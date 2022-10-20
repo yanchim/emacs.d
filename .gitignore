@@ -1,0 +1,36 @@
+#########
+# Files #
+#########
+*.elc
+/.lsp*
+/.org-id-locations
+/abbrev_defs
+/amx-items
+/bookmarks
+/custom-set-variables.el
+/history
+/ido.last
+/places
+/projectile*
+/recentf
+/projects
+/tramp
+/viper
+/README.html
+!/lib/site-lisp/README
+
+###########
+# Folders #
+###########
+/.cache/
+/auto-save-list/
+/elpa/
+/transient/
+/url/
+/tramp/
+/eshell/
+/games/
+/server/
+/eln-cache/
+/var/
+/lib/site-lisp/*/
