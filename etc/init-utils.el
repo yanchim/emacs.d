@@ -147,15 +147,13 @@
 (put 'erase-buffer 'disabled nil)
 
 ;; disable annoying blink
-(when (fboundp 'blink-cursor-mode)
-  (blink-cursor-mode -1))
+(blink-cursor-mode -1)
 
 ;; delete the selection with a key press
 (delete-selection-mode +1)
 
 ;; fix Emacs performance when edit so-long files
-(when (fboundp 'global-so-long-mode)
-  (global-so-long-mode +1))
+(global-so-long-mode +1)
 
 ;; https://www.emacswiki.org/emacs/SavePlace
 (save-place-mode +1)
@@ -165,32 +163,12 @@
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
 
-;; NOTE: `tool-bar-mode' and `scroll-bar-mode' are not defined in some cases
-;; https://emacs-china.org/t/topic/5159/12
-;; https://github.com/vijaykiran/spacemacs/commit/b2760f33e5c77fd4a073bc052e7b3f95eedae08f
-;; removes the GUI elements
-;; NO scroll-bar, tool-bar
-(when window-system
-  (and (fboundp 'tool-bar-mode) (not (eq tool-bar-mode -1))
-       (tool-bar-mode -1))
-  (and (fboundp 'scroll-bar-mode) (not (eq scroll-bar-mode -1))
-       (scroll-bar-mode -1))
-  (when (fboundp 'horizontal-scroll-bar-mode)
-    (horizontal-scroll-bar-mode -1)))
-
-;; NO menu-bar
-;; BUT there's no point in hiding the menu bar on mac, so let's not do it
-(unless my-mac-x-p
-  (and (fboundp 'menu-bar-mode) (not (eq menu-bar-mode -1))
-       (menu-bar-mode -1)))
-
 ;; pairs...
 (electric-pair-mode +1)
 
 ;; show matching parentheses
 (show-paren-mode +1)
-(when (boundp 'show-paren-context-when-offscreen)
-  (setq show-paren-context-when-offscreen 'overlay))
+(setq show-paren-context-when-offscreen 'overlay)
 
 ;; clean up obsolete buffers automatically
 (require 'midnight)
@@ -268,13 +246,9 @@
 (setq auth-sources '("~/.authinfo.gpg"))
 
 (with-eval-after-load 'epa
-  ;; with GPG 2.1+, this forces gpg-agent to use the Emacs minibuffer to prompt
-  ;; for the key passphrase.
-  ;; `epa-pinentry-mode' is obsolete since Emacs 27.1
-  (set (if (>= emacs-major-version 27)
-           'epg-pinentry-mode
-         'epa-pinentry-mode)
-       'loopback))
+  ;; with GPG 2.1+, this forces gpg-agent to use the Emacs minibuffer to
+  ;; prompt for the key passphrase.
+  (setq epg-pinentry-mode 'loopback))
 
 ;;;;;;;;;;;;;;;;;
 ;; keybindings ;;

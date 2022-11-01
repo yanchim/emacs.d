@@ -25,9 +25,22 @@
 (when (fboundp 'pixel-scroll-precision-mode)
   (pixel-scroll-precision-mode +1))
 
-(use-package ns-auto-titlebar
-  :when my-mac-x-p
-  :config (ns-auto-titlebar-mode +1))
+(when (featurep 'ns)
+  (defun my--set-frame-ns-titlebar (frame &rest _)
+    "Set ns-appearance frame parameter for FRAME."
+    (when (display-graphic-p frame)
+      (let ((mode (frame-parameter frame 'background-mode)))
+        (modify-frame-parameters
+         frame
+         `((ns-transparent-titlebar . t) (ns-appearance . ,mode))))))
+
+  (defun my--set-all-frams-ns-titlebar (&rest _)
+    "Set ns-appearance frame parameter for all frames."
+    (mapc #'my--set-frame-ns-titlebar (frame-list)))
+
+  (add-hook 'after-init-hook #'my--set-all-frams-ns-titlebar)
+  (add-hook 'after-make-frame-functions #'my--set-frame-ns-titlebar)
+  (advice-add 'frame-set-background-mode :after #'my--set-frame-ns-titlebar))
 
 (defun my-set-window-transparency (value)
   "Set the VALUE of transparency of the frame window."
