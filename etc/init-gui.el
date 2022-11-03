@@ -18,9 +18,6 @@
                    (abbreviate-file-name (buffer-file-name))
                  "%b"))))
 
-;; Full screen when open GUI Emacs
-(setq initial-frame-alist '((fullscreen . maximized)))
-
 ;; move more smoothly
 (when (fboundp 'pixel-scroll-precision-mode)
   (pixel-scroll-precision-mode +1))

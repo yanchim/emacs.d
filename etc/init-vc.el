@@ -7,17 +7,24 @@
 
 ;;; Code:
 
-(with-eval-after-load 'magit
+(use-package magit
+  :bind (("C-x g"   . magit-status)
+         ("C-c v g" . magit-status)
+         ("C-x M-g" . magit-dispatch)
+         ("C-c v d" . magit-dispatch)
+         ("C-c M-g" . magit-file-dispatch)
+         ("C-c v f" . magit-file-dispatch))
+  :config
   ;; add module section into the status buffer
   (magit-add-section-hook 'magit-status-sections-hook
                           #'magit-insert-modules
                           #'magit-insert-stashes #'append))
 
-(require 'diff-hl)
-(global-diff-hl-mode +1)
-(add-hook 'dired-mode-hook #'diff-hl-dired-mode)
-
-(with-eval-after-load 'diff-hl
+(use-package diff-hl
+  :hook ((after-init . global-diff-hl-mode)
+         (dired-mode . diff-hl-dired-mode))
+  :config
+  ;; highlight on-the-fly
   (diff-hl-flydiff-mode +1)
 
   (setq diff-hl-margin-symbols-alist

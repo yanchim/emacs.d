@@ -266,9 +266,11 @@
 ;; toggle
 (global-set-key (kbd "C-c t A") #'abbrev-mode)
 (global-set-key (kbd "C-c t a") #'auto-fill-mode)
-(global-set-key (kbd "C-c t f") #'display-fill-column-indicator-mode)
+(global-set-key (kbd "C-c t f f") #'toggle-frame-fullscreen)
+(global-set-key (kbd "C-c t f m") #'toggle-frame-maximized)
 (global-set-key (kbd "C-c t g") #'glasses-mode)
 (global-set-key (kbd "C-c t h") #'global-hl-line-mode)
+(global-set-key (kbd "C-c t i") #'display-fill-column-indicator-mode)
 (global-set-key (kbd "C-c t j") #'toggle-truncate-lines)
 (global-set-key (kbd "C-c t k") #'visual-line-mode)
 (global-set-key (kbd "C-c t l") #'display-line-numbers-mode)
