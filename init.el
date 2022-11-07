@@ -64,7 +64,6 @@
 (when (display-graphic-p)
   (require 'init-gui))
 (require 'init-misc)
-(require 'init-term)
 (require 'init-markup)
 (require 'init-chinese)
 

@@ -8,12 +8,12 @@
 ;;; Code:
 
 (use-package flymake
-             :hook (c-mode-hook c++-mode-hook)
-             :bind (("C-c ! n" . flymake-goto-next-error)
-                    ("C-c ! p" . flymake-goto-next-error)
-                    ("C-c ! d" . flymake-show-buffer-diagnostics)
-                    ("C-c ! D" . flymake-show-project-diagnostics)
-                    ("C-c ! s" . flymake-start)))
+  :hook (c-mode-hook c++-mode-hook)
+  :bind (("C-c ! n" . flymake-goto-next-error)
+         ("C-c ! p" . flymake-goto-next-error)
+         ("C-c ! d" . flymake-show-buffer-diagnostics)
+         ("C-c ! D" . flymake-show-project-diagnostics)
+         ("C-c ! s" . flymake-start)))
 
 (use-package flyspell
   :when (executable-find "aspell")

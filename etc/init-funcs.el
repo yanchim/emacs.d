@@ -554,6 +554,31 @@ When region is active, delete the blank lines in region only."
 
 (global-set-key (kbd "C-c m D") #'my-delete-visual-blank-lines)
 
+(defun my-delete-invisible-chars ()
+  "Query and replace some invisible Unicode chars.
+
+The chars replaced are:
+ ZERO WIDTH NO-BREAK SPACE (65279, #xfeff)
+ ZERO WIDTH SPACE (codepoint 8203, #x200b)
+ RIGHT-TO-LEFT MARK (8207, #x200f)
+ RIGHT-TO-LEFT OVERRIDE (8238, #x202e)
+ LEFT-TO-RIGHT MARK ‎(8206, #x200e)
+ OBJECT REPLACEMENT CHARACTER (65532, #xfffc)
+
+Begin at buffer beginning, respects `narrow-to-region'.
+
+URL `http://xahlee.info/emacs/emacs/elisp_unicode_replace_invisible_chars.html'
+Version: 2018-09-07 2022-09-13."
+  (interactive)
+  (save-excursion
+    (let ((case-replace nil)
+          (case-fold-search nil))
+      (goto-char (point-min))
+      (while (re-search-forward
+              "\ufeff\\|\u200b\\|\u200f\\|\u202e\\|\u200e\\|\ufffc"
+              nil t)
+        (replace-match "")))))
+
 (defun my-fixup-whitespace ()
   "Add Chinese characters support for `fixup-whitespace'."
   (interactive "*")

@@ -86,9 +86,9 @@
 (setq recentf-max-saved-items 200)
 ;; simplify save path
 (setq recentf-filename-handlers '(abbreviate-file-name))
-(add-to-list 'recentf-exclude
-             '("^/\\(?:ssh\\|su\\|sudo\\)?:"
-               "/TAGS\\'" "/tags\\'"))
+(dolist (regexp '("^/\\(?:ssh\\|su\\|sudo\\)?x?:"
+                  "/\\.?TAGS\\'" "/\\.?tags\\'"))
+  (add-to-list 'recentf-exclude regexp))
 ;; disable `recentf-cleanup' on recentf start,
 ;; because it can be laggy with remote files
 (setq recentf-auto-cleanup 'never)
@@ -187,14 +187,10 @@
 
 ;; whitespace
 (require 'whitespace)
-(setq whitespace-style '(face indentation
-                              tabs tab-mark
-                              spaces space-mark
-                              newline newline-mark
-                              trailing lines-tail))
-(setq whitespace-display-mappings '((tab-mark ?\t [?› ?\t])
-                                    (space-mark ?\  [?·] [?.])
-                                    (newline-mark ?\n [?¬ ?\n])))
+;; search {zero,full}-width space also
+(setq whitespace-space-regexp "\\( +\\|　+\\|​+\\)")
+;; show zero-width space
+(add-to-list 'whitespace-display-mappings '(space-mark #x200b [?.]))
 
 ;; meaningful names for buffers with the same name
 (require 'uniquify)
@@ -220,7 +216,7 @@
 ;; Don't ask before rereading the TAGS files if they have changed
 (setq tags-revert-without-query t)
 
-;; hippie-expand
+;; change the default behavior of hippie-expand
 (setq hippie-expand-try-functions-list '(try-expand-dabbrev
                                          try-expand-dabbrev-all-buffers
                                          try-expand-dabbrev-from-kill
@@ -259,9 +255,14 @@
 (global-set-key (kbd "C-c l t") #'load-theme)
 ;; be able to M-x without meta
 (global-set-key (kbd "C-c m x") #'execute-extended-command)
-(global-set-key (kbd "C-x 8 s") (lambda ()
+;; zero width space
+(global-set-key (kbd "C-c 8 z") (lambda ()
                                   (interactive)
-                                  (insert "　")))
+                                  (insert-char ?\u200b)))
+;; ideographic space
+(global-set-key (kbd "C-c 8 f") (lambda ()
+                                  (interactive)
+                                  (insert-char ?\u3000)))
 
 ;; toggle
 (global-set-key (kbd "C-c t A") #'abbrev-mode)
@@ -281,20 +282,6 @@
 
 ;; abbrevs
 (setq save-abbrevs 'silently)
-(define-abbrev-table
-  'global-abbrev-table
-  '(;; Emacs regex
-    ("azdr" "\\([A-Za-z0-9]+\\)" )
-    ("bracketr" "\\[\\([^]]+?\\)\\]" )
-    ("curlyr" "“\\([^”]+?\\)”" )
-    ("digitsr" "\\([0-9]+\\)" )
-    ("dater" "\\([0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\}\\)" )
-    ("dotr" "\\(.\\)" )
-    ("strr" "\\([^\"]+?\\)" )
-    ("tagr" "\\([</>=\" A-Za-z0-9]+\\)" )
-    ;; unicode
-    ("fws" "　"))
-  "Abbrev table for my own use.")
 
 ;; search
 (global-set-key (kbd "C-c s d") #'find-dired)

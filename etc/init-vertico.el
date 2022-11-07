@@ -143,7 +143,7 @@
     (advice-add func :filter-args #'my--consult-zh-builder))
 
   (defun my-consult-fd (&optional dir initial)
-  "Search with `fd' for files in DIR where the content matches a regexp.
+    "Search with `fd' for files in DIR where the content matches a regexp.
 The initial input is given by the INITIAL argument.  See
 `consult-find' for more details."
     (interactive "P")

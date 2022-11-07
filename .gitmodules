@@ -49,6 +49,9 @@
 [submodule "cyberpunk-theme"]
 	path = lib/cyberpunk-theme
 	url = https://github.com/n3mo/cyberpunk-theme.el.git
+[submodule "darkroom"]
+	path = lib/darkroom
+	url = https://github.com/joaotavora/darkroom.git
 [submodule "dash"]
 	no-byte-compile = dash-functional.el
 	no-makeinfo = dash-template.texi
@@ -57,6 +60,9 @@
 [submodule "diff-hl"]
 	path = lib/diff-hl
 	url = https://github.com/dgutov/diff-hl.git
+[submodule "doom-themes"]
+	path = lib/doom-themes
+	url = https://github.com/doomemacs/themes.git
 [submodule "dracula-theme"]
 	path = lib/dracula-theme
 	url = https://github.com/dracula/emacs.git

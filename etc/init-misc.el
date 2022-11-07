@@ -107,8 +107,13 @@
           ;; For things that just gotta go and will soon be gone.
           ("DEPRECATED" font-lock-doc-face bold))))
 
+(use-package darkroom
+  :bind (("C-c t d" . darkroom-tentative-mode)
+         ("C-c t D" . darkroom-mode)))
+
 (use-package separedit
   :bind ("C-c e e" . separedit)
+  :custom (separedit-remove-trailing-spaces-in-comment t)
   :init
   (defun my-eval-last-sexp-in-comment ()
     "Eval last sexp in comment by using `separedit'."
