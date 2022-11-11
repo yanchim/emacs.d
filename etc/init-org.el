@@ -151,6 +151,12 @@
       (org-mark-subtree))
     (if is-promote (org-do-promote) (org-do-demote)))
 
+  (global-set-key (kbd "C-c o p") (lambda ()
+                                    "Promote current org tree."
+                                    (interactive)
+                                    (my-org-demote-or-promote t)))
+  (global-set-key (kbd "C-c o d") #'my-org-demote-or-promote)
+
   ;; -----------------------------------------
   ;; C-c . \+1w RET ;; => <2020-05-23 Sat +1w>
   ;; C-c . \-1w RET ;; => <2020-05-23 Sat -1w>
@@ -461,9 +467,7 @@ Only equations at the beginning of a line are justified."
   ;; ------
   (with-eval-after-load 'ox
     (require 'ox-md)
-    (require 'ox-latex)
     (add-to-list 'org-export-backends 'md)
-    (add-to-list 'org-export-backends 'odt)
     (setq org-export-coding-system 'utf-8)))
 
 (provide 'init-org)

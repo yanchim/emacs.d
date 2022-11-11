@@ -135,14 +135,16 @@ version control automatically."
 ;; FILE ;;
 ;;;;;;;;;;
 
-(defun my-rename-this-file (&optional prefix)
-  "Rename both current buffer and file."
+(defun my-rename-this-file (&optional arg)
+  "Rename both current buffer and file.
+With a prefix ARG, rename based on current name."
   (interactive "P")
-  (let ((name (buffer-name))
-        (filename (buffer-file-name)))
+  (let ((filename (buffer-file-name)))
     (unless filename
       (error "Buffer ‘%s’ is not visiting a file!" name))
-    (let ((new-name (read-string "New name: " (when prefix name))))
+    (let ((new-name (read-string
+                     "New name: "
+                     (when arg (file-name-nondirectory filename)))))
       (progn
         (when (file-exists-p filename)
           (rename-file filename new-name +1))
@@ -177,33 +179,20 @@ version control automatically."
 
 (global-set-key (kbd "C-c f b") #'my-browse-this-file)
 
-(defun my-open-this-file-externally (arg)
-  "Open visited file in default external program.
-When in Dired mode, open file under the cursor.
-With a prefix ARG always prompt for command to use."
-  (interactive "P")
-  (let* ((current-file-name
-          (if (eq major-mode 'dired-mode)
-              (dired-get-file-for-visit)
-            buffer-file-name))
-         (current-file-dir (file-name-directory current-file-name))
-         (open (pcase system-type
-                 (`darwin "open")
-                 ((or `gnu `gnu/linux `gnu/kfreebsd)
-                  ;; wsl
-                  (if (executable-find "explorer.exe")
-                      "explorer.exe"
-                    "xdg-open"))
-                 (`windows-nt "explorer.exe")))
-         (program (if (or arg (not open))
-                      (read-shell-command "Open current file with: ")
-                    open)))
-    ;; buggy when under wsl
-    (when (executable-find "explorer.exe")
-      (setq current-file-dir "."))
-    (call-process program nil 0 nil current-file-dir)))
+(defun my-open-file-externally (file)
+  "Open FILE externally using the default application of the system."
+  (interactive "fOpen externally: ")
+  (if (and (eq system-type 'windows-nt)
+           (fboundp 'w32-shell-execute))
+      (w32-shell-execute "open" file)
+    (call-process (pcase system-type
+                    ('darwin "open")
+                    ('cygwin "cygstart")
+                    (_ "xdg-open"))
+                  nil 0 nil
+                  (expand-file-name file))))
 
-(global-set-key (kbd "C-c f o") #'my-open-this-file-externally)
+(global-set-key (kbd "C-c f o") #'my-open-file-externally)
 
 (defun my-delete-this-file ()
   "Delete current file, and kill the buffer."
