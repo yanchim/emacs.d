@@ -32,17 +32,15 @@
 	path = lib/compat
 	url = https://git.sr.ht/~pkal/compat
 [submodule "consult"]
+	no-byte-compile = consult-icomplete
+	no-byte-compile = consult-selectrum
 	path = lib/consult
 	url = https://github.com/minad/consult.git
 [submodule "corfu"]
+	load-path = .
+	load-path = extensions
 	path = lib/corfu
 	url = https://github.com/minad/corfu.git
-[submodule "corfu-doc"]
-	path = lib/corfu-doc
-	url = https://github.com/galeo/corfu-doc.git
-[submodule "corfu-doc-terminal"]
-	path = lib/corfu-doc-terminal
-	url = https://codeberg.org/akib/emacs-corfu-doc-terminal.git
 [submodule "corfu-terminal"]
 	path = lib/corfu-terminal
 	url = https://codeberg.org/akib/emacs-corfu-terminal.git
