@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: documentclass
+# key: dc
+# --
+\documentclass${1:[options]}{$2}

@@ -37,7 +37,7 @@
               (setq file-name-handler-alist
                     (delete-dups (append file-name-handler-alist
                                          old-file-name-handler-alist)))
-              ;; if x10, half of cpu time is spent on gc when scrolling
+              ;; If x10, half of cpu time is spent on gc when scrolling.
               (setq gc-cons-threshold (* 100 old-gc-cons-threshold)))))
 
 (push (expand-file-name my-config-d) load-path)
@@ -62,18 +62,19 @@
 (require 'init-prog)
 (require 'init-check)
 
-;; handy tools though not must have
+;; Handy tools though not must have.
 (require 'init-misc)
 (require 'init-markup)
+(require 'init-snippet)
 (require 'init-chinese)
 
-;; program
+;; Program.
 (require 'init-tex)
 (require 'init-sexp)
 (require 'init-js)
 (require 'init-python)
 
-;; personal setup
+;; Personal setup.
 (load (expand-file-name "~/.custom.el") t nil)
 
 (load

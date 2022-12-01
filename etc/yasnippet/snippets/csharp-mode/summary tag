@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: summary tag
+# key: <su
+# --
+/// <summary>
+/// $1
+/// </summary>

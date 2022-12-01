@@ -7,6 +7,9 @@
 [submodule "auto-compile"]
 	path = lib/auto-compile
 	url = https://github.com/emacscollective/auto-compile.git
+[submodule "auto-yasnippet"]
+	path = lib/auto-yasnippet
+	url = https://github.com/abo-abo/auto-yasnippet.git
 [submodule "avy"]
 	path = lib/avy
 	url = https://github.com/abo-abo/avy.git
@@ -101,6 +104,9 @@
 [submodule "marginalia"]
 	path = lib/marginalia
 	url = https://github.com/minad/marginalia.git
+[submodule "markdown-mode"]
+	path = lib/markdown-mode
+	url = https://github.com/jrblevin/markdown-mode.git
 [submodule "modus-themes"]
 	path = lib/modus-themes
 	url = https://git.sr.ht/~protesilaos/modus-themes
@@ -110,9 +116,6 @@
 [submodule "orderless"]
 	path = lib/orderless
 	url = https://github.com/oantolin/orderless.git
-[submodule "packed"]
-	path = lib/packed
-	url = https://github.com/emacscollective/packed.git
 [submodule "popon"]
 	path = lib/popon
 	url = https://codeberg.org/akib/emacs-popon.git
@@ -152,6 +155,9 @@
 [submodule "xr"]
 	path = lib/xr
 	url = https://github.com/mattiase/xr.git
+[submodule "yasnippet"]
+	path = lib/yasnippet
+	url = https://github.com/joaotavora/yasnippet.git
 [submodule "zenburn-theme"]
 	path = lib/zenburn-theme
 	url = https://github.com/bbatsov/zenburn-emacs.git

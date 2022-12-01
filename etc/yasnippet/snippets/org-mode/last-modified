@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: last-modified
+# key: lm
+# --
+#+last_modified: `(format-time-string "%FT%T%z")`

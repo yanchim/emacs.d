@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: constant
+# key: const
+# --
+${1:$$(yas-choose-value '("public" "private" "protected" ""))} static final ${2:Type} ${3:Variable} = $4;

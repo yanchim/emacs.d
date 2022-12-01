@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: date
+# key: date
+# --
+#+date: ${1:`(format-time-string "%FT%T%z")`}

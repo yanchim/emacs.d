@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ArrayList
+# key: al
+# --
+ArrayList<${1:Object}>$0

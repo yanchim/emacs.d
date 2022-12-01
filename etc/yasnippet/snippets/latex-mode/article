@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: full template of article class
+# key: article
+# --
+\documentclass[${1:options}]{article}
+
+\begin{document}
+$0
+\end{document}
