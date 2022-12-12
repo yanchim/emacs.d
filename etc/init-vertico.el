@@ -71,12 +71,10 @@
    ("C-c s g" . consult-grep)
    ("C-c s v" . consult-git-grep)
    ("C-c s r" . consult-ripgrep)
-   ("C-c s l" . consult-line-multi)
-   ("C-c s m" . consult-multi-occur)
+   ("C-c s l" . consult-line)
+   ("C-c s m" . consult-line-multi)
    ("C-c s k" . consult-focus-lines)
    ("C-c s K" . consult-keep-lines)
-   (:map dired-mode-map
-         ("e" . my-dired-open-externally))
    (:map minibuffer-local-map
          ("M-h" . consult-history)
          ([remap next-matching-history-element] . consult-history)
@@ -92,28 +90,43 @@
   :hook (completion-list-mode . consult-preview-at-point-mode)
 
   :config
-  (defun my--consult-zh-builder (input)
-    "Add Zhongwen support for `consult' when searching INPUT."
-    (require 'zh-lib)
-    (let* ((str (car input))
-           (len (length str)))
-      ;; Detect the first entered character.  If it matches `:',
-      ;; convert the subsequent characters into Zhongwen regexp.
-      ;; For expmale, input `:zw' matches `中文', `植物' and etc.
-      (when (string= (substring str 0 1) ":")
-        (setf (car input) (zh-lib-build-regexp-string
-                           (substring str 1 len)))))
-    input)
+  (defcustom my-consult-zh-prefix ?:
+    "The prefix character when using consult to search Zhongwen."
+    :group 'convenience
+    :type 'character)
 
-  (defcustom my--consult--fd-command "fd"
+  (defun my--consult-zh-regexp-compiler (input type ignore-case)
+    "Compile the INPUT string to a list of regular expressions.
+
+The function should return a pair, the list of regular expressions and a
+highlight function. The highlight function should take a single
+argument, the string to highlight given the INPUT. TYPE is the desired
+type of regular expression, which can be `basic', `extended', `emacs' or
+`pcre'. If IGNORE-CASE is non-nil return a highlight function which
+matches case insensitively."
+    (require 'zh-lib)
+    (setq input (consult--split-escaped
+                 (if (char-equal my-consult-zh-prefix (string-to-char input))
+                     ;; Detect the first entered character. If it
+                     ;; matches `my-consult-zh-prefix', convert the
+                     ;; subsequent characters into Zhongwen regexp.
+                     (zh-lib-build-regexp-string (substring input 1))
+                   input)))
+    (cons (mapcar (lambda (x) (consult--convert-regexp x type)) input)
+          (when-let (regexps (seq-filter #'consult--valid-regexp-p input))
+            (apply-partially #'consult--highlight-regexps regexps ignore-case))))
+
+  (advice-add 'consult--default-regexp-compiler :override #'my--consult-zh-regexp-compiler)
+
+  (defcustom my-consult-fd-command "fd"
     "The default command used to run fd."
     :group 'convenience
     :type 'string)
 
   (defun my--consult--fd-builder (input)
     "Build command line given INPUT."
-    (unless my--consult--fd-command
-      (setq my--consult--fd-command
+    (unless my-consult-fd-command
+      (setq my-consult-fd-command
             (if (eq 0 (call-process-shell-command "fdfind"))
                 "fdfind"
               "fd")))
@@ -122,19 +135,11 @@
                                         arg 'extended t)))
       (when re
         (list :command (append
-                        (list my--consult--fd-command
+                        (list my-consult-fd-command
                               "--color=never" "--full-path"
                               (consult--join-regexps re 'extended))
                         opts)
               :highlight hl))))
-
-  (dolist (func '(consult--find-builder
-                  my--consult--fd-builder
-                  consult--git-grep-builder
-                  consult--grep-builder
-                  consult--locate-builder
-                  consult--ripgrep-builder))
-    (advice-add func :filter-args #'my--consult-zh-builder))
 
   (defun my-consult-fd (&optional dir initial)
     "Search with `fd' for files in DIR where the content matches a regexp.
@@ -154,11 +159,11 @@ The initial input is given by the INITIAL argument.  See
     ;;              '("[rR][gG]" . (utf-8 . gbk-dos)))
 
     (defun my--consult-find-win (&optional dir initial)
-      "Use `consult-find' in Windows with msys2.
+      "Use `consult-find' on Windows.
 
 URL `https://github.com/minad/consult/issues/475'."
       (let* ((w32-quote-process-args ?\\) ; or (w32-quote-process-args ?*)
-             (consult-find-args "c:/msys64/usr/bin/find.exe . -not ( -wholename */.* -prune )")
+             (consult-find-args (concat find-program " . -not ( -wholename */.* -prune )"))
              (prompt-dir (consult--directory-prompt "Find" dir))
              (default-directory (cdr prompt-dir)))
         (find-file (consult--find
@@ -166,13 +171,6 @@ URL `https://github.com/minad/consult/issues/475'."
                     #'consult--find-builder
                     initial))))
     (advice-add 'consult-find :override #'my--consult-find-win))
-
-  (defun my-dired-open-externally (&optional arg)
-    "Open marked or current file in operating system's default application."
-    (interactive "P")
-    (dired-map-over-marks
-     (consult-file-externally (dired-get-file-for-visit))
-     arg))
 
   ;; The narrowing key.
   ;; Both `<' and `C-+' work reasonably well.

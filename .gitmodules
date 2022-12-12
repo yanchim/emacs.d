@@ -137,15 +137,15 @@
 [submodule "transient"]
 	path = lib/transient
 	url = https://github.com/magit/transient.git
-[submodule "use-package"]
-	path = lib/use-package
-	url = https://github.com/jwiegley/use-package.git
 [submodule "valign"]
 	path = lib/valign
 	url = https://github.com/casouri/valign.git
 [submodule "vertico"]
 	path = lib/vertico
 	url = https://github.com/minad/vertico.git
+[submodule "vundo"]
+	path = lib/vundo
+	url = https://github.com/casouri/vundo.git
 [submodule "wgrep"]
 	path = lib/wgrep
 	url = https://github.com/mhayashi1120/Emacs-wgrep.git

@@ -53,12 +53,16 @@
   (require 'init-gui))
 
 (require 'init-package)
+
 (require 'init-edit)
 (require 'init-vc)
+
 ;; (require 'init-ido)
 (require 'init-vertico)
+
 ;; (require 'init-company)
 (require 'init-corfu)
+
 (require 'init-prog)
 (require 'init-check)
 

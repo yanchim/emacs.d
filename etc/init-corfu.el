@@ -16,7 +16,7 @@
   ;; (corfu-quit-at-boundary nil)   ; never quit at completion boundary
   ;; (corfu-quit-no-match nil)      ; never quit, even if there is no match
   ;; (corfu-preview-current nil)    ; disable current candidate preview
-  ;; (corfu-preselect-first nil)    ; disable candidate preselection
+  ;; (corfu-preselect 'prompt)      ; disable candidate preselection
   ;; (corfu-on-exact-match nil)     ; configure handling of exact matches
   ;; (corfu-scroll-margin 5)        ; use scroll margin
   :config
@@ -34,6 +34,8 @@
       :bind (:map corfu-map
                   ("M-n" . corfu-popupinfo-scroll-up)
                   ("M-p" . corfu-popupinfo-scroll-down)
+                  ("M-a" . corfu-popupinfo-beginning)
+                  ("M-e" . corfu-popupinfo-end)
                   ("M-l" . corfu-popupinfo-location)
                   ("M-d" . corfu-popupinfo-documentation)
                   ("M-t" . corfu-popupinfo-toggle)))
