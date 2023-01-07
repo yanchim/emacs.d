@@ -33,10 +33,10 @@
 	url = https://github.com/purcell/color-theme-sanityinc-solarized.git
 [submodule "compat"]
 	path = lib/compat
-	url = https://git.sr.ht/~pkal/compat
+	url = https://github.com/emacs-compat/compat.git
 [submodule "consult"]
-	no-byte-compile = consult-icomplete
-	no-byte-compile = consult-selectrum
+	no-byte-compile = consult-icomplete.el
+	no-byte-compile = consult-selectrum.el
 	path = lib/consult
 	url = https://github.com/minad/consult.git
 [submodule "corfu"]
