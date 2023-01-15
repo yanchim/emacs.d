@@ -36,7 +36,6 @@
 	url = https://github.com/emacs-compat/compat.git
 [submodule "consult"]
 	no-byte-compile = consult-icomplete.el
-	no-byte-compile = consult-selectrum.el
 	path = lib/consult
 	url = https://github.com/minad/consult.git
 [submodule "corfu"]
@@ -108,6 +107,7 @@
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode.git
 [submodule "modus-themes"]
+	no-makeinfo = doclicense.texi
 	path = lib/modus-themes
 	url = https://git.sr.ht/~protesilaos/modus-themes
 [submodule "no-littering"]
@@ -116,6 +116,9 @@
 [submodule "orderless"]
 	path = lib/orderless
 	url = https://github.com/oantolin/orderless.git
+[submodule "pdf-tools"]
+	path = lib/pdf-tools
+	url = https://github.com/vedang/pdf-tools.git
 [submodule "popon"]
 	path = lib/popon
 	url = https://codeberg.org/akib/emacs-popon.git
@@ -128,6 +131,9 @@
 [submodule "separedit"]
 	path = lib/separedit
 	url = https://github.com/twlz0ne/separedit.el.git
+[submodule "tablist"]
+	path = lib/tablist
+	url = https://github.com/politza/tablist.git
 [submodule "tao-theme"]
 	path = lib/tao-theme
 	url = https://github.com/11111000000/tao-theme-emacs.git

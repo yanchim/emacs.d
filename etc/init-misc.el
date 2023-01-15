@@ -119,6 +119,16 @@ access from `emacsclient'."
   :bind (("C-c t d" . darkroom-tentative-mode)
          ("C-c t D" . darkroom-mode)))
 
+(use-package pdf-view
+  :when (display-graphic-p)
+  :hook ((pdf-view-mode . pdf-isearch-minor-mode))
+  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  ;; Enable hiDPI support, but at the cost of memory!
+  (setq pdf-view-use-scaling t
+        pdf-view-use-imagemagick nil))
+
 (use-package separedit
   :bind ("C-c e e" . separedit)
   :custom (separedit-remove-trailing-spaces-in-comment t)
