@@ -72,9 +72,6 @@
 [submodule "embark"]
 	path = lib/embark
 	url = https://github.com/oantolin/embark.git
-[submodule "exec-path-from-shell"]
-	path = lib/exec-path-from-shell
-	url = https://github.com/purcell/exec-path-from-shell.git
 [submodule "expand-region"]
 	path = lib/expand-region
 	url = https://github.com/magnars/expand-region.el.git
