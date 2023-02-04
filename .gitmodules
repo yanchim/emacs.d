@@ -103,10 +103,6 @@
 [submodule "markdown-mode"]
 	path = lib/markdown-mode
 	url = https://github.com/jrblevin/markdown-mode.git
-[submodule "modus-themes"]
-	no-makeinfo = doclicense.texi
-	path = lib/modus-themes
-	url = https://git.sr.ht/~protesilaos/modus-themes
 [submodule "no-littering"]
 	path = lib/no-littering
 	url = https://github.com/emacscollective/no-littering.git
@@ -137,9 +133,6 @@
 [submodule "toc-org"]
 	path = lib/toc-org
 	url = https://github.com/snosov1/toc-org.git
-[submodule "transient"]
-	path = lib/transient
-	url = https://github.com/magit/transient.git
 [submodule "valign"]
 	path = lib/valign
 	url = https://github.com/casouri/valign.git

@@ -14,10 +14,6 @@
         borg-user-emacs-directory user-emacs-directory
         borg-gitmodules-file (expand-file-name ".gitmodules"
                                                user-emacs-directory))
-  ;; Use HTTPS instead of SSH.
-  (setq borg-rewrite-urls-alist
-        '(("git@github.com:" . "https://github.com/")
-          ("git@gitlab.com:" . "https://gitlab.com/")))
   (borg-initialize))
 
 ;; Add both site-lisp and its subdirs to `load-path'.

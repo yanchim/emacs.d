@@ -7,9 +7,9 @@
 
 ;;; Code:
 
-(when (treesit-available-p)
-  (require 'treesit)
-
+(use-package treesit
+  :when (treesit-available-p)
+  :init
   (setq treesit-language-source-alist
         '((bash       . ("https://github.com/tree-sitter/tree-sitter-bash.git"))
           (c          . ("https://github.com/tree-sitter/tree-sitter-c.git"))
@@ -31,7 +31,24 @@
           (tsx        . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "tsx/src"))
           (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript.git" nil "typescript/src"))
           (yaml       . ("https://github.com/ikatyang/tree-sitter-yaml.git"))))
-
+  :custom
+  (major-mode-remap-alist
+   '((c-mode          . c-ts-mode)
+     (c++-mode        . c++-ts-mode)
+     (c-or-c++-mode   . c-or-c++-ts-mode)
+     (conf-toml-mode  . toml-ts-mode)
+     (csharp-mode     . csharp-ts-mode)
+     (css-mode        . css-ts-mode)
+     (html-mode       . html-ts-mode)
+     (java-mode       . java-ts-mode)
+     (javascript-mode . js-ts-mode)
+     (js-json-mode    . json-ts-mode)
+     (js-mode         . js-ts-mode)
+     (python-mode     . python-ts-mode)
+     (ruby-mode       . ruby-ts-mode)
+     (sh-mode         . bash-ts-mode)))
+  :config
+  ;; Add `*-ts-mode' to `auto-mode-alist'.
   (dolist (list `((cmake      . (,(rx (or "CMakeLists.txt" ".cmake") eos) . cmake-ts-mode))
                   (dockerfile . (,(rx (or (seq "Dockerfile" (opt "." (zero-or-more nonl))) (seq "." (any "Dd") "ockerfile")) eos) . dockerfile-ts-mode))
                   (go         . (,(rx ".go" eos) . go-ts-mode))
@@ -43,23 +60,7 @@
     (let ((parser (car list))
           (alist (cdr list)))
       (when (treesit-ready-p parser)
-        (add-to-list 'auto-mode-alist alist))))
-
-  (setq major-mode-remap-alist
-        '((c-mode          . c-ts-mode)
-          (c++-mode        . c++-ts-mode)
-          (c-or-c++-mode   . c-or-c++-ts-mode)
-          (conf-toml-mode  . toml-ts-mode)
-          (csharp-mode     . csharp-ts-mode)
-          (css-mode        . css-ts-mode)
-          (html-mode       . html-ts-mode)
-          (java-mode       . java-ts-mode)
-          (javascript-mode . js-ts-mode)
-          (js-json-mode    . json-ts-mode)
-          (js-mode         . js-ts-mode)
-          (python-mode     . python-ts-mode)
-          (ruby-mode       . ruby-ts-mode)
-          (sh-mode         . bash-ts-mode))))
+        (add-to-list 'auto-mode-alist alist)))))
 
 (defvar my-last-compilation-buffer nil
   "The last buffer in which compilation took place.")
