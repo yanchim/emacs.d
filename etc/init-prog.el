@@ -64,7 +64,7 @@
                   (yaml       . (,(rx ".y" (opt "a") "ml" eos) . yaml-ts-mode))))
     (let ((parser (car list))
           (alist (cdr list)))
-      (when (treesit-ready-p parser)
+      (when (treesit-ready-p parser 'message)
         (add-to-list 'auto-mode-alist alist)))))
 
 (defvar my-last-compilation-buffer nil
