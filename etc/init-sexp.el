@@ -19,7 +19,7 @@ URL `https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html'.
                 (eq (char-after) ?'))
       (insert "'"))))
 
-(define-key emacs-lisp-mode-map "#" #'my-endless-sharp)
+(keymap-set emacs-lisp-mode-map "#" #'my-endless-sharp)
 
 (defun my-eval-print-last-sexp (&optional arg)
   "Evaluate sexp before point, insert output below following an arrow.
@@ -43,7 +43,7 @@ sexp before point and insert output into current position."
 
 (dolist (map (list emacs-lisp-mode-map
                    lisp-interaction-mode-map))
-  (define-key map (kbd "C-c C-p") #'my-eval-print-last-sexp))
+  (keymap-set map "C-c C-p" #'my-eval-print-last-sexp))
 
 (provide 'init-sexp)
 

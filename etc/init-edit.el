@@ -124,8 +124,9 @@
   :after avy
   :config (global-avy-zh-mode +1))
 
-(use-package expand-region
-  :bind ("C-c e ;" . er/expand-region))
+(use-package expreg
+  :bind (("C-c e ;" . expreg-expand)
+         ("C-c e '" . expreg-contract)))
 
 (use-package vundo
   :bind ("C-c e u" . vundo))

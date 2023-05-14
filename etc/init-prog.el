@@ -17,7 +17,6 @@
           (cpp        . ("https://github.com/tree-sitter/tree-sitter-cpp.git"))
           (csharp     . ("https://github.com/tree-sitter/tree-sitter-c-sharp.git"))
           (css        . ("https://github.com/tree-sitter/tree-sitter-css.git"))
-          (dart       . ("https://github.com/UserNobody14/tree-sitter-dart.git"))
           (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git"))
           (elixir     . ("https://github.com/elixir-lang/tree-sitter-elixir.git"))
           (go         . ("https://github.com/tree-sitter/tree-sitter-go.git"))
@@ -53,7 +52,7 @@
   :config
   ;; Add `*-ts-mode' to `auto-mode-alist'.
   (dolist (list `((cmake      . (,(rx (or "CMakeLists.txt" ".cmake") eos) . cmake-ts-mode))
-                  (dockerfile . (,(rx (or (seq "Dockerfile" (opt "." (zero-or-more nonl))) (seq "." (any "Dd") "ockerfile")) eos) . dockerfile-ts-mode))
+                  (dockerfile . (,(rx "Dockerfile" (opt "." (zero-or-more nonl)) eos) . dockerfile-ts-mode))
                   (elixir     . (,(rx (or ".elixir" (seq ".ex" (opt "s")) "mix.lock") eos) . elixir-ts-mode))
                   (go         . (,(rx ".go" eos) . go-ts-mode))
                   (gomod      . (,(rx "/go.mod" eos) . go-mod-ts-mode))
@@ -67,19 +66,32 @@
       (when (treesit-ready-p parser 'message)
         (add-to-list 'auto-mode-alist alist)))))
 
-(defvar my-last-compilation-buffer nil
-  "The last buffer in which compilation took place.")
+(use-package compile
+  :bind (("C-c c k" . compile)
+         ("C-c c r" . recompile))
+  :custom
+  (compilation-ask-about-save nil)
+  (compilation-always-kill t)
+  (compilation-scroll-output 'first-error)
+  :config
+  ;; Colorize output of Compilation Mode.
+  ;; https://stackoverflow.com/a/3072831/355252
+  (require 'ansi-color)
 
-(with-eval-after-load 'compile
-  ;; Save before compiling.
-  (setq compilation-ask-about-save nil)
-  ;; Kill old compile processes before starting the new one.
-  (setq compilation-always-kill t)
-  ;; Automatically scroll to first error.
-  (setq compilation-scroll-output 'first-error)
+  (defun my--colorize-compilation-buffer ()
+    "Colorize a compilation mode buffer."
+    ;; Don't mess with child modes such as grep, ack, ag, etc.
+    (when (eq major-mode 'compilation-mode)
+      (let ((inhibit-read-only t))
+        (ansi-color-apply-on-region (point-min) (point-max)))))
+
+  (add-hook 'compilation-filter-hook #'my--colorize-compilation-buffer)
+
+  (defvar my-last-compilation-buffer nil
+    "The last buffer in which compilation took place.")
 
   (defun my--save-compilation-buffer (&rest _)
-    "Save the compilation buffer to find it later."
+    "Save the last compilation buffer to find it later."
     (setq my-last-compilation-buffer next-error-last-buffer))
 
   (advice-add 'compilation-start :after #'my--save-compilation-buffer)
@@ -96,29 +108,41 @@
 
   (advice-add 'recompile :around #'my--find-prev-compilation))
 
-(keymap-global-set "C-c c k" #'compile)
-(keymap-global-set "C-c c r" #'recompile)
+(use-package etags
+  :defer t
+  :custom (tags-revert-without-query t))
 
-;; Colorize output of Compilation Mode.
-;; https://stackoverflow.com/a/3072831/355252
-(with-eval-after-load 'compile
-  (require 'ansi-color)
+(use-package subword
+  :hook ((prog-mode text-mode) . subword-mode))
 
-  (defun my--colorize-compilation-buffer ()
-    "Colorize a compilation mode buffer."
-    ;; We don't want to mess with child modes such as grep-mode, ack, ag, etc.
-    (when (eq major-mode 'compilation-mode)
-      (let ((inhibit-read-only t))
-        (ansi-color-apply-on-region (point-min) (point-max)))))
+(use-package xml-mode
+  :mode "\\.[^.]*proj\\'"
+  :mode "\\.xaml\\'"
+  :mode "\\.p\\(?:list\\|om\\)\\'"
+  :mode "\\.xs\\(?:d\\|lt\\)\\'"
+  :mode "\\.rss\\'")
 
-  (add-hook 'compilation-filter-hook #'my--colorize-compilation-buffer))
-
-(defun my--generic-prog-mode-hook-setup ()
-  "Generic configuration for `prog-mode'."
-  ;; Camel case aware editing operations.
-  (subword-mode +1))
-
-(add-hook 'prog-mode-hook #'my--generic-prog-mode-hook-setup)
+(use-package eldoc-box
+  :when (display-graphic-p)
+  :hook (eldoc-mode . eldoc-box-hover-mode)
+  :custom
+  (eldoc-box-only-multi-line t)
+  (eldoc-box-clear-with-C-g t)
+  (eldoc-box-use-visible-frame-map t)
+  :bind (("C-c h h" . eldoc-box-help-at-point)
+         (:map eldoc-box-visible-frame-map
+               ("M-n" . eldoc-box-scroll-up)
+               ("M-p" . eldoc-box-scroll-down)
+               ("M-a" . eldoc-box-beginning)
+               ("M-e" . eldoc-box-end)))
+  :config
+  (setq eldoc-doc-buffer-separator
+        (concat "\n"
+                (propertize "-"
+                            'display '(space :align-to right)
+                            'face '(:strike-through t)
+                            'font-lock-face '(:strike-through t))
+                "\n")))
 
 (provide 'init-prog)
 

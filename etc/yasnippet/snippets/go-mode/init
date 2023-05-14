@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: func init()
+# key: init
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region nil))
+# --
+func init() {
+	$0
+}

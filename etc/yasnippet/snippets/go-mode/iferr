@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: if error
+# key: iferr
+# expand-env: ((yas-indent-line 'fixed) (yas-wrap-around-region nil))
+# --
+if err != $1 {
+	$0
+}

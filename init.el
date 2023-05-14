@@ -77,6 +77,7 @@
 (require 'init-tex)
 (require 'init-js)
 (require 'init-python)
+(require 'init-lsp)
 
 ;; Personal setup.
 (load (expand-file-name "~/.custom.el") t nil)
