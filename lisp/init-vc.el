@@ -20,6 +20,16 @@
                           #'magit-insert-modules
                           #'magit-insert-stashes #'append))
 
+;; Access GIT forges from `magit'.
+(use-package forge
+  :after magit
+  :config
+  (setq forge-topic-list-columns
+        '(("#" 5 forge-topic-list-sort-by-number (:right-align t) number nil)
+          ("Title" 50 t nil title  nil)
+          ("State" 10 t nil state nil)
+          ("Updated" 10 t nil updated nil))))
+
 (use-package diff-hl
   :hook ((after-init . global-diff-hl-mode)
          (dired-mode . diff-hl-dired-mode))

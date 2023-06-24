@@ -10,19 +10,13 @@
 (setq user-init-file (or load-file-name buffer-file-name))
 (setq user-emacs-directory (file-name-directory user-init-file))
 
-(when (< emacs-major-version 27)
-  (load (expand-file-name "early-init.el" user-emacs-directory)))
-
-(defconst my-config-d (expand-file-name "etc/" user-emacs-directory)
+(defconst my-config-d (expand-file-name "lisp" user-emacs-directory)
   "Directory of configuration files.")
 
-(defconst my-library-d (expand-file-name "lib/" user-emacs-directory)
-  "Directory of packages.")
-
-(defconst my-optional-d (expand-file-name "opt/" user-emacs-directory)
+(defconst my-optional-d (expand-file-name "opt" user-emacs-directory)
   "Directory of optional files.")
 
-(defconst my-cache-d (expand-file-name "var/" user-emacs-directory)
+(defconst my-cache-d (expand-file-name "var" user-emacs-directory)
   "Directory of dotfiles created by packages.")
 
 (unless (file-directory-p my-cache-d) (mkdir my-cache-d))
@@ -41,6 +35,10 @@
               (setq gc-cons-threshold (* 100 old-gc-cons-threshold)))))
 
 (push (expand-file-name my-config-d) load-path)
+
+(load
+ (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+ t t)
 
 (require 'init-utils)
 (require 'init-modeline)
@@ -68,6 +66,9 @@
 
 ;; Handy tools though not must have.
 (require 'init-misc)
+(require 'init-theme)
+(require 'init-reader)
+(require 'init-evil)
 (require 'init-markup)
 (require 'init-snippet)
 (require 'init-chinese)
@@ -76,17 +77,14 @@
 (require 'init-sexp)
 (require 'init-tex)
 (require 'init-js)
+(require 'init-web)
 (require 'init-python)
 (require 'init-lsp)
 
-;; Personal setup.
+;;; Personal setup.
 (load (expand-file-name "~/.custom.el") t nil)
 
-(load
- (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
- t t)
-
-(message "*** Emacs loaded in %s with %d garbage collections. ***"
+(message "Emacs ready in %s with %d garbage collections."
          (format "%.2f seconds"
                  (float-time
                   (time-subtract after-init-time before-init-time)))

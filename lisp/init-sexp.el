@@ -16,7 +16,7 @@ URL `https://endlessparentheses.com/get-in-the-habit-of-using-sharp-quote.html'.
   (let ((ppss (syntax-ppss)))
     (unless (or (elt ppss 3)
                 (elt ppss 4)
-                (eq (char-after) ?'))
+                (eq (char-after) ?\'))
       (insert "'"))))
 
 (keymap-set emacs-lisp-mode-map "#" #'my-endless-sharp)
@@ -44,6 +44,16 @@ sexp before point and insert output into current position."
 (dolist (map (list emacs-lisp-mode-map
                    lisp-interaction-mode-map))
   (keymap-set map "C-c C-p" #'my-eval-print-last-sexp))
+
+(use-package sly
+  :defer t
+  :custom (inferior-lisp-program "sbcl"))
+
+(use-package geiser
+  :defer t
+  :custom
+  (geiser-active-implementations '(chez))
+  (geiser-mode-smart-tab-p t))
 
 (provide 'init-sexp)
 

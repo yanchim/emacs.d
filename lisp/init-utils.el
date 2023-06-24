@@ -1,6 +1,5 @@
 ;;; init-utils.el --- utility -*- lexical-binding: t; -*-
 
-
 ;;; Commentary:
 ;;
 ;; Utility configuration.

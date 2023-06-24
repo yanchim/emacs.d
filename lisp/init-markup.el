@@ -7,6 +7,9 @@
 
 ;;; Code:
 
+(use-package ox-hugo
+  :after ox)
+
 (use-package toc-org
   :hook ((org-mode markdown-mode) . toc-org-mode)
   :config
@@ -23,8 +26,7 @@
   (defun my-valign-fancy-bar ()
     "Toggle valign fancy bar."
     (interactive)
-    (setq valign-fancy-bar
-          (not valign-fancy-bar)))
+    (setq valign-fancy-bar (not valign-fancy-bar)))
 
   ;; Compatible with `outline-mode'.
   (define-advice outline-show-entry (:override nil)

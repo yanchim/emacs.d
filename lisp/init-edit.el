@@ -8,6 +8,7 @@
 ;;; Code:
 
 (use-package zh-lib
+  :vc (:url "https://github.com/dalugm/zh-lib.el" :rev :newest)
   :custom (zh-lib-scheme 'simplified-traditional-quanpin-all))
 
 (use-package marginalia
@@ -55,12 +56,19 @@
          ("C-c w d" . ace-delete-window)
          ("C-c w o" . ace-delete-other-windows))
   :config
-  ;; Inherit from `avy'.
+  ;; Inherits from `avy'.
   (with-eval-after-load 'avy
     (setq aw-keys avy-keys)
     (setq aw-background avy-background)))
 
+(use-package winum
+  :config
+  (setq winum-format "%s ")
+  (setq winum-mode-line-position 0)
+  (winum-mode +1))
+
 (use-package color-rg
+  :vc (:url "https://github.com/manateelazycat/color-rg" :rev :newest)
   :custom
   (color-rg-recenter-match-line t)
   (color-rg-mac-load-path-from-shell nil)
@@ -121,10 +129,12 @@
         (message "%s copied." thing)))))
 
 (use-package avy-zh
+  :vc (:url "https://gitee.com/dalugm/avy-zh" :rev :newest)
   :after avy
   :config (global-avy-zh-mode +1))
 
 (use-package expreg
+  :vc (:url "https://github.com/casouri/expreg" :rev :newest)
   :bind (("C-c e ;" . expreg-expand)
          ("C-c e '" . expreg-contract)))
 

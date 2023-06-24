@@ -30,7 +30,9 @@
 
 (if (display-graphic-p)
     (use-package corfu-popupinfo
+      :ensure nil
       :hook (corfu-mode . corfu-popupinfo-mode)
+      :demand t
       :bind (:map corfu-map
                   ("M-n" . corfu-popupinfo-scroll-up)
                   ("M-p" . corfu-popupinfo-scroll-down)
@@ -40,7 +42,9 @@
                   ("M-d" . corfu-popupinfo-documentation)
                   ("M-t" . corfu-popupinfo-toggle)))
   (use-package corfu-info
+    :ensure nil
     :after corfu
+    :demand t
     :bind (:map corfu-map
                 ("M-l" . corfu-info-location)
                 ("M-d" . corfu-info-documentation))))

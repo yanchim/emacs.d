@@ -16,28 +16,6 @@
             (my-linux-p "/usr/share/games/fortunes"))))
       (setq fortune-file fortune))))
 
-(defcustom my-http-proxy "127.0.0.1:1087"
-  "HTTP proxy."
-  :group 'convenience
-  :type 'string)
-
-(defcustom my-socks-proxy "127.0.0.1:1080"
-  "SOCKS proxy."
-  :group 'convenience
-  :type 'string)
-
-(defcustom my-wsl-socks-proxy
-  (concat
-   (if (file-exists-p "/etc/resolv.conf")
-       (shell-command-to-string
-        "cat /etc/resolv.conf | grep nameserver | awk '{ printf $2 }'")
-     "0.0.0.0")
-   ":"
-   "10810")
-  "SOCKS proxy in WSL."
-  :group 'convenience
-  :type 'string)
-
 (defcustom my-run-emacs-as-a-server nil
   "Non-nil means to run Emacs as a server process, which allows
 access from `emacsclient'."
@@ -79,16 +57,6 @@ access from `emacsclient'."
   :bind (("C-c t d" . darkroom-tentative-mode)
          ("C-c t D" . darkroom-mode)))
 
-(use-package pdf-view
-  :when (display-graphic-p)
-  :hook ((pdf-view-mode . pdf-isearch-minor-mode))
-  :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
-  :magic ("%PDF" . pdf-view-mode)
-  :config
-  ;; Enable hiDPI support, but at the cost of memory!
-  (setq pdf-view-use-scaling t
-        pdf-view-use-imagemagick nil))
-
 (use-package separedit
   :bind ("C-c e e" . separedit)
   :custom
@@ -104,6 +72,11 @@ access from `emacsclient'."
       (with-current-buffer (separedit)
         (unwind-protect (call-interactively #'eval-last-sexp)
           (separedit-abort))))))
+
+(use-package search-dired
+  :vc (:url "https://github.com/dalugm/search-dired" :rev :newest)
+  :bind (("C-c s d" . search-dired-dwim)
+         ("C-c s D" . search-dired)))
 
 (provide 'init-misc)
 

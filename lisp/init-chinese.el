@@ -40,7 +40,7 @@
                 '(pyim-probe-punctuation-line-beginning
                   pyim-probe-punctuation-after-punctuation))
 
-  (defvar my-pyim-directory (expand-file-name "pyim/" my-cache-d)
+  (defvar my-pyim-directory (expand-file-name "pyim" my-cache-d)
     "The directory containing pyim related files.")
 
   (unless (file-directory-p my-pyim-directory) (mkdir my-pyim-directory))
@@ -62,7 +62,9 @@
              files))
       ;; Disable basedict if a local dict is used.
       (setq disable-basedict t))
-    (unless disable-basedict (pyim-basedict-enable))))
+    (unless disable-basedict
+      (use-package pyim-basedict
+        :config (pyim-basedict-enable)))))
 
 (provide 'init-chinese)
 

@@ -323,13 +323,15 @@ Key is a symbol as the name, value is a plist specifying the search url.")
   (interactive)
   (unless buffer-display-table
     (setq buffer-display-table (make-display-table)))
-  (aset buffer-display-table ?\ []))
+  (aset buffer-display-table ?\C-m []))
 
-(defun my-remove-dos-eol ()
+(defun my-dos2unix ()
   "Replace DOS eolns CR LF with Unix eolns CR."
   (interactive)
-  (goto-char (point-min))
-  (while (search-forward "\r" nil t) (replace-match "")))
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward (string ?\C-m) nil t)
+      (replace-match "" nil t))))
 
 (defun my-load-theme (x)
   "Disable current theme and load theme X."
@@ -473,7 +475,7 @@ otherwise on the whole buffer."
           (insert-char #x3000 2))
         (forward-line)))))
 
-(keymap-global-set "C-c m f" #'my-add-two-ideographic-spaces-at-bol)
+(keymap-global-set "C-c m i" #'my-add-two-ideographic-spaces-at-bol)
 
 (defun my-delete-blank-lines ()
   "Delete blank lines.
@@ -483,7 +485,7 @@ When region is active, delete the blank lines in region only."
       (delete-matching-lines "^[[:space:]]*$" (region-beginning) (region-end))
     (delete-matching-lines "^[[:space:]]*$" (point-min) (point-max))))
 
-(keymap-global-set "C-c m i" #'my-delete-blank-lines)
+(keymap-global-set "C-c m d" #'my-delete-blank-lines)
 
 (defun my-delete-visual-blank-lines ()
   "Delete all visual blank lines."
@@ -663,7 +665,30 @@ pangu-spacing. The excluded puncuation will be matched to group
         ;; Recursively search subdirectories.
         (my--add-subdirs-to-load-path subdir-path)))))
 
-;; Network Proxy.
+;;; Network Proxy.
+
+(defcustom my-http-proxy "127.0.0.1:1087"
+  "HTTP proxy."
+  :group 'convenience
+  :type 'string)
+
+(defcustom my-socks-proxy "127.0.0.1:1080"
+  "SOCKS proxy."
+  :group 'convenience
+  :type 'string)
+
+(defcustom my-wsl-socks-proxy
+  (concat
+   (if (file-exists-p "/etc/resolv.conf")
+       (shell-command-to-string
+        "cat /etc/resolv.conf | grep nameserver | awk '{ printf $2 }'")
+     "0.0.0.0")
+   ":"
+   "10810")
+  "SOCKS proxy in WSL."
+  :group 'convenience
+  :type 'string)
+
 (defun my-show-http-proxy ()
   "Show http/https proxy."
   (interactive)

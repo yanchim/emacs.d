@@ -8,17 +8,21 @@
 ;;; Code:
 
 (use-package treesit
+  :ensure nil
   :when (treesit-available-p)
   :init
   (setq treesit-language-source-alist
         '((bash       . ("https://github.com/tree-sitter/tree-sitter-bash.git"))
           (c          . ("https://github.com/tree-sitter/tree-sitter-c.git"))
+          (clojure    . ("https://github.com/sogaiu/tree-sitter-clojure.git"))
           (cmake      . ("https://github.com/uyha/tree-sitter-cmake.git"))
           (cpp        . ("https://github.com/tree-sitter/tree-sitter-cpp.git"))
           (csharp     . ("https://github.com/tree-sitter/tree-sitter-c-sharp.git"))
           (css        . ("https://github.com/tree-sitter/tree-sitter-css.git"))
+          (dart       . ("https://github.com/UserNobody14/tree-sitter-dart.git"))
           (dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile.git"))
           (elixir     . ("https://github.com/elixir-lang/tree-sitter-elixir.git"))
+          (erlang     . ("https://github.com/WhatsApp/tree-sitter-erlang.git"))
           (go         . ("https://github.com/tree-sitter/tree-sitter-go.git"))
           (gomod      . ("https://github.com/camdencheek/tree-sitter-go-mod.git"))
           (heex       . ("https://github.com/phoenixframework/tree-sitter-heex.git"))
@@ -51,7 +55,9 @@
      (sh-mode         . bash-ts-mode)))
   :config
   ;; Add `*-ts-mode' to `auto-mode-alist'.
-  (dolist (list `((cmake      . (,(rx (or "CMakeLists.txt" ".cmake") eos) . cmake-ts-mode))
+  (dolist (list `((clojure    . (,(rx ".clj" eos) . clojure-ts-mode))
+                  (cmake      . (,(rx (or "CMakeLists.txt" ".cmake") eos) . cmake-ts-mode))
+                  (dart       . (,(rx ".dart" eos) . dart-ts-mode))
                   (dockerfile . (,(rx "Dockerfile" (opt "." (zero-or-more nonl)) eos) . dockerfile-ts-mode))
                   (elixir     . (,(rx (or ".elixir" (seq ".ex" (opt "s")) "mix.lock") eos) . elixir-ts-mode))
                   (go         . (,(rx ".go" eos) . go-ts-mode))
@@ -115,7 +121,7 @@
 (use-package subword
   :hook ((prog-mode text-mode) . subword-mode))
 
-(use-package xml-mode
+(use-package xml
   :mode "\\.[^.]*proj\\'"
   :mode "\\.xaml\\'"
   :mode "\\.p\\(?:list\\|om\\)\\'"
@@ -123,6 +129,7 @@
   :mode "\\.rss\\'")
 
 (use-package eldoc-box
+  :vc (:url "https://github.com/dalugm/eldoc-box" :rev :newest)
   :when (display-graphic-p)
   :hook (eldoc-mode . eldoc-box-hover-mode)
   :custom
@@ -143,6 +150,51 @@
                             'face '(:strike-through t)
                             'font-lock-face '(:strike-through t))
                 "\n")))
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+(use-package evil-nerd-commenter
+  :bind (("C-c c l" . evilnc-comment-or-uncomment-lines)
+         ("C-c c d" . evilnc-copy-and-comment-lines)
+         ("C-c c p" . evilnc-comment-or-uncomment-paragraphs)))
+
+(use-package editorconfig
+  :hook (prog-mode . editorconfig-mode)
+  :bind ("C-c c E" . editorconfig-apply))
+
+(use-package citre
+  :init
+  (require 'citre-config)
+  (setq citre-auto-enable-citre-mode-modes '(prog-mode))
+  (defun my-citre-jump ()
+    "Fallback to `xref' when citre failed."
+    (interactive)
+    (condition-case _
+        (citre-jump)
+      (error (call-interactively #'xref-find-definitions))))
+  (defun my-citre-jump-back ()
+    "Fallback to `xref' when citre failed."
+    (interactive)
+    (condition-case _
+        (citre-jump-back)
+      (error (call-interactively #'xref-pop-marker-stack))))
+  :bind (("C-c c a" . citre-ace-peek)
+         ("C-c c e" . citre-edit-tags-file-recipe)
+         ("C-c c h" . citre-peek)
+         ("C-c c t" . citre-update-this-tags-file)
+         ("C-c c j" . my-citre-jump)
+         ("C-c c J" . my-citre-jump-back)))
+
+(use-package apheleia
+  :bind (("C-c c f" . apheleia-format-buffer)
+         ("C-c c F" . apheleia-goto-error))
+  :config
+  (add-to-list 'apheleia-mode-alist '(emacs-lisp-mode . lisp-indent)))
+
+(use-package dart-ts-mode
+  :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode" :rev :newest))
+(use-package clojure-ts-mode)
 
 (provide 'init-prog)
 
