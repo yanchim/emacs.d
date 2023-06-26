@@ -8,6 +8,7 @@
 ;;; Code:
 
 (use-package python
+  :ensure nil
   :mode ("\\.\\(c\\|i\\|r\\)?py\\'" . python-mode)
   :custom
   (python-indent-guess-indent-offset nil)

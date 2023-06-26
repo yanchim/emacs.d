@@ -73,6 +73,7 @@
         (add-to-list 'auto-mode-alist alist)))))
 
 (use-package compile
+  :ensure nil
   :bind (("C-c c k" . compile)
          ("C-c c r" . recompile))
   :custom
@@ -115,13 +116,16 @@
   (advice-add 'recompile :around #'my--find-prev-compilation))
 
 (use-package etags
+  :ensure nil
   :defer t
   :custom (tags-revert-without-query t))
 
 (use-package subword
+  :ensure nil
   :hook ((prog-mode text-mode) . subword-mode))
 
 (use-package xml
+  :ensure nil
   :mode "\\.[^.]*proj\\'"
   :mode "\\.xaml\\'"
   :mode "\\.p\\(?:list\\|om\\)\\'"

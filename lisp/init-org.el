@@ -8,6 +8,7 @@
 ;;; Code:
 
 (use-package org
+  :ensure nil
   :bind (("C-c o b" . org-switchb)
          ("C-c o d" . org-demote-subtree)
          ("C-c o i" . org-insert-structure-template)
@@ -251,6 +252,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
       (advice-add 'org-create-formula-image :around #'my--org-renumber-fragment))))
 
 (use-package org-clock
+  :ensure nil
   :after org
   :custom
   ;; Save clock data and notes in the LOGBOOK drawer.
@@ -259,6 +261,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
   (org-clock-out-remove-zero-time-clocks t))
 
 (use-package org-archive
+  :ensure nil
   :after org
   :custom
   (org-archive-mark-done nil)
@@ -284,6 +287,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
      "/CANCELLED" 'file)))
 
 (use-package org-agenda
+  :ensure nil
   :bind (("C-c o a" . org-agenda))
   :config
   (defvar my--org-task-file (concat org-directory "/task.org")
@@ -398,11 +402,13 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
            "* - %^U - %^{heading}\n %?"))))
 
 (use-package org-capture
+  :ensure nil
   :bind (("C-c o c" . org-capture))
   :custom
   (org-agenda-files `(,org-directory)))
 
 (use-package ox-latex
+  :ensure nil
   :after ox
   :custom
   (org-latex-compiler "xelatex")
@@ -423,6 +429,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
   (setq org-latex-default-class "ctexart"))
 
 (use-package ox-md
+  :ensure nil
   :after ox
   :config
   (add-to-list 'org-export-backends 'md)

@@ -8,6 +8,7 @@
 ;;; Code:
 
 (use-package js
+  :ensure nil
   :mode ("\\.\\(m\\|c\\)?js\\'" . js-mode)
   :custom (js-indent-level 2))
 

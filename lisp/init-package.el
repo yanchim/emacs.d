@@ -12,13 +12,6 @@
   (push site-lisp-dir load-path)
   (my--add-subdirs-to-load-path site-lisp-dir))
 
-(setq use-package-enable-imenu-support t)
-(setq use-package-always-defer t)
-(setq use-package-always-ensure t)
-(setq use-package-verbose t)
-(require 'use-package)
-
-;; HTTPS should be used where possible as they offer superior security.
 (with-eval-after-load 'package
   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                       (not (gnutls-available-p))))
@@ -73,10 +66,11 @@
   :config
   ;; Use shortened filenames.
   ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=56123
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-var-directory))
-  (add-to-list 'recentf-exclude
-               (recentf-expand-file-name no-littering-etc-directory)))
+  (with-eval-after-load 'recentf
+    (add-to-list 'recentf-exclude
+                 (recentf-expand-file-name no-littering-var-directory))
+    (add-to-list 'recentf-exclude
+                 (recentf-expand-file-name no-littering-etc-directory))))
 
 (provide 'init-package)
 
