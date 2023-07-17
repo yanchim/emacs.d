@@ -413,7 +413,7 @@ argument ARG, insert name only."
 (keymap-global-set "C-c m 2" #'my-insert-user-information)
 
 (defcustom my-zh-title-regexp
-  (rx bol "第" (repeat 1 6 nonl) (any "章回话") (+ nonl))
+  (rx bol "第" (repeat 1 6 nonl) (any "章回话") (0+ nonl))
   "Chinese title regexp.")
 
 (defun my-divide-file-chapter (&optional arg)
