@@ -634,37 +634,6 @@ pangu-spacing. The excluded puncuation will be matched to group
 
 (keymap-global-set "C-c m p" #'my-pangu-spacing-current-buffer)
 
-(defun my--add-subdirs-to-load-path (search-dir)
-  "Add every subdir of SEARCH-DIR to `load-path'."
-  (let ((dir (file-name-as-directory search-dir)))
-    (dolist (subdir
-             ;; Filter out unnecessary dirs.
-             (cl-remove-if
-              (lambda (subdir)
-                (or
-                 ;; Remove if not directory.
-                 (not (file-directory-p (concat dir subdir)))
-                 ;; Remove dirs such as parent dir, programming language
-                 ;; related dir and version control dir.
-                 (member subdir '("." ".."
-                                  "dist" "node_modules" "__pycache__"
-                                  "RCS" "CVS" "rcs" "cvs"
-                                  ".git" ".github"))))
-              (directory-files dir)))
-      (let ((subdir-path (concat dir (file-name-as-directory subdir))))
-        (when (cl-some (lambda (subdir-file)
-                         (and (file-regular-p
-                               (concat subdir-path subdir-file))
-                              ;; Extensions like `.so' `.dll' are
-                              ;; Emacs dynamic library written in non
-                              ;; emacs-lisp.
-                              (member (file-name-extension subdir-file)
-                                      '("el" "so" "dll"))))
-                       (directory-files subdir-path))
-          (add-to-list 'load-path subdir-path t))
-        ;; Recursively search subdirectories.
-        (my--add-subdirs-to-load-path subdir-path)))))
-
 ;;; Network Proxy.
 
 (defcustom my-http-proxy "127.0.0.1:1087"
