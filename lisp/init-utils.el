@@ -92,34 +92,17 @@
 (setq scroll-conservatively 100000)
 (setq scroll-preserve-screen-position 1)
 
-(setq-default buffers-menu-max-size 30
-              fill-column 72
-              case-fold-search t
-              grep-highlight-matches t
-              grep-scroll-output t
-              mouse-yank-at-point t
-              set-mark-command-repeat-pop t
-              tooltip-delay 1.5
-
-              ;; ;; New line at the end of file the POSIX standard
-              ;; ;; defines a line is "a sequence of zero or more
-              ;; ;; non-newline characters followed by a terminating
-              ;; ;; newline", so files should end in a newline. Windows
-              ;; ;; doesn't respect this (because it's Windows), but we
-              ;; ;; should, since programmers' tools tend to be POSIX
-              ;; ;; compliant.
-              ;; ;; NOTE: This could accidentally edit others' code.
-              ;; require-final-newline t
-
-              truncate-lines nil
-              truncate-partial-width-windows nil
-              ediff-split-window-function #'split-window-horizontally
-              ediff-window-setup-function #'ediff-setup-windows-plain
-              ;; Disable the annoying bell ring.
-              ring-bell-function #'ignore)
+;; Disable the annoying bell ring.
+(setq ring-bell-function #'ignore)
 
 ;; Use y/n instead of yes/no.
 (setq use-short-answers t)
+
+;; Repeating C-SPC after popping mark pops it again.
+(setq set-mark-command-repeat-pop t)
+
+;; Make mouse clicks more precise.
+(setq mouse-prefer-closest-glyph t)
 
 ;;; Tab and Space
 ;; Indent with spaces.

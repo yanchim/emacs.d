@@ -7,6 +7,11 @@
 
 ;;; Code:
 
+(use-package ediff
+  :custom
+  (ediff-split-window-function #'split-window-horizontally)
+  (ediff-window-setup-function #'ediff-setup-windows-plain))
+
 (use-package zh-lib
   :vc (:url "https://github.com/dalugm/zh-lib.el" :rev :newest)
   :custom (zh-lib-scheme 'simplified-traditional-quanpin-all))
