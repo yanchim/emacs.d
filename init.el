@@ -11,7 +11,7 @@
 (setq user-emacs-directory (file-name-directory user-init-file))
 
 (defconst my-config-d (file-name-as-directory
-                       (expand-file-name "lisp" user-emacs-directory))
+                       (expand-file-name "etc" user-emacs-directory))
   "Directory of configuration files.")
 
 (defconst my-optional-d (file-name-as-directory

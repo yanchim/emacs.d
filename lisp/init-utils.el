@@ -154,15 +154,6 @@
 ;; It must be set before loading `use-package'.
 (setq use-package-enable-imenu-support t)
 
-(use-package winner
-  :ensure nil
-  :hook (after-init . winner-mode)
-  :custom
-  (winner-boring-buffers '("*Apropos*" "*Buffer List*"
-                           "*Completions*" "*Compile-Log*"
-                           "*Help*" "*Ibuffer*"
-                           "*inferior-lisp*")))
-
 ;; Do NOT make backups of files, not safe.
 ;; https://github.com/joedicastro/dotfiles/tree/master/emacs
 (use-package files
@@ -171,8 +162,21 @@
   (auto-save-default nil)
   (make-backup-files nil))
 
-(use-package recentf
+(use-package uniquify
   :ensure nil
+  :custom
+  ;; Don't muck with special buffers.
+  (uniquify-ignore-buffers-re "^\\*"))
+
+(use-package winner
+  :hook (after-init . winner-mode)
+  :custom
+  (winner-boring-buffers '("*Apropos*" "*Buffer List*"
+                           "*Completions*" "*Compile-Log*"
+                           "*Help*" "*Ibuffer*"
+                           "*inferior-lisp*")))
+
+(use-package recentf
   :hook (after-init . recentf-mode)
   :bind (("C-c f f" . recentf-open-files)
          ("C-c f l" . recentf-load-list))
@@ -187,26 +191,18 @@
 
 ;; Automatically reload files was modified by external program.
 (use-package autorevert
-  :ensure nil
   :hook (after-init . global-auto-revert-mode)
   :custom
   (global-auto-revert-non-file-buffers t)
   (auto-revert-verbose nil))
 
 (use-package whitespace
-  :ensure nil
   :custom
   ;; Search {zero,full}-width space also.
   (whitespace-space-regexp "\\( +\\|　+\\|​+\\)")
   :config
   ;; Show zero-width space.
   (add-to-list 'whitespace-display-mappings '(space-mark #x200b [?.])))
-
-(use-package uniquify
-  :ensure nil
-  :custom
-  ;; Don't muck with special buffers.
-  (uniquify-ignore-buffers-re "^\\*"))
 
 (with-eval-after-load 'tramp
   (push (cons tramp-file-name-regexp nil) backup-directory-alist)
