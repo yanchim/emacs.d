@@ -7,45 +7,26 @@
 
 ;;; Code:
 
-;; Enable some really cool extensions like `dired-jump'.
-(require 'dired-x)
+(use-package dired
+  :custom
+  (dired-listing-switches "-alh")
+  ;; Search file name only when focus is over filename.
+  (dired-isearch-filenames 'dwim)
+  ;; Kill current dired buffer when selecting a new directory.
+  (dired-kill-when-opening-new-dired-buffer t)
+  ;; Make dired "guess" target directory.
+  (dired-dwim-target t))
 
-(with-eval-after-load 'dired
+(use-package dired-x
+  :after dired)
 
-  ;; Extra dired functionality.
-  (require 'dired-aux)
-
-  ;; Reuse current buffer by pressing `a'.
-  (put 'dired-find-alternate-file 'disabled nil)
-  (keymap-set dired-mode-map "RET" #'dired-find-alternate-file)
-
-  ;; Search file name only when focus is over file.
-  (setq dired-isearch-filenames 'dwim)
-
-  ;; Always delete and copy recursively.
-  (setq dired-recursive-deletes 'always)
-  (setq dired-recursive-copies  'always)
-
-  ;; Show directory first.
-  ;; https://emacs.stackexchange.com/questions/5649/sort-file-names-numbered-in-dired/5650#5650
-  (setq dired-listing-switches "-alhG1v --group-directories-first")
-
-  ;; If there is a dired buffer displayed in the next window, use its
-  ;; current subdir, instead of the current subdir of this dired buffer.
-  ;; https://blog.twonegatives.com/post/19292622546/dired-dwim-target-is-j00-j00-magic
-  (setq dired-dwim-target t)
-
-  (setq dired-omit-files
-        (concat dired-omit-files
-                "\\|^.DS_Store\\'"
-                "\\|^.project\\(?:ile\\)?\\'"
-                "\\|^.\\(svn\\|git\\)\\'"
-                "\\|^.ccls-cache\\'"
-                "\\|\\(?:\\.js\\)?\\.meta\\'"
-                "\\|\\.\\(?:elc\\|o\\|pyo\\|swp\\|class\\)\\'")))
+(use-package dired-aux
+  :after dired)
 
 (defun my-ediff-files ()
-  "Inspired by URL `https://oremacs.com/2017/03/18/dired-ediff/'."
+  "Run Ediff on the two marked files.
+
+URL `https://oremacs.com/2017/03/18/dired-ediff/'."
   (interactive)
   (let ((files (dired-get-marked-files))
         (wnd (current-window-configuration)))
@@ -69,8 +50,8 @@
 
 (defun my-dired-cycle-space-underscore-hyphen ()
   "In Dired, rename current or marked files.
-Cycling between space, hyphen - and underscore _.
-If not in Dired, do nothing.
+Cycling between space, hyphen - and underscore _.  If not in
+Dired, do nothing.
 
 URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'."
   (interactive)
@@ -96,7 +77,7 @@ URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'."
     (user-error "Not in Dired!")))
 
 (defun my-dired-open-externally (&optional arg)
-  "Open marked or current file in operating system's default application."
+  "Open marked or current file in OS's default application."
   (interactive "P")
   (dired-map-over-marks
    (my-open-file-externally (dired-get-file-for-visit))
