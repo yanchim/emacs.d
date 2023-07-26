@@ -28,6 +28,11 @@
 (defconst my-root-p (string-equal "root" (getenv "USER"))
   "Root user.")
 
+;;; Use-package.
+(setq use-package-always-ensure t)
+;; It must be set before loading `use-package'.
+(setq use-package-enable-imenu-support t)
+
 ;; Fix PATH problem on macOS when using GUI Emacs.
 (when my-mac-x-p
   (setenv "LANG" "en_US.UTF-8")
@@ -104,28 +109,22 @@
 ;; Make mouse clicks more precise.
 (setq mouse-prefer-closest-glyph t)
 
-;;; Tab and Space
+;;; Tab and Space.
+
 ;; Indent with spaces.
 (setq-default indent-tabs-mode nil)
+
 ;; But maintain correct appearance.
 (setq-default tab-width 8)
+
 ;; Smart tab behavior - indent or complete.
 ;; `completion-at-point' is often bound to M-TAB.
 (setq tab-always-indent 'complete)
+
 ;; TAB cycle if there are only few candidates.
 (setq completion-cycle-threshold 3)
 
-;; Enable narrowing commands.
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(put 'narrow-to-defun 'disabled nil)
-
-;; Enabled change region case commands.
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-
-;; Enable erase-buffer command.
-(put 'erase-buffer 'disabled nil)
+;;; Useful modes.
 
 ;; Disable annoying blink.
 (blink-cursor-mode -1)
@@ -148,11 +147,6 @@
 
 ;; Clean up obsolete buffers automatically.
 (require 'midnight)
-
-;;; Use-package.
-(setq use-package-always-ensure t)
-;; It must be set before loading `use-package'.
-(setq use-package-enable-imenu-support t)
 
 ;; Do NOT make backups of files, not safe.
 ;; https://github.com/joedicastro/dotfiles/tree/master/emacs
@@ -204,48 +198,21 @@
   ;; Show zero-width space.
   (add-to-list 'whitespace-display-mappings '(space-mark #x200b [?.])))
 
-(with-eval-after-load 'tramp
-  (push (cons tramp-file-name-regexp nil) backup-directory-alist)
+;;; Commands.
 
-  ;; ;; https://github.com/syl20bnr/spacemacs/issues/1921
-  ;; ;; If you tramp is hanging, you can uncomment below line.
-  ;; (setq tramp-ssh-controlmaster-options "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
+;; Enable narrowing commands.
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
 
-  (setq tramp-chunksize 8192))
+;; Enabled change region case commands.
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
 
-;; Change the default behavior of hippie-expand.
-(setq hippie-expand-try-functions-list '(try-expand-dabbrev
-                                         try-expand-dabbrev-all-buffers
-                                         try-expand-dabbrev-from-kill
-                                         try-complete-file-name-partially
-                                         try-complete-file-name
-                                         try-expand-all-abbrevs
-                                         try-expand-list
-                                         try-expand-line
-                                         try-complete-lisp-symbol-partially
-                                         try-complete-lisp-symbol))
-;; Use `hippie-expand' instead of `dabbrev'.
-(keymap-global-set "<remap> <dabbrev-expand>" #'hippie-expand)
+;; Enable erase-buffer command.
+(put 'erase-buffer 'disabled nil)
 
-(with-eval-after-load 'comint
-  ;; Don't echo passwords when communicating with interactive programs:
-  ;; Github prompt is like "Password for 'https://user@github.com/':"
-  (setq comint-password-prompt-regexp
-        (format "%s\\|^ *Password for .*: *$" comint-password-prompt-regexp))
-  (add-hook 'comint-output-filter-functions
-            #'comint-watch-for-password-prompt))
-
-;; Security.
-(setq auth-sources '("~/.authinfo.gpg"))
-
-(with-eval-after-load 'epa
-  ;; With GPG 2.1+, this forces gpg-agent to use the Emacs minibuffer to
-  ;; prompt for the key passphrase.
-  (setq epg-pinentry-mode 'loopback))
-
-;;;;;;;;;;;;;;;;;
-;; keybindings ;;
-;;;;;;;;;;;;;;;;;
+;;; Keybindings.
 
 ;; Be able to M-x without meta.
 (keymap-global-set "C-c m x" #'execute-extended-command)

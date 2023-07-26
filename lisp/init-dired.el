@@ -9,6 +9,12 @@
 
 (use-package dired
   :ensure nil
+  :bind (:map dired-mode-map
+              ("," . dired-up-directory)
+              ("e" . my-dired-open-externally)
+              ("_" . my-dired-cycle-space-underscore-hyphen)
+              ("C-c C-e" . my-ediff-files)
+              ("C-c C-p" . wdired-change-to-wdired-mode))
   :init
   (defun my-ediff-files ()
     "Run Ediff on the two marked files.
@@ -69,12 +75,6 @@ URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'."
     (dired-map-over-marks
      (my-open-file-externally (dired-get-file-for-visit))
      arg))
-  :bind ((:map dired-mode-map
-               ("," . dired-up-directory)
-               ("e" . my-dired-open-externally)
-               ("_" . my-dired-cycle-space-underscore-hyphen)
-               ("C-c C-e" . my-ediff-files)
-               ("C-c C-p" . wdired-change-to-wdired-mode)))
   :custom
   (dired-listing-switches "-alh")
   ;; Search file name only when focus is over filename.
