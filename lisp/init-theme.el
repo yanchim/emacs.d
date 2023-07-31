@@ -8,7 +8,11 @@
 ;;; Code:
 
 (use-package standard-themes)
+
 (use-package doom-themes)
+
+(use-package sinolor-themes
+  :vc (:url "https://github.com/dalugm/sinolor-themes" :rev :newest))
 
 (provide 'init-theme)
 
