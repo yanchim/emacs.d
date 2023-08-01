@@ -228,9 +228,7 @@ More details are inside `my-load-font'."
   (interactive
    (list (completing-read
           "Font: " (mapcar #'car my-font-alist) nil t)
-         (string-to-number (completing-read
-                            "Size: " nil nil nil nil nil
-                            (number-to-string (my--font-default-size))))))
+         (read-number "Size: " (my--font-default-size))))
   (let* ((spec (my--font-expand-spec
                 (my--font-name-to-spec font-name)
                 size))
@@ -254,9 +252,7 @@ ATTRS."
   (interactive
    (list (intern (completing-read "Face: " (face-list) nil t))
          (completing-read "Font: " (mapcar #'car my-font-alist) nil t)
-         (string-to-number (completing-read
-                            "Size: " nil nil nil nil nil
-                            (number-to-string (my--font-default-size))))))
+         (read-number "Size: " (my--font-default-size))))
   (let* ((spec (my--font-name-to-spec font-name))
          (fontset
           (apply #'my--create-fontset
