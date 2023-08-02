@@ -8,7 +8,6 @@
 ;;; Code:
 
 (use-package org
-  :ensure nil
   :bind (("C-c o b" . org-switchb)
          ("C-c o d" . org-demote-subtree)
          ("C-c o i" . org-insert-structure-template)

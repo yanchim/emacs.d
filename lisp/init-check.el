@@ -8,12 +8,10 @@
 ;;; Code:
 
 (use-package flymake
-  :ensure nil
   :bind (("C-c ! b" . flymake-show-buffer-diagnostics)
          ("C-c ! p" . flymake-show-project-diagnostics)))
 
 (use-package flyspell
-  :ensure nil
   :defer t
   :config
   (cond

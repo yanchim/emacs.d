@@ -7,13 +7,12 @@
 
 ;;; Code:
 
-;;; Frame
+;;;; Frame.
 
 (setq-default frame-title-format "GNU Emacs %@ %b")
 
 ;; Move more smoothly.
-(when (fboundp 'pixel-scroll-precision-mode)
-  (pixel-scroll-precision-mode +1))
+(pixel-scroll-precision-mode +1)
 
 (when (featurep 'ns)
   ;; Make NS behavior the same as other platforms.
@@ -57,7 +56,7 @@
 
 (keymap-global-set "C-c w l" #'my-set-line-spacing)
 
-;;; Font
+;;;; Font.
 
 ;; ;; https://archive.casouri.cat/note/2019/emacs-%E5%AD%97%E4%BD%93%E4%B8%8E%E5%AD%97%E4%BD%93%E9%9B%86/index.html
 ;; ;; http://ergoemacs.org/emacs/emacs_list_and_set_font.html

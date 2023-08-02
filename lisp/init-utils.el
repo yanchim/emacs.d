@@ -7,6 +7,8 @@
 
 ;;; Code:
 
+;;;; Const.
+
 (defconst my-linux-p (eq system-type 'gnu/linux)
   "Running on GNU/Linux.")
 
@@ -28,10 +30,13 @@
 (defconst my-root-p (string-equal "root" (getenv "USER"))
   "Root user.")
 
-;;; Use-package.
+;;;; Use-package.
+
 (setq use-package-always-ensure t)
 ;; It must be set before loading `use-package'.
 (setq use-package-enable-imenu-support t)
+
+;;;; Utility.
 
 ;; Fix PATH problem on macOS when using GUI Emacs.
 (when my-mac-x-p
@@ -109,7 +114,7 @@
 ;; Make mouse clicks more precise.
 (setq mouse-prefer-closest-glyph t)
 
-;;; Tab and Space.
+;;;; Tab and Space.
 
 ;; Indent with spaces.
 (setq-default indent-tabs-mode nil)
@@ -124,7 +129,7 @@
 ;; TAB cycle if there are only few candidates.
 (setq completion-cycle-threshold 3)
 
-;;; Useful modes.
+;;;; Useful modes.
 
 ;; Disable annoying blink.
 (blink-cursor-mode -1)
@@ -147,6 +152,12 @@
 
 ;; Clean up obsolete buffers automatically.
 (require 'midnight)
+
+(use-package simple
+  :ensure nil
+  :custom
+  ;; Pass `C-u' to `recenter' to put point in the window's center.
+  (next-error-recenter '(4)))
 
 ;; Do NOT make backups of files, not safe.
 ;; https://github.com/joedicastro/dotfiles/tree/master/emacs
@@ -198,7 +209,11 @@
   ;; Show zero-width space.
   (add-to-list 'whitespace-display-mappings '(space-mark #x200b [?.])))
 
-;;; Commands.
+(use-package tramp
+  :defer t
+  :custom (tramp-default-method "ssh"))
+
+;;;; Commands.
 
 ;; Enable narrowing commands.
 (put 'narrow-to-region 'disabled nil)
@@ -212,7 +227,7 @@
 ;; Enable erase-buffer command.
 (put 'erase-buffer 'disabled nil)
 
-;;; Keybindings.
+;;;; Keybindings.
 
 ;; Be able to M-x without meta.
 (keymap-global-set "C-c m x" #'execute-extended-command)
@@ -241,9 +256,6 @@
 (keymap-global-set "C-c t t" #'load-theme)
 (keymap-global-set "C-c t v" #'view-mode)
 (keymap-global-set "C-c t w" #'whitespace-mode)
-
-;; Abbrevs.
-(setq save-abbrevs 'silently)
 
 ;; Search.
 (keymap-global-set "C-c s d" #'find-dired)
