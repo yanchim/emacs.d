@@ -61,7 +61,6 @@
 ;; (require 'init-ido)
 (require 'init-vertico)
 
-;; (require 'init-company)
 (require 'init-corfu)
 
 (require 'init-prog)
