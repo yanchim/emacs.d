@@ -121,7 +121,8 @@
 (use-package subword
   :hook ((prog-mode text-mode) . subword-mode))
 
-(use-package xml
+(use-package nxml-mode
+  :ensure nil
   :mode "\\.[^.]*proj\\'"
   :mode "\\.xaml\\'"
   :mode "\\.p\\(?:list\\|om\\)\\'"
@@ -171,6 +172,7 @@
          ("C-c c j" . my-citre-jump)
          ("C-c c J" . my-citre-jump-back))
   :custom (citre-auto-enable-citre-mode-modes '(prog-mode))
+  :commands (citre-jump-back)
   :config
   (defun my-citre-jump ()
     "Fallback to `xref' when citre failed."
@@ -183,7 +185,7 @@
     (interactive)
     (condition-case _
         (citre-jump-back)
-      (error (call-interactively #'xref-pop-marker-stack)))))
+      (error (call-interactively #'xref-go-back)))))
 
 (use-package apheleia
   :bind (("C-c c f" . apheleia-format-buffer)

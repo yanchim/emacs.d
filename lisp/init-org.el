@@ -125,7 +125,7 @@
     "Show next entry, keeping other entries closed."
     (interactive)
     (if (save-excursion (end-of-line) (outline-invisible-p))
-        (progn (org-show-entry) (outline-show-children))
+        (progn (org-fold-show-entry) (outline-show-children))
       (outline-back-to-heading)
       (unless (and (bolp) (org-at-heading-p))
         (org-up-heading-safe)
@@ -133,7 +133,7 @@
         (error "Boundary reached!"))
       (org-overview)
       (org-reveal t)
-      (org-show-entry)
+      (org-fold-show-entry)
       (outline-show-children)))
 
   (keymap-global-set "C-c o o" #'my-org-show-current-heading-tidily)
@@ -145,16 +145,15 @@
   ;; ;; Enlarge the preview magnification.
   ;; (plist-put org-format-latex-options :scale 1.5)
 
-  (defun my--org-justify-fragment-overlay-h (beg end image imagetype)
+  (defun my--org-justify-fragment-overlay-h (beg end)
     "Adjust the justification of a LaTeX fragment horizontally.
 The justification is set by :justify in `org-format-latex-options'.
 Only equations at the beginning of a line are justified.
 
 URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview-fragments-in-org-mode/'."
     (let* ((position (plist-get org-format-latex-options :justify))
-           (img (create-image image 'svg t))
            (ov (car (overlays-at (/ (+ beg end) 2) t)))
-           (width (car (image-display-size (overlay-get ov 'display))))
+           (width (car (image-size (overlay-get ov 'display))))
            offset)
       (cond
        ((and (eq 'center position)
@@ -166,8 +165,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview
         (overlay-put ov 'before-string (make-string offset ? )))
        ((and (eq 'right position)
              (= beg (line-beginning-position)))
-        (setq offset (floor (- fill-column
-                               width)))
+        (setq offset (floor (- fill-column width)))
         (when (< offset 0)
           (setq offset 0))
         (overlay-put ov 'before-string (make-string offset ? ))))))
@@ -181,7 +179,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview
         (advice-remove 'org--make-preview-overlay #'my--org-justify-fragment-overlay-h)
       (advice-add 'org--make-preview-overlay :after #'my--org-justify-fragment-overlay-h)))
 
-  (defun my--org-justify-fragment-overlay-v (beg end &rest _args)
+  (defun my--org-justify-fragment-overlay-v (beg end)
     "Adjust the justification of a LaTeX fragment vertically."
     (let* ((ov (car (overlays-at (/ (+ beg end) 2) t)))
            (img (cdr (overlay-get ov 'display)))

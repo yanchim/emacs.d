@@ -370,7 +370,9 @@ argument ARG, insert name only."
 
 (defcustom my-zh-title-regexp
   (rx bol "第" (repeat 1 6 nonl) (any "章回话") (0+ nonl))
-  "Chinese title regexp.")
+  "Chinese title regexp."
+  :type 'regexp
+  :group 'convenience)
 
 (defun my-divide-file-chapter (&optional arg)
   "Add empty lines to divide chapters according to `my-zh-title-regexp'.

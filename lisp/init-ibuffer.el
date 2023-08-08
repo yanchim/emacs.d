@@ -13,6 +13,12 @@
   (ibuffer-expert t)
   (ibuffer-show-empty-filter-groups nil)
   (ibuffer-display-summary nil)
+  :commands (ibuffer-switch-to-saved-filter-groups)
+  :defines (ibuffer-saved-filter-groups)
+  :functions (my--ibuffer-get-major-modes-list
+              my--ibuffer-generate-filter-groups-alist
+              ibuffer-vc--status-string
+              ibuffer-vc--state)
   :hook
   (ibuffer-mode . (lambda ()
                     (ibuffer-switch-to-saved-filter-groups "default")))

@@ -112,55 +112,23 @@ If INCLUSIVE is t, the text object is inclusive."
   (keymap-set evil-outer-text-objects-map "a" #'my--evil-a-paren)
   (keymap-set evil-inner-text-objects-map "a" #'my--evil-inner-paren)
 
-  (defun my--show-current-evil-state ()
-    "Change modeline's face according to different evil state."
-    (let ((color (cond
-                  ((minibufferp)          my-default-color)
-                  ((evil-emacs-state-p)   '("#7e1671" . "#f8f4ed"))
-                  ((evil-insert-state-p)  '("#20894d" . "#f8f4ed"))
-                  ((evil-visual-state-p)  '("#ffd111" . "#f8f4ed"))
-                  ((evil-replace-state-p) '("#de1c31" . "#f8f4ed"))
-                  ((buffer-modified-p)    '("#1772b4" . "#f8f4ed"))
-                  (t                      my-default-color))))
-      (set-face-background 'mode-line (car color))
-      (set-face-foreground 'mode-line (cdr color))))
-
-  (define-minor-mode my-modeline-evil-indicator-mode
-    "Show current evil state by changing modeline's face."
-    :global t
-    :lighter ""
-    (defconst my-default-color (cons (face-background 'mode-line)
-                                     (face-foreground 'mode-line))
-      "Default modeline color.")
-    (if my-modeline-evil-indicator-mode
-        (add-hook 'post-command-hook #'my--show-current-evil-state)
-      (remove-hook 'post-command-hook #'my--show-current-evil-state)))
-
-  ;; ---------------
-  ;; evil keybinding
-  ;; ---------------
-
   (evil-define-key 'normal org-mode-map
     "gh" #'outline-up-heading
     "gn" #'outline-next-visible-heading
     "gp" #'outline-previous-visible-heading
     "$"  #'org-end-of-line
     "^"  #'org-beginning-of-line
-    "<"  #'org-promote-subtree          ; outdent
-    ">"  #'org-demote-subtree           ; indent
+    "<"  #'org-promote-subtree
+    ">"  #'org-demote-subtree
     (kbd "TAB") #'org-cycle)
 
   (evil-define-key 'normal markdown-mode-map
     "gh" #'outline-up-heading
     "gn" #'outline-next-visible-heading
     "gp" #'outline-previous-visible-heading
-    "<"  #'markdown-promote             ; outdent
-    ">"  #'markdown-demote              ; indent
+    "<"  #'markdown-promote
+    ">"  #'markdown-demote
     (kbd "TAB") #'markdown-cycle)
-
-  ;; ------------------
-  ;; evil-initial-state
-  ;; ------------------
 
   (defmacro my--evil-adjust-major-mode-keymap (mode &optional replace)
     "Use MODE\\='s keymap in evil after MODE loaded.
@@ -258,31 +226,34 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
   (my--quoted-text-object "QuanJiaoWanKuoHao" "i" "〔" "〕")
   (my--quoted-text-object "QuanJiaoHuaKuoHao" "o" "｛" "｝")
 
-  (dolist (char '(
-                  (?Q . ("《 " . " 》")) (?q . ("《" . "》"))
-                  (?E . ("“ "  . " ”" )) (?e . ("“"  . "”" ))
-                  (?D . ("‘ "  . " ’" )) (?d . ("‘"  . "’" ))
-                  (?R . ("「 " . " 」")) (?r . ("「" . "」"))
-                  (?F . ("『 " . " 』")) (?f . ("『" . "』"))
-                  (?T . ("【 " . " 】")) (?t . ("【" . "】"))
-                  (?G . ("〖 " . " 〗")) (?g . ("〖" . "〗"))
-                  (?Y . ("（ " . " ）")) (?y . ("（" . "）"))
-                  (?U . ("［ " . " ］")) (?u . ("［" . "］"))
-                  (?I . ("〔 " . " 〕")) (?i . ("〔" . "〕"))
-                  (?O . ("｛ " . " ｝")) (?o . ("｛" . "｝"))
-                  ))
-    (setq-default evil-surround-pairs-alist
-                  (cons char evil-surround-pairs-alist)))
-
   (add-hook 'org-mode-hook
             (lambda ()
-              (push '(?b . ("*" . "*")) evil-surround-pairs-alist)
-              (push '(?c . ("~" . "~")) evil-surround-pairs-alist)
-              (push '(?i . ("/" . "/")) evil-surround-pairs-alist)
-              (push '(?s . ("+" . "+")) evil-surround-pairs-alist)
-              (push '(?u . ("_" . "_")) evil-surround-pairs-alist)
-              (push '(?v . ("=" . "=")) evil-surround-pairs-alist)
-              )))
+              (let ((alist '(
+                             (?b . ("*" . "*"))
+                             (?c . ("~" . "~"))
+                             (?i . ("/" . "/"))
+                             (?s . ("+" . "+"))
+                             (?u . ("_" . "_"))
+                             (?v . ("=" . "="))
+                             )))
+                (setq evil-surround-pairs-alist
+                      (append alist evil-surround-pairs-alist)))))
+
+  (let ((alist '(
+                 (?Q . ("《 " . " 》")) (?q . ("《" . "》"))
+                 (?E . ("“ "  . " ”" )) (?e . ("“"  . "”" ))
+                 (?D . ("‘ "  . " ’" )) (?d . ("‘"  . "’" ))
+                 (?R . ("「 " . " 」")) (?r . ("「" . "」"))
+                 (?F . ("『 " . " 』")) (?f . ("『" . "』"))
+                 (?T . ("【 " . " 】")) (?t . ("【" . "】"))
+                 (?G . ("〖 " . " 〗")) (?g . ("〖" . "〗"))
+                 (?Y . ("（ " . " ）")) (?y . ("（" . "）"))
+                 (?U . ("［ " . " ］")) (?u . ("［" . "］"))
+                 (?I . ("〔 " . " 〕")) (?i . ("〔" . "〕"))
+                 (?O . ("｛ " . " ｝")) (?o . ("｛" . "｝"))
+                 )))
+    (setq-default evil-surround-pairs-alist
+                  (append alist evil-surround-pairs-alist))))
 
 (use-package evil-nerd-commenter
   :bind ((:map evil-normal-state-map
@@ -297,7 +268,6 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
 (use-package general
   :config (general-evil-setup)
 
-  ;; Use `,' as leader key.
   (general-create-definer my-comma-leader-def
     :prefix ","
     :states '(normal visual))
@@ -305,6 +275,7 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
   (my-comma-leader-def
     ","  #'execute-extended-command
     "."  #'evil-ex
+    ";"  #'eval-expression
     "aa" #'avy-goto-char-2
     "ac" #'avy-goto-char-timer
     "ag" #'avy-goto-line
@@ -338,9 +309,7 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "xk" #'kill-buffer
     "xs" #'save-buffer
     ;; ORG.
-    ;; Toggle overview.
     "c$" #'org-archive-subtree
-    ;; org-do-demote/org-do-premote support selected region.
     "c<"  #'org-do-promote
     "c>"  #'org-do-demote
     "cam" #'org-tags-view
@@ -381,7 +350,7 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "x51" #'delete-other-frames
     "x52" #'make-frame-command
     "x5o" #'other-frame
-    ;; Check on the fly
+    ;; Check.
     "fa" #'flyspell-auto-correct-word
     "fm" #'flymake-mode
     "fn" #'flyspell-goto-next-error
@@ -390,23 +359,19 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "pe" #'flymake-goto-prev-error
     ;; Version control.
     "va" #'vc-next-action
-    "vc" #'my-vc-copy-file-and-rename-buffer
-    "vf" #'my-vc-rename-file-and-buffer
     "vg" #'vc-annotate
     "vn" #'diff-hl-next-hunk
     "vp" #'diff-hl-previous-hunk
-    ;; http://ergoemacs.org/emacs/emacs_pinky_2020.html
+    ;; Misc.
     "xx" #'my-kill-other-buffers-without-special-ones)
 
-  ;; Use `SPC' as leader key.
-  ;; All keywords arguments are still supported.
   (general-create-definer my-space-leader-def
     :prefix "SPC"
     :states '(normal visual))
 
   (my-space-leader-def
     "SPC" #'execute-extended-command
-    ":"   #'eval-expression
+    ";"   #'eval-expression
     ;; Bookmark/buffer.
     "b"  #'(:ignore t)
     "bb" #'switch-to-buffer
