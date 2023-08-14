@@ -43,12 +43,12 @@
   (setenv "LANG" "en_US.UTF-8")
   (condition-case err
       (let ((path (with-temp-buffer
-                    (insert-file-contents-literally "~/.path")
+                    (insert-file-contents-literally "~/.emacsenv")
                     (buffer-string))))
         (setenv "PATH" path)
         (setq exec-path
               (append (parse-colon-path path) (list exec-directory))))
-    (error (warn "%s" (error-message-string err)))))
+    (error (message (error-message-string err)))))
 
 ;; Use GNU ls as `gls' from `coreutils' if available.
 (when my-mac-p

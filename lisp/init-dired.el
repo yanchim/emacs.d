@@ -29,7 +29,7 @@ URL `https://oremacs.com/2017/03/18/dired-ediff/'."
               (file2 (if (cdr files)
                          (cadr files)
                        (read-file-name
-                        "file: "
+                        "File: "
                         (dired-dwim-target-directory)))))
           (if (file-newer-than-file-p file1 file2)
               (ediff-files file2 file1)
@@ -39,7 +39,7 @@ URL `https://oremacs.com/2017/03/18/dired-ediff/'."
                       (setq ediff-after-quit-hook-internal nil)
                       (set-window-configuration wnd)))))
        (t
-        (error "No more than 2 files should be marked!")))))
+        (user-error "Mark more than 2 files")))))
 
   (defun my-dired-cycle-space-underscore-hyphen ()
     "In Dired, rename current or marked files.
@@ -67,7 +67,7 @@ URL `http://ergoemacs.org/emacs/elisp_dired_rename_space_to_underscore.html'."
                                    nil)))))
                 (dired-get-marked-files))
           (revert-buffer))
-      (user-error "Not in Dired!")))
+      (user-error "Not in Dired")))
 
   (defun my-dired-open-externally (&optional arg)
     "Open marked or current file in OS's default application."

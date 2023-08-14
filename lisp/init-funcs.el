@@ -34,7 +34,7 @@
           (set-window-buffer (next-window) next-win-buffer)
           (select-window first-win)
           (when this-win-2nd (other-window 1))))
-    (error "Not two windows in current frame!")))
+    (user-error "There should be only two windows in current frame")))
 
 (keymap-global-set "C-c w t" #'my-toggle-two-split-window)
 
@@ -43,7 +43,7 @@
   (interactive)
   (cond
    ((not (> (count-windows) 1))
-    (message "You can't rotate a single window!"))
+    (user-error "You can't rotate a single window"))
    (t
     (let ((i 1)
           (window-num (count-windows)))
@@ -79,7 +79,7 @@ With a prefix ARG, rename based on current name."
   (interactive "P")
   (let ((filename (buffer-file-name)))
     (unless filename
-      (error "Buffer `%s' is not visiting a file!" filename))
+      (user-error "Buffer `%s' is not visiting a file" filename))
     (let ((new-name (read-string
                      "New name: "
                      (when arg (file-name-nondirectory filename)))))
@@ -102,7 +102,7 @@ With a prefix ARG, rename based on current name."
         (progn
           (kill-new (file-name-nondirectory filename))
           (message "Copied `%s'." (file-name-nondirectory filename)))
-      (warn "Current buffer is not attached to a file!"))))
+      (user-error "Current buffer is not attached to a file"))))
 
 (keymap-global-set "C-c f c" #'my-copy-file-name)
 
@@ -112,7 +112,7 @@ With a prefix ARG, rename based on current name."
   (let ((file-name (buffer-file-name)))
     (if (and (fboundp 'tramp-tramp-file-p)
              (tramp-tramp-file-p file-name))
-        (error "Cannot open tramp file!")
+        (user-error "Cannot open tramp file")
       (browse-url (concat "file://" file-name)))))
 
 (keymap-global-set "C-c f b" #'my-browse-this-file)
@@ -136,7 +136,7 @@ With a prefix ARG, rename based on current name."
   "Delete current file, and kill the buffer."
   (interactive)
   (unless (buffer-file-name)
-    (error "No file is currently being edited!"))
+    (user-error "No file is currently being edited"))
   (when (yes-or-no-p
          (format-message "Really delete `%s'?"
                          (file-name-nondirectory buffer-file-name)))
@@ -299,7 +299,7 @@ Key is a symbol as the name, value is a plist specifying the search url.")
       (progn
         (mapc #'disable-theme custom-enabled-themes)
         (load-theme (intern x) t))
-    (error "Problem loading theme %s!" x)))
+    (error "Problem loading theme %s" x)))
 
 (keymap-global-set "C-c m t" #'my-load-theme)
 
