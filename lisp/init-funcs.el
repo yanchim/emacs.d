@@ -43,7 +43,7 @@
   (interactive)
   (cond
    ((not (> (count-windows) 1))
-    (user-error "You can't rotate a single window"))
+    (user-error "Cannot rotate a single window"))
    (t
     (let ((i 1)
           (window-num (count-windows)))
@@ -375,41 +375,38 @@ argument ARG, insert name only."
   :group 'convenience)
 
 (defun my-divide-file-chapter (&optional arg)
-  "Add empty lines to divide chapters according to `my-zh-title-regexp'.
+  "Add empty lines to divide chapters.
 
-With a prefix ARG, add lines based on input regexp."
+When ARG is non-nil, search lines based on input regexp.
+Otherwise, use `my-zh-title-regexp'."
   (interactive "P")
-  ;; Make sure final newline exist.
-  (goto-char (point-max))
-  (unless (bolp)
-    (newline))
-  (goto-char (point-min))
-  ;; Search sentences containing `zh-title-regexp'.
-  (let (zh-title-regexp)
-    (if arg
-        (setq zh-title-regexp (read-regexp "Input search regexp: "))
-      (setq zh-title-regexp my-zh-title-regexp))
-    (while (< (point) (point-max))
-      (if (re-search-forward zh-title-regexp (line-end-position) t)
-          ;; Add new line if current line contains `zh-title-regexp'.
-          (newline)
-        (while (not (or (re-search-forward zh-title-regexp
-                                           (line-end-position) t)
-                        (= (point) (point-max))))
-          ;; Forward line until find next line contains
-          ;; `zh-title-regexp' or EOF.
-          (forward-line))
-        ;; Add two new lines above the chapter title.
-        (beginning-of-line)
-        (newline 2)
-        ;; Add one new line below the chapter title.
-        (end-of-line)
-        (newline)
-        (forward-line))))
-  ;; Keep a final newline at EOF.
-  (when (= (point) (point-max))
-    (delete-all-space)
-    (newline)))
+  (save-excursion
+    ;; Search sentences containing `zh-title-regexp'.
+    (let ((zh-title-regexp (if arg
+                               (read-regexp "Title pattern: ")
+                             my-zh-title-regexp)))
+      ;; Make sure the final newline exists.
+      (goto-char (point-max))
+      (unless (bolp)
+        (newline))
+      ;; Go to start position.
+      (goto-char (point-min))
+      (while (< (point) (point-max))
+        (when (re-search-forward zh-title-regexp (line-end-position) t)
+          ;; Add two new lines above the chapter title when it is not
+          ;; in the first line.
+          (unless (= (line-number-at-pos) 1)
+            (beginning-of-line)
+            (newline 2))
+          ;; Add one new line below the chapter title.
+          (end-of-line)
+          (newline))
+        ;; Forward line to continue the loop.
+        (forward-line)))
+    ;; Avoid extra newlines when chapter title is in the last line.
+    (when (= (point) (point-max))
+      (delete-all-space)
+      (newline))))
 
 (defun my-add-two-ideographic-spaces-at-bol ()
   "Add two ideographic spaces at non-empty line beginning.
@@ -439,18 +436,27 @@ otherwise on the whole buffer."
   "Delete blank lines.
 When region is active, delete the blank lines in region only."
   (interactive)
-  (if (use-region-p)
-      (delete-matching-lines "^[[:space:]]*$" (region-beginning) (region-end))
-    (delete-matching-lines "^[[:space:]]*$" (point-min) (point-max))))
+  (save-excursion
+    (let ((regexp "^[[:space:]]*$"))
+      (if (use-region-p)
+          (delete-matching-lines regexp
+                                 (region-beginning)
+                                 (region-end))
+        (delete-matching-lines regexp
+                               (point-min)
+                               (point-max))))))
 
 (keymap-global-set "C-c m d" #'my-delete-blank-lines)
 
 (defun my-delete-visual-blank-lines ()
   "Delete all visual blank lines."
   (interactive)
-  (save-restriction
-    (narrow-to-region (window-start) (window-end))
-    (delete-matching-lines "^[[:space:]]*$" (point-min) (point-max))))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region (window-start) (window-end))
+      (delete-matching-lines "^[[:space:]]*$"
+                             (point-min)
+                             (point-max)))))
 
 (keymap-global-set "C-c m D" #'my-delete-visual-blank-lines)
 
