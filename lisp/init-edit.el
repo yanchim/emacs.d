@@ -140,8 +140,9 @@
   :config (global-avy-zh-mode +1))
 
 (use-package expreg
-  :vc (:url "https://github.com/casouri/expreg" :rev :newest)
-  :bind (("C-c e ;" . expreg-expand)
+  :bind (("C-=" . expreg-expand)
+         ("C--" . expreg-contract)
+         ("C-c e ;" . expreg-expand)
          ("C-c e '" . expreg-contract)))
 
 (use-package vundo
