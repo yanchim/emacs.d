@@ -7,6 +7,10 @@
 
 ;;; Code:
 
+(use-package epg
+  :defer t
+  :custom (epg-pinentry-mode 'loopback))
+
 (use-package fortune
   :defer t
   :custom
