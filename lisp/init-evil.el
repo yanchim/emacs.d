@@ -24,23 +24,26 @@
                ("gle" . avy-goto-end-of-line)
                ("M-." . xref-find-definitions))
          (:map evil-visual-state-map
-               ("v" . expreg-expand)))
+               ("v" . expreg-expand))
+         (:map evil-command-line-map
+               ("C-a" . move-beginning-of-line)
+               ("C-e" . move-end-of-line)
+               ("C-f" . forward-char)
+               ("C-b" . backward-char)
+               ("C-d" . delete-char)
+               ("C-k" . kill-line)
+               ("C-o" . evil-command-window)))
+  :custom
+  (evil-ex-interactive-search-highlight 'selected-window)
+  ;; Move back the cursor one position when exiting insert mode.
+  (evil-move-cursor-back t)
+  ;; Make cursor move as Emacs.
+  (evil-move-beyond-eol t)
+  ;; Make evil search like vim.
+  (evil-ex-search-vim-style-regexp t)
   :config
   ;; Make evil-search behave more like VIM.
   (evil-select-search-module 'evil-search-module 'evil-search)
-  (setq evil-ex-interactive-search-highlight 'selected-window)
-
-  ;; https://github.com/emacs-evil/evil/issues/342
-  ;; Cursor is always black because of evil.
-  ;; Here is the workaround.
-  (setq evil-default-cursor t)
-
-  ;; Move back the cursor one position when exiting insert mode.
-  (setq evil-move-cursor-back t)
-  ;; Make cursor move as Emacs.
-  (setq evil-move-beyond-eol t)
-  ;; Make evil search like vim.
-  (setq evil-ex-search-vim-style-regexp t)
 
   (defun evil-unimpaired-insert-newline-above (count)
     "Insert COUNT blank line(s) above current line."
@@ -130,8 +133,32 @@ If INCLUSIVE is t, the text object is inclusive."
     ">"  #'markdown-demote
     (kbd "TAB") #'markdown-cycle)
 
+  (dolist (b '(;; Special buffers.
+               ("\\*.*\\*"           . emacs)
+               ;; Magit related.
+               (".*MSG.*"            . emacs)
+               ;; Yasnippet.
+               ("+new-snippet+"      . emacs)
+               ;; Evil-ex.
+               ("\\*Command Line\\*" . normal)
+               ("\\*scratch\\*"      . normal)))
+    (add-to-list 'evil-buffer-regexps b))
+
+  (dolist (hook '(view-mode-hook))
+    (add-hook hook
+              (lambda ()
+                "Toggle `evil-state' according to current `evil-state'."
+                (if (eq evil-state 'normal)
+                    (evil-emacs-state)
+                  (evil-normal-state)))))
+
+  (setq evil-emacs-state-modes
+        (append
+         '(calender-mode dired-mode erc-mode image-mode)
+         evil-emacs-state-modes))
+
   (defmacro my--evil-adjust-major-mode-keymap (mode &optional replace)
-    "Use MODE\\='s keymap in evil after MODE loaded.
+    "Use MODE\\='s keymap in `evil-normal-state' after MODE loaded.
 
 If MODE provides a feature REPLACE, to change the keymap use REPLACE instead.
 URL `https://github.com/emacs-evil/evil/issues/511'."
@@ -140,52 +167,7 @@ URL `https://github.com/emacs-evil/evil/issues/511'."
        (add-hook (quote ,(intern (concat mode "-mode-hook")))
                  #'evil-normalize-keymaps)))
 
-  (my--evil-adjust-major-mode-keymap "git-timemachine")
-
-  (dolist (b '(
-               ("+new-snippet+"  . emacs)
-               ("\\*.*\\*"       . emacs)
-               (".*MSG.*"        . emacs)
-               ("\\*scratch\\*"  . normal)
-               ))
-    (add-to-list 'evil-buffer-regexps b))
-
-  (dolist (hook '(cua-rectangle-mark-mode-hook))
-    (add-hook hook #'evil-emacs-state))
-
-  ;; Set evil initial state for major modes.
-  (dolist (p '(
-               (Info-mode                . emacs)
-               (Man-mode                 . emacs)
-               (apropos-mode             . emacs)
-               (calendar-mode            . emacs)
-               (compilation-mode         . emacs)
-               (dired-mode               . emacs)
-               (elfeed-search-mode       . emacs)
-               (elfeed-show-mode         . emacs)
-               (epa-key-list-mode        . emacs)
-               (erc-mode                 . emacs)
-               (eshell-mode              . emacs)
-               (forge-post-mode          . emacs)
-               (grep-mode                . emacs)
-               (help-mode                . emacs)
-               (image-mode               . emacs)
-               (magit-mode               . emacs)
-               (message-mode             . emacs)
-               (minibuffer-inactive-mode . emacs)
-               (profiler-report-mode     . emacs)
-               (shell-mode               . emacs)
-               (special-mode             . emacs)
-               (term-mode                . emacs)
-               (view-mode                . emacs)
-               (vc-log-edit-mode         . emacs)
-               (w3m-mode                 . emacs)
-               (woman-mode               . emacs)
-               (xref--xref-buffer-mode   . emacs)
-               (fundamental-mode         . normal)
-               (messages-buffer-mode     . normal)
-               ))
-    (evil-set-initial-state (car p) (cdr p))))
+  (my--evil-adjust-major-mode-keymap "git-timemachine"))
 
 (use-package evil-zh
   :vc (:url "https://github.com/dalugm/evil-zh" :rev :newest)
