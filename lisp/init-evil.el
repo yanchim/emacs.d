@@ -266,7 +266,6 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "ak" #'avy-goto-line-above
     "af" #'beginning-of-defun
     "ar" #'align-regexp
-    "as" #'ace-swap-window
     "aw" #'avy-goto-word-or-subword-1
     "bb" (lambda ()
            (interactive) (switch-to-buffer nil))
@@ -278,60 +277,43 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "si" #'imenu
     "dd" #'pwd
     "dj" #'dired-jump
-    "eb" #'eval-buffer
-    "ee" #'eval-expression
+    "ee" #'eval-buffer
     "el" #'eval-last-sexp
-    "kb" #'kill-buffer-and-window
     "sc" #'shell-command
     "tD" #'darkroom-mode
     "td" #'darkroom-tentative-mode
+    "hh" #'mark-whole-buffer
+    "kk" #'kill-buffer
+    ;; Keymaps in `ctl-x-map'.
     "xb" #'switch-to-buffer
-    "xh" #'mark-whole-buffer
     "xf" #'find-file
-    "xk" #'kill-buffer
     "xs" #'save-buffer
-    ;; ORG.
-    "c$" #'org-archive-subtree
-    "c<"  #'org-do-promote
-    "c>"  #'org-do-demote
-    "cam" #'org-tags-view
-    "cxi" #'org-clock-in
-    "cxo" #'org-clock-out
-    "cxr" #'org-clock-report
-    "oa"  #'org-agenda
-    "ob"  #'org-switchb
-    "oc"  #'org-capture
-    "ol"  #'org-store-link
-    "ot"  #'org-toggle-link-display
+    "xx" #'my-kill-other-buffers-without-special-ones
+    ;; Search.
+    "ss" #'consult-line
+    "sr" #'consult-ripgrep
+    "sf" #'consult-fd
     ;; Window.
-    "0"   #'winum-select-window-0-or-10
-    "1"   #'winum-select-window-1
-    "2"   #'winum-select-window-2
-    "3"   #'winum-select-window-3
-    "4"   #'winum-select-window-4
-    "5"   #'winum-select-window-5
-    "6"   #'winum-select-window-6
-    "7"   #'winum-select-window-7
-    "8"   #'winum-select-window-8
-    "9"   #'winum-select-window-9
-    "ff"  #'my-toggle-full-window
-    "oo"  #'delete-other-windows
-    "sa"  #'split-window-vertically
-    "sd"  #'split-window-horizontally
-    "sh"  #'split-window-below
-    "sq"  #'delete-window
-    "sv"  #'split-window-right
-    "xr"  #'my-rotate-windows
-    "xt"  #'my-toggle-two-split-window
-    "xo"  #'ace-window
-    "x0"  #'delete-window
-    "x1"  #'delete-other-windows
-    "x2"  #'split-window-vertically
-    "x3"  #'split-window-horizontally
-    "x50" #'delete-frame
-    "x51" #'delete-other-frames
-    "x52" #'make-frame-command
-    "x5o" #'other-frame
+    "0"  #'winum-select-window-0-or-10
+    "1"  #'winum-select-window-1
+    "2"  #'winum-select-window-2
+    "3"  #'winum-select-window-3
+    "4"  #'winum-select-window-4
+    "5"  #'winum-select-window-5
+    "6"  #'winum-select-window-6
+    "7"  #'winum-select-window-7
+    "8"  #'winum-select-window-8
+    "9"  #'winum-select-window-9
+    "oo" #'my-toggle-full-window
+    "sa" #'split-window-vertically
+    "sd" #'split-window-horizontally
+    "sh" #'split-window-below
+    "sq" #'delete-window
+    "sv" #'split-window-right
+    "rr" #'my-rotate-windows
+    "tt" #'my-toggle-two-split-window
+    "xo" #'ace-window
+    "ws" #'ace-swap-window
     ;; Check.
     "fa" #'flyspell-auto-correct-word
     "fm" #'flymake-mode
@@ -344,8 +326,7 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "vg" #'vc-annotate
     "vn" #'diff-hl-next-hunk
     "vp" #'diff-hl-previous-hunk
-    ;; Misc.
-    "xx" #'my-kill-other-buffers-without-special-ones)
+    "vu" #'vc-revert)
 
   (general-create-definer my-space-leader-def
     :prefix "SPC"
@@ -426,12 +407,15 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "s"  #'(:ignore t)
     "sd" #'search-dired-dwim
     "sD" #'search-dired
-    "sf" #'my-consult-fd
+    "sf" #'consult-fd
     "sF" #'consult-find
     "sg" #'consult-grep
+    "sG" #'consult-git-grep
     "so" #'my-search-online
     "sr" #'consult-ripgrep
     "ss" #'consult-line
+    "su" #'consult-focus-lines
+    "sk" #'consult-keep-lines
     "si" #'imenu
     ;; Toggle.
     "t"  #'(:ignore t)

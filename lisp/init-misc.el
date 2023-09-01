@@ -79,6 +79,16 @@ access from `emacsclient'."
                            (message "Starting a server...")
                            (server-start)))))
 
+(when my-win-p
+  (defcustom my-use-gbk-dos-coding-system nil
+    "Non-nil means using GBK-DOS coding system."
+    :group 'convenience
+    :type 'boolean)
+
+  (when my-use-gbk-dos-coding-system
+    (add-to-list 'process-coding-system-alist
+                 '("[rR][gG]" . (utf-8 . gbk-dos)))))
+
 (use-package hl-todo
   :hook (after-init . global-hl-todo-mode)
   :bind (:map hl-todo-mode-map
