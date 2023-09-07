@@ -277,18 +277,21 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "si" #'imenu
     "dd" #'pwd
     "dj" #'dired-jump
-    "ee" #'eval-buffer
+    "dp" #'project-dired
+    "ee" #'eval-expression
     "el" #'eval-last-sexp
-    "sc" #'shell-command
-    "tD" #'darkroom-mode
-    "td" #'darkroom-tentative-mode
+    "ff" #'find-file
+    "f/" #'find-file-other-window
+    "gg" #'switch-to-buffer
     "hh" #'mark-whole-buffer
-    "kk" #'kill-buffer
+    "kk" #'my-kill-other-buffers-without-special-ones
+    "sc" #'shell-command
+    "xx" #'kill-buffer
     ;; Keymaps in `ctl-x-map'.
     "xb" #'switch-to-buffer
     "xf" #'find-file
+    "xk" #'kill-buffer
     "xs" #'save-buffer
-    "xx" #'my-kill-other-buffers-without-special-ones
     ;; Search.
     "ss" #'consult-line
     "sr" #'consult-ripgrep
