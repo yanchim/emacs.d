@@ -139,10 +139,10 @@
   (eldoc-box-use-visible-frame-map t)
   :bind (("C-c h h" . eldoc-box-help-at-point)
          (:map eldoc-box-visible-frame-map
-               ("M-n" . eldoc-box-scroll-up)
-               ("M-p" . eldoc-box-scroll-down)
-               ("M-a" . eldoc-box-beginning)
-               ("M-e" . eldoc-box-end)))
+               ("C-M-n" . eldoc-box-scroll-up)
+               ("C-M-p" . eldoc-box-scroll-down)
+               ("C-M-a" . eldoc-box-beginning)
+               ("C-M-e" . eldoc-box-end)))
   :config
   (setq eldoc-doc-buffer-separator
         (concat "\n"
