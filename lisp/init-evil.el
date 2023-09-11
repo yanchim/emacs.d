@@ -11,7 +11,15 @@
   :init
   ;; Use Emacs keys in INSERT state.
   (setq evil-disable-insert-state-bindings t)
-  :hook (after-init . evil-mode)
+  :hook ((after-init . evil-mode)
+         (view-mode . (lambda ()
+                        "Toggle `evil-state' based on current state."
+                        (if (eq evil-state 'normal)
+                            (evil-emacs-state)
+                          (evil-normal-state))))
+         (org-capture-mode . (lambda ()
+                               "Minor modes with Evil Emacs state."
+                               (evil-emacs-state))))
   :bind ((:map evil-normal-state-map
                ("]b" . next-buffer)
                ("[b" . previous-buffer)
@@ -143,14 +151,6 @@ If INCLUSIVE is t, the text object is inclusive."
                ("\\*Command Line\\*" . normal)
                ("\\*scratch\\*"      . normal)))
     (add-to-list 'evil-buffer-regexps b))
-
-  (dolist (hook '(view-mode-hook))
-    (add-hook hook
-              (lambda ()
-                "Toggle `evil-state' according to current `evil-state'."
-                (if (eq evil-state 'normal)
-                    (evil-emacs-state)
-                  (evil-normal-state)))))
 
   (setq evil-emacs-state-modes
         (append
