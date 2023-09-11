@@ -116,10 +116,9 @@ access from `emacsclient'."
         (unwind-protect (call-interactively #'eval-last-sexp)
           (separedit-abort))))))
 
-(use-package search-dired
-  :vc (:url "https://github.com/dalugm/search-dired" :rev :newest)
-  :bind (("C-c s d" . search-dired-dwim)
-         ("C-c s D" . search-dired)))
+(use-package xiaoshuo-mode
+  :vc (:url "https://github.com/dalugm/xiaoshuo-mode" :rev :newest)
+  :bind ("C-c t x" . xiaoshuo-mode))
 
 (provide 'init-misc)
 
