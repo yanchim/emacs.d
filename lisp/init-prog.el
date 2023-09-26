@@ -64,6 +64,7 @@
                   (go         . (,(rx ".go" eos) . go-ts-mode))
                   (gomod      . (,(rx "/go.mod" eos) . go-mod-ts-mode))
                   (heex       . (,(rx "." (opt (any "hl")) "eex" eos) . heex-ts-mode))
+                  (lua        . (,(rx ".lua" eos) . lua-ts-mode))
                   (rust       . (,(rx ".rs" eos) . rust-ts-mode))
                   (tsx        . (,(rx ".tsx" eos) . tsx-ts-mode))
                   (typescript . (,(rx ".ts" eos) . typescript-ts-mode))
