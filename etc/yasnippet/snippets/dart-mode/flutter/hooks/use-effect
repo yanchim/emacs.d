@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: hook-use-effect
-# key: hue
+# name: use-effect
+# key: ue
 # --
 useEffect(() {
   return $1;
