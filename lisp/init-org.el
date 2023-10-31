@@ -234,6 +234,13 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
                 (string-trim-right
                  (match-string 1 org-read-date-final-answer)))))))
 
+(use-package org-src
+  :ensure nil
+  :after org
+  :custom
+  ;; Don't indent the content of a source code block.
+  (org-edit-src-content-indentation 0))
+
 (use-package org-clock
   :ensure nil
   :after org
