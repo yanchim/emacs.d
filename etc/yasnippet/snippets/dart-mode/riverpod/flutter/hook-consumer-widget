@@ -1,8 +1,8 @@
 # -*- mode: snippet -*-
-# name: consumer-stateless-widget
-# key: cslw
+# name: hook-consumer-widget
+# key: hcw
 # --
-class ${1:name} extends ConsumerWidget {
+class ${1:name} extends HookConsumerWidget {
   const $1({super.key});
 
   @override

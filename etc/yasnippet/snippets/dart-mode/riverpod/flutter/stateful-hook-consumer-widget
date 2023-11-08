@@ -1,15 +1,15 @@
 # -*- mode: snippet -*-
-# name: hook-stateful-widget
-# key: hsfw
+# name: stateful-hook-consumer-widget
+# key: shcw
 # --
-class ${1:name} extends StatefulHookWidget {
+class ${1:name} extends StatefulHookConsumerWidget {
   const $1({super.key});
 
   @override
-  State<$1> createState() => _$1State();
+  ConsumerState<$1> createState() => _$1State();
 }
 
-class _$1State extends State<$1> {
+class _$1State extends ConsumerState<$1> {
   @override
   Widget build(BuildContext context) {
     return const Placeholder(

@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: consumer-stateful-widget
-# key: csfw
+# key: csw
 # --
 class ${1:name} extends ConsumerStatefulWidget {
   const $1({super.key});
