@@ -440,26 +440,11 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
     "tw" #'whitespace-mode
     ;; Window.
     "w"   #'(:ignore t)
-    "w'"  #'eyebrowse-last-window-config
-    "w,"  #'eyebrowse-rename-window-config
-    "w."  #'eyebrowse-switch-to-window-config
-    "w\"" #'eyebrowse-close-window-config
-    "w1"  #'eyebrowse-switch-to-window-config-1
-    "w2"  #'eyebrowse-switch-to-window-config-2
-    "w3"  #'eyebrowse-switch-to-window-config-3
-    "w4"  #'eyebrowse-switch-to-window-config-4
-    "w5"  #'eyebrowse-switch-to-window-config-5
-    "w6"  #'eyebrowse-switch-to-window-config-6
-    "w7"  #'eyebrowse-switch-to-window-config-7
-    "w8"  #'eyebrowse-switch-to-window-config-8
-    "w9"  #'eyebrowse-switch-to-window-config-9
-    "wc"  #'eyebrowse-create-window-config
     "wd"  #'delete-window
     "wh"  #'evil-window-left
     "wj"  #'evil-window-down
     "wk"  #'evil-window-up
     "wl"  #'evil-window-right
-    "wn"  #'eyebrowse-create-named-window-config
     "ws"  #'split-window-below
     "wv"  #'split-window-right))
 

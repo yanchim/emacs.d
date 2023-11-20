@@ -17,7 +17,7 @@
   :custom (zh-lib-scheme 'simplified-traditional-quanpin-all))
 
 (use-package marginalia
-  :config (marginalia-mode +1))
+  :hook (after-init . marginalia-mode))
 
 (use-package embark
   :bind (("M-A" . embark-act)
@@ -50,10 +50,48 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-(use-package eyebrowse
-  :hook (after-init . eyebrowse-mode)
-  :custom (eyebrowse-keymap-prefix (kbd "C-c w"))
-  :bind ("C-c w n" . eyebrowse-create-named-window-config))
+(use-package tabspaces
+  :hook (after-init . tabspaces-mode)
+  :custom
+  ;; Always keep the tab bar hidden.
+  (tab-bar-show nil)
+  (tabspaces-default-tab "Default")
+  (tabspaces-remove-to-default t)
+  (tabspaces-include-buffers '("*scratch*"))
+  (tabspaces-initialize-project-with-todo t)
+  (tabspaces-todo-file-name "TODO.org")
+  :config
+  ;; Integrate workspace buffers into `consult-buffer'.
+  (with-eval-after-load 'consult
+    (defvar consult--source-workspace
+      (list :name     "Workspace Buffers"
+            :narrow   ?w
+            :history  'buffer-name-history
+            :category 'buffer
+            :state    #'consult--buffer-state
+            :default  t
+            :items    (lambda () (consult--buffer-query
+                                  :predicate #'tabspaces--local-buffer-p
+                                  :sort 'visibility
+                                  :as #'buffer-name)))
+      "Set workspace buffer list for `consult-buffer'.")
+
+    ;; Use workspace buffer instead of buffer (still "b" available).
+    (consult-customize consult--source-buffer :hidden t :default nil)
+    (add-to-list 'consult-buffer-sources 'consult--source-workspace)
+
+    (defun my--consult-tabspaces ()
+      "Isolated consult buffers when using tabspaces."
+      (if tabspaces-mode
+          (progn
+            (consult-customize consult--source-buffer :hidden t :default nil)
+            (add-to-list 'consult-buffer-sources 'consult--source-workspace))
+        ;; Reset `consult-buffer' to show all buffers.
+        (consult-customize consult--source-buffer :hidden nil :default t)
+        (setq consult-buffer-sources
+              (remove #'consult--source-workspace consult-buffer-sources))))
+
+    (add-hook 'tabspaces-mode-hook #'my--consult-tabspaces)))
 
 (use-package ace-window
   :bind (([remap other-window] . ace-window)
@@ -67,10 +105,10 @@
     (setq aw-background avy-background)))
 
 (use-package winum
-  :config
-  (setq winum-format "%s ")
-  (setq winum-mode-line-position 0)
-  (winum-mode +1))
+  :hook (after-init . winum-mode)
+  :custom
+  (winum-format "%s ")
+  (winum-mode-line-position 0))
 
 (use-package color-rg
   :vc (:url "https://github.com/manateelazycat/color-rg" :rev :newest)
@@ -135,7 +173,7 @@
         (message "%s copied." thing)))))
 
 (use-package avy-zh
-  :vc (:url "https://gitee.com/dalugm/avy-zh" :rev :newest)
+  :vc (:url "https://github.com/dalugm/avy-zh" :rev :newest)
   :after avy
   :config (global-avy-zh-mode +1))
 
