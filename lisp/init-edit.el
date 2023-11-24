@@ -51,15 +51,23 @@
                  (window-parameters (mode-line-format . none)))))
 
 (use-package tabspaces
-  :hook (after-init . tabspaces-mode)
+  :init
+  (defun my--tabspaces-setup ()
+    "Setup for `tabspaces'."
+    (tabspaces-mode +1)
+    (tab-bar-rename-tab "default")
+    ;; Move `*Messages*' to frame's `buffer-list'.
+    (when (get-buffer "*Messages*")
+      (set-frame-parameter nil
+                           'buffer-list
+                           (cons (get-buffer "*Messages*")
+                                 (frame-parameter nil 'buffer-list)))))
+  :hook (after-init . my--tabspaces-setup)
   :custom
   ;; Always keep the tab bar hidden.
   (tab-bar-show nil)
-  (tabspaces-default-tab "Default")
-  (tabspaces-remove-to-default t)
-  (tabspaces-include-buffers '("*scratch*"))
-  (tabspaces-initialize-project-with-todo t)
-  (tabspaces-todo-file-name "TODO.org")
+  (tabspaces-remove-to-default nil)
+  (tabspaces-initialize-project-with-todo nil)
   :config
   ;; Integrate workspace buffers into `consult-buffer'.
   (with-eval-after-load 'consult
@@ -74,23 +82,17 @@
                                   :predicate #'tabspaces--local-buffer-p
                                   :sort 'visibility
                                   :as #'buffer-name)))
-      "Set workspace buffer list for `consult-buffer'.")
-
-    ;; Use workspace buffer instead of buffer (still "b" available).
-    (consult-customize consult--source-buffer :hidden t :default nil)
-    (add-to-list 'consult-buffer-sources 'consult--source-workspace)
+      "Workspace buffer candidate source for `consult-buffer'.")
 
     (defun my--consult-tabspaces ()
-      "Isolated consult buffers when using tabspaces."
+      "Isolate workspace buffers when using tabspaces."
       (if tabspaces-mode
-          (progn
-            (consult-customize consult--source-buffer :hidden t :default nil)
-            (add-to-list 'consult-buffer-sources 'consult--source-workspace))
+          (add-to-list 'consult-buffer-sources 'consult--source-workspace)
         ;; Reset `consult-buffer' to show all buffers.
-        (consult-customize consult--source-buffer :hidden nil :default t)
         (setq consult-buffer-sources
               (remove #'consult--source-workspace consult-buffer-sources))))
 
+    (my--consult-tabspaces)
     (add-hook 'tabspaces-mode-hook #'my--consult-tabspaces)))
 
 (use-package ace-window
