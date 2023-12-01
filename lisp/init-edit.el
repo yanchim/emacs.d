@@ -12,6 +12,37 @@
   (ediff-split-window-function #'split-window-horizontally)
   (ediff-window-setup-function #'ediff-setup-windows-plain))
 
+(use-package project
+  :init
+  (defun my-project-magit ()
+    "Start `magit-status' in the current project."
+    (interactive)
+    (magit-status (project-root (project-current t))))
+
+  (defun my-project-search ()
+    "Start `consult-ripgrep' or `consult-grep' in the current project."
+    (interactive)
+    (let ((root (project-root (project-current t))))
+      (if (executable-find "rg")
+          (consult-ripgrep root)
+        (consult-grep root))))
+
+  (defun my-project-find ()
+    "Start `consult-fd' or `consult-find' in the current project."
+    (interactive)
+    (let ((root (project-root (project-current t))))
+      (if (or (executable-find "fd") (executable-find "fdfind"))
+          (consult-fd root)
+        (consult-find root))))
+  :custom
+  (project-switch-commands '((project-find-file "Find file" ?F)
+                             (project-find-dir "Find directory")
+                             (project-eshell "Eshell")
+                             (my-project-magit "Magit status" ?g)
+                             (my-project-find "Find" ?f)
+                             (my-project-search "Search" ?s)
+                             (project-any-command "Other"))))
+
 (use-package zh-lib
   :vc (:url "https://github.com/dalugm/zh-lib.el" :rev :newest)
   :custom (zh-lib-scheme 'simplified-traditional-quanpin-all))
