@@ -8,6 +8,7 @@
 ;;; Code:
 
 (with-eval-after-load 'package
+  (setq package-install-upgrade-built-in t)
   (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
                       (not (gnutls-available-p))))
          (proto (if no-ssl "http" "https")))
