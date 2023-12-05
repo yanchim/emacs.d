@@ -32,6 +32,7 @@
           (json "https://github.com/tree-sitter/tree-sitter-json")
           (lua "https://github.com/MunifTanjim/tree-sitter-lua")
           (python "https://github.com/tree-sitter/tree-sitter-python")
+          (racket "https://github.com/6cdh/tree-sitter-racket")
           (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
           (rust "https://github.com/tree-sitter/tree-sitter-rust")
           (toml "https://github.com/tree-sitter/tree-sitter-toml")
