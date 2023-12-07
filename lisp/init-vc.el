@@ -7,6 +7,9 @@
 
 ;;; Code:
 
+;; Visit version controlled symlink without asking.
+(setq vc-follow-symlinks t)
+
 (use-package magit
   :bind (("C-x g"   . magit-status)
          ("C-c v g" . magit-status)
