@@ -54,7 +54,7 @@ sexp before point and insert output into current position."
   :custom (inferior-lisp-program "sbcl"))
 
 (use-package racket-mode
-  :mode ".rkt")
+  :bind ("C-c C-x C-x" . racket-xp-mode))
 
 (provide 'init-sexp)
 
