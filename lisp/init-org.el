@@ -16,13 +16,13 @@
          ("C-c o p" . org-promote-subtree)
          ("C-c o t" . org-toggle-link-display))
   :custom
-  (org-agenda-files `(,org-directory))
+  (org-agenda-files (list org-directory))
   (org-export-backends '(ascii beamer html latex md))
   ;; Respect property lines.
   (org-startup-folded 'nofold)
   ;; Make Emacs respect kinsoku rules when wrapping lines visually.
   (word-wrap-by-category t)
-  (org-default-notes-file (concat org-directory "/notes.org"))
+  (org-default-notes-file (expand-file-name "notes.org" org-directory))
   (org-src-fontify-natively t)
   ;; Save state changes in the LOGBOOK drawer.
   (org-log-into-drawer t)
@@ -91,21 +91,6 @@
             ("convert -density %D -trim -antialias %f -quality 100 %O")))))
   (org-preview-latex-default-process 'dvisvgm)
   :config
-;;;; Babel.
-  (defun my-org-babel-load-languages ()
-    "Add src_block supported src."
-    (interactive)
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (calc . t)
-       (shell . t)
-       (C . t)
-       (python . t)
-       (ruby . t)
-       (latex . t)
-       (org . t))))
-
 ;;;; Preview.
   ;; Enhance LaTeX preview in Org.
   ;; https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview-fragments-in-org-mode/
@@ -132,13 +117,13 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/06/Justifying-LaTeX-preview
                                (/ width 2))))
         (when (< offset 0)
           (setq offset 0))
-        (overlay-put ov 'before-string (make-string offset ? )))
+        (overlay-put ov 'before-string (make-string offset #x20)))
        ((and (eq 'right position)
              (= beg (line-beginning-position)))
         (setq offset (floor (- fill-column width)))
         (when (< offset 0)
           (setq offset 0))
-        (overlay-put ov 'before-string (make-string offset ? ))))))
+        (overlay-put ov 'before-string (make-string offset #x20))))))
 
   (advice-add 'org--make-preview-overlay :after #'my--org-justify-fragment-overlay-h)
 
@@ -234,9 +219,26 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
                 (string-trim-right
                  (match-string 1 org-read-date-final-answer)))))))
 
+(use-package ob
+  :ensure nil
+  :defer t
+  :custom (org-confirm-babel-evaluate nil)
+  :config
+  (defun my-org-babel-load-languages ()
+    "Add src_block supported src."
+    (interactive)
+    (org-babel-do-load-languages 'org-babel-load-languages
+                                 '((C . t) (python . t)
+                                   (emacs-lisp . t) (lisp . t)))))
+
+(use-package ob-lisp
+  :ensure nil
+  :defer t
+  :custom (org-babel-lisp-eval-fn #'sly-eval))
+
 (use-package org-clock
   :ensure nil
-  :after org
+  :defer t
   :custom
   ;; Save clock data and notes in the LOGBOOK drawer.
   (org-clock-into-drawer t)
@@ -245,7 +247,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
 
 (use-package org-archive
   :ensure nil
-  :after org
+  :defer t
   :custom
   (org-archive-mark-done nil)
   (org-archive-location "%s_archive::* Archive")
@@ -345,7 +347,7 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
 
 (use-package ox-latex
   :ensure nil
-  :after ox
+  :defer t
   :custom
   ;; Compared to `pdflatex', `xelatex' supports unicode and can use
   ;; system's font.
