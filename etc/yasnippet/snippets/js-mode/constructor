@@ -4,4 +4,4 @@
 # --
 constructor(${1:args}) {
   ${2:super(${3:args});}
-}$0
+}

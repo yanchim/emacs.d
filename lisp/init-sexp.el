@@ -45,6 +45,13 @@ sexp before point and insert output into current position."
                    lisp-interaction-mode-map))
   (keymap-set map "C-c C-p" #'my-eval-print-last-sexp))
 
+(use-package clojure-ts-mode
+  :when (and (treesit-available-p) (treesit-ready-p 'clojure 'message))
+  :mode
+  ("\\.\\(clj\\|edn\\)\\'" . clojure-ts-mode)
+  ("\\.cljs\\'" . clojurescript-ts-mode)
+  ("\\.cljd\\'" . clojure-dart-ts-mode))
+
 (use-package sly
   :bind ((:map sly-mode-map
                ("C-c C-o" . sly)

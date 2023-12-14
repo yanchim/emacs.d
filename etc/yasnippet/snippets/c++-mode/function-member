@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: function_member
+# key: fnm
+# --
+${1:type} ${2:Name}::${3:name}(${4:args})${5: const}
+{
+        $0
+}

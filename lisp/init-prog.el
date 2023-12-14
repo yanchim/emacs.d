@@ -30,6 +30,7 @@
           (java "https://github.com/tree-sitter/tree-sitter-java")
           (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
           (json "https://github.com/tree-sitter/tree-sitter-json")
+          (kotlin "https://github.com/fwcd/tree-sitter-kotlin")
           (lua "https://github.com/MunifTanjim/tree-sitter-lua")
           (python "https://github.com/tree-sitter/tree-sitter-python")
           (racket "https://github.com/6cdh/tree-sitter-racket")
@@ -57,9 +58,7 @@
      (sh-mode         . bash-ts-mode)))
   :config
   ;; Add `*-ts-mode' to `auto-mode-alist'.
-  (dolist (list `((clojure    . (,(rx ".clj" eos) . clojure-ts-mode))
-                  (cmake      . (,(rx (or "CMakeLists.txt" ".cmake") eos) . cmake-ts-mode))
-                  (dart       . (,(rx ".dart" eos) . dart-ts-mode))
+  (dolist (list `((cmake      . (,(rx (or "CMakeLists.txt" ".cmake") eos) . cmake-ts-mode))
                   (dockerfile . (,(rx "Dockerfile" eos) . dockerfile-ts-mode))
                   (elixir     . (,(rx (or ".elixir" (seq ".ex" (opt "s")) "mix.lock") eos) . elixir-ts-mode))
                   (go         . (,(rx ".go" eos) . go-ts-mode))
@@ -195,8 +194,13 @@
          ("C-c c F" . apheleia-goto-error)))
 
 (use-package dart-ts-mode
-  :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode" :rev :newest))
-(use-package clojure-ts-mode)
+  :when (and (treesit-available-p) (treesit-ready-p 'dart 'message))
+  :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode" :rev :newest)
+  :mode "\\.dart\\'")
+
+(use-package kotlin-ts-mode
+  :when (and (treesit-available-p) (treesit-ready-p 'kotlin 'message))
+  :mode "\\.kt\\'")
 
 (provide 'init-prog)
 
