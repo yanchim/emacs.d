@@ -123,14 +123,6 @@
 (use-package subword
   :hook ((prog-mode text-mode) . subword-mode))
 
-(use-package nxml-mode
-  :ensure nil
-  :mode "\\.[^.]*proj\\'"
-  :mode "\\.xaml\\'"
-  :mode "\\.p\\(?:list\\|om\\)\\'"
-  :mode "\\.xs\\(?:d\\|lt\\)\\'"
-  :mode "\\.rss\\'")
-
 (use-package eldoc-box
   :vc (:url "https://github.com/dalugm/eldoc-box" :rev :newest)
   :when (display-graphic-p)
@@ -193,6 +185,31 @@
   :bind (("C-c c f" . apheleia-format-buffer)
          ("C-c c F" . apheleia-goto-error)))
 
+;;;; Major modes.
+
+(use-package js
+  :mode ("\\.[mc]js\\'" . js-mode)
+  :custom (js-indent-level 2))
+
+(use-package python
+  :mode ("\\.[cir]py\\'" . python-mode)
+  :custom
+  (python-indent-guess-indent-offset nil)
+  (python-indent-offset 4))
+
+(use-package nxml
+  :mode ("\\.[^.]*proj\\'" . nxml-mode)
+  :mode ("\\.xaml\\'" . nxml-mode)
+  :mode ("\\.p\\(?:list\\|om\\)\\'" . nxml-mode)
+  :mode ("\\.xs\\(?:d\\|lt\\)\\'" . nxml-mode)
+  :mode ("\\.rss\\'" . nxml-mode))
+
+(use-package tex-mode
+  :defer t
+  :config
+  (setq tex-command "xelatex")
+  (add-to-list 'tex-compile-commands '("xelatex %f" t "%r.pdf")))
+
 (use-package dart-ts-mode
   :when (and (treesit-available-p) (treesit-ready-p 'dart 'message))
   :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode" :rev :newest)
@@ -200,7 +217,7 @@
 
 (use-package kotlin-ts-mode
   :when (and (treesit-available-p) (treesit-ready-p 'kotlin 'message))
-  :mode "\\.kt\\'")
+  :mode "\\.kts?\\'")
 
 (provide 'init-prog)
 
