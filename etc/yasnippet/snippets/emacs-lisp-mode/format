@@ -2,4 +2,4 @@
 # name: format
 # key: f
 # --
-(format "${1:message}" ${2:format-args})
+(format "${1:message}")

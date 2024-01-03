@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: method
-# key: m
-# --
-${1:void} ${2:name}(${3:args}) {
-          $0
-}

@@ -2,4 +2,4 @@
 # name: namespace
 # key: ns
 # --
-(ns ${1:namespace})
+(ns $0)

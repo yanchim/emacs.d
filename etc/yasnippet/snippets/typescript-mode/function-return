@@ -2,6 +2,6 @@
 # name: function-return
 # key: fnr
 # --
-function ${1:name}(${2:args}): ${3:type} {
-                      $0
+function ${1:name}($2): ${3:type} {
+         $0
 }

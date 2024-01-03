@@ -2,4 +2,4 @@
 # name: fmt.Printf(...)
 # key: p
 # --
-fmt.Printf("${1:%s}\n", ${2:args})
+fmt.Printf($1)

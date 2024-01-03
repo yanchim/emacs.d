@@ -2,4 +2,4 @@
 # name: message
 # key: m
 # --
-(message "${1:message}"${2: format-args})
+(message "${1:message}")
