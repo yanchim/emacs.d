@@ -32,7 +32,7 @@ sexp before point and insert output into current position."
        ((not arg)
         (newline-and-indent)
         (if (and (stringp value) (string-match-p "\n" value))
-            ;; if return value is a multiline string
+            ;; If return value is a multiline string.
             (insert (format
                      ";; =>\n;; %S"
                      (replace-regexp-in-string "\n" "\n;; " value)))
@@ -45,7 +45,20 @@ sexp before point and insert output into current position."
                    lisp-interaction-mode-map))
   (keymap-set map "C-c C-p" #'my-eval-print-last-sexp))
 
+(use-package clojure-mode
+  :mode
+  ("\\.\\(clj\\|cljd\\|edn\\)\\'" . clojure-mode)
+  ("\\.cljs\\'" . clojurescript-mode))
+
+(use-package cider
+  :after clojure-mode
+  :config
+  ;; https://github.com/clojure-emacs/cider/issues/3588
+  (when (string= "powershell" cider-clojure-cli-command)
+    (setq cider-clojure-cli-command "pwsh")))
+
 (use-package clojure-ts-mode
+  :disabled
   :when (and (treesit-available-p) (treesit-ready-p 'clojure 'message))
   :mode
   ("\\.\\(clj\\|edn\\)\\'" . clojure-ts-mode)

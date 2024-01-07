@@ -154,10 +154,6 @@
          ("C-c c d" . evilnc-copy-and-comment-lines)
          ("C-c c p" . evilnc-comment-or-uncomment-paragraphs)))
 
-(use-package editorconfig
-  :hook (prog-mode . editorconfig-mode)
-  :bind ("C-c c E" . editorconfig-apply))
-
 (use-package citre
   :bind (("C-c c a" . citre-ace-peek)
          ("C-c c e" . citre-edit-tags-file-recipe)
@@ -188,7 +184,7 @@
 ;;;; Major modes.
 
 (use-package js
-  :mode ("\\.[mc]js\\'" . js-mode)
+  :mode ("\\.[cm]js\\'" . js-mode)
   :custom (js-indent-level 2))
 
 (use-package python
@@ -198,11 +194,12 @@
   (python-indent-offset 4))
 
 (use-package nxml
-  :mode ("\\.[^.]*proj\\'" . nxml-mode)
-  :mode ("\\.xaml\\'" . nxml-mode)
-  :mode ("\\.p\\(?:list\\|om\\)\\'" . nxml-mode)
-  :mode ("\\.xs\\(?:d\\|lt\\)\\'" . nxml-mode)
-  :mode ("\\.rss\\'" . nxml-mode))
+  :mode
+  ("\\.[^.]*proj\\'" . nxml-mode)
+  ("\\.xaml\\'" . nxml-mode)
+  ("\\.p\\(?:list\\|om\\)\\'" . nxml-mode)
+  ("\\.xs\\(?:d\\|lt\\)\\'" . nxml-mode)
+  ("\\.rss\\'" . nxml-mode))
 
 (use-package tex-mode
   :defer t
