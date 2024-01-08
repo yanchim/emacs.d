@@ -25,8 +25,11 @@
     ;; Swap M-/ and C-M-/.
     :bind (("M-/" . dabbrev-completion)
            ("C-M-/" . dabbrev-expand))
-    :custom
-    (dabbrev-ignored-buffer-regexps '("\\.\\(?:pdf\\|jpe?g\\|png\\)\\'"))))
+    :config
+    (add-to-list 'dabbrev-ignored-buffer-regexps "\\` ")
+    ;; Since 29.1, use `dabbrev-ignored-buffer-regexps' on older.
+    (add-to-list 'dabbrev-ignored-buffer-modes 'pdf-view-mode)
+    (add-to-list 'dabbrev-ignored-buffer-modes 'doc-view-mode)))
 
 (if (display-graphic-p)
     (use-package corfu-popupinfo

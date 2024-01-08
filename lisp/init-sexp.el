@@ -47,7 +47,7 @@ sexp before point and insert output into current position."
 
 (use-package clojure-mode
   :mode
-  ("\\.\\(clj\\|cljd\\|edn\\)\\'" . clojure-mode)
+  ("\\.\\(cljd?\\|edn\\)\\'" . clojure-mode)
   ("\\.cljs\\'" . clojurescript-mode))
 
 (use-package cider
