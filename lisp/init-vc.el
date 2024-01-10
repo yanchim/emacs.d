@@ -23,10 +23,6 @@
                           #'magit-insert-modules
                           #'magit-insert-stashes #'append))
 
-;; Access GIT forges from `magit'.
-(use-package forge
-  :after magit)
-
 (use-package diff-hl
   :hook ((after-init . global-diff-hl-mode)
          (dired-mode . diff-hl-dired-mode))

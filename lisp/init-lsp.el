@@ -16,6 +16,12 @@
          ("C-c l Q" . eglot-shutdown-all)
          ("C-c l r" . eglot-rename)))
 
+(use-package eglot-booster
+  :vc (:url "https://github.com/jdtsmith/eglot-booster" :rev :newest)
+  :when (executable-find "emacs-lsp-booster")
+  :after eglot
+  :config (eglot-booster-mode))
+
 (provide 'init-lsp)
 
 ;;; init-lsp.el ends here

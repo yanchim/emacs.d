@@ -13,9 +13,10 @@
 
 (use-package orderless
   :after vertico
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion))))
+  :init
+  (setq completion-styles '(orderless basic))
+  (setq completion-category-defaults nil)
+  (setq completion-category-overrides '((file (styles basic partial-completion))))
   :config
   (defun my--orderless-regexp (str)
     "Enhance `orderless-regexp' when searching STR."
