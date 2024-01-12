@@ -8,11 +8,13 @@
 ;;; Code:
 
 (use-package ediff
+  :defer t
   :custom
   (ediff-split-window-function #'split-window-horizontally)
   (ediff-window-setup-function #'ediff-setup-windows-plain))
 
 (use-package project
+  :defer t
   :init
   (defun my-project-magit ()
     "Start `magit-status' in the current project."
@@ -43,7 +45,15 @@
                              (my-project-search "Search" ?s)
                              (project-any-command "Other"))))
 
+(use-package tab-bar
+  :defer t
+  :custom
+  ;; Always keep the tab bar hidden.
+  (tab-bar-show nil)
+  (tab-bar-new-tab-choice "*scratch*"))
+
 (use-package zh-lib
+  :defer t
   :vc (:url "https://github.com/dalugm/zh-lib.el" :rev :newest)
   :custom (zh-lib-scheme 'simplified-traditional-quanpin-all))
 
@@ -82,6 +92,7 @@
                  (window-parameters (mode-line-format . none)))))
 
 (use-package tabspaces
+  :vc (:url "https://github.com/dalugm/tabspaces" :rev :newest)
   :init
   (defun my--tabspaces-setup ()
     "Setup for `tabspaces'."
@@ -94,11 +105,6 @@
                            (cons (get-buffer "*Messages*")
                                  (frame-parameter nil 'buffer-list)))))
   :hook (after-init . my--tabspaces-setup)
-  :custom
-  ;; Always keep the tab bar hidden.
-  (tab-bar-show nil)
-  (tabspaces-remove-to-default nil)
-  (tabspaces-initialize-project-with-todo nil)
   :config
   ;; Integrate workspace buffers into `consult-buffer'.
   (with-eval-after-load 'consult
