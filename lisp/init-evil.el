@@ -11,12 +11,7 @@
   :init
   ;; Use Emacs keys in INSERT state.
   (setq evil-disable-insert-state-bindings t)
-  :hook ((after-init . evil-mode)
-         (view-mode . (lambda ()
-                        "Toggle `evil-state' based on current state."
-                        (if (eq evil-state 'normal)
-                            (evil-emacs-state)
-                          (evil-normal-state)))))
+  :hook (after-init . evil-mode)
   :bind (;; Evil leader key bindings.
 ;;;; Evil leader.
          ("<leader><SPC>" . execute-extended-command)
@@ -309,6 +304,7 @@ URL `https://github.com/emacs-evil/evil/issues/511'."
        (add-hook (quote ,(intern (concat mode "-mode-hook")))
                  #'evil-normalize-keymaps)))
 
+  (my--evil-adjust-major-mode-keymap "view")
   (my--evil-adjust-major-mode-keymap "git-timemachine"))
 
 (use-package evil-zh
