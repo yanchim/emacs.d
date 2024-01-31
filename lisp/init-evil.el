@@ -188,7 +188,7 @@
     ;; SPACE as leader.
     (evil-set-leader state (kbd "SPC"))
     ;; Comma as localleader.
-    (evil-set-leader state  "," t))
+    (evil-set-leader state (kbd ",") t))
 
   (defun evil-unimpaired-insert-newline-above (count)
     "Insert COUNT blank line(s) above current line."
