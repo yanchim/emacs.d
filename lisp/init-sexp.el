@@ -71,14 +71,15 @@ sexp before point and insert output into current position."
   :bind ((:map sly-mode-map
                ;; Unbind completion in `sly-mode-map'.
                ("C-c C-i" . nil)
-               ("C-c C-o" . sly)
-               ("C-c C-q" . sly-disconnect))
+               ("C-c C-x C-j" . sly)
+               ("C-c C-x C-q" . sly-disconnect))
          (:map sly-doc-map
                ("C-l" . sly-documentation)))
   :custom (inferior-lisp-program "sbcl"))
 
 (use-package racket-mode
   :bind (:map racket-mode-map
+              ("C-c C-x C-j" . racket-run)
               ("C-c C-x C-x" . racket-xp-mode)
               ("C-c C-x C-e" . racket-eval-last-sexp)))
 
