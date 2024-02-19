@@ -51,7 +51,7 @@ sexp before point and insert output into current position."
   ("\\.cljs\\'" . clojurescript-mode))
 
 (use-package cider
-  :after clojure-mode
+  :after (:any clojure-mode clojure-ts-mode)
   :bind (:map cider-start-map
               ("r" . cider-restart)
               ("C-r" . cider-restart))
@@ -61,7 +61,6 @@ sexp before point and insert output into current position."
     (setq cider-clojure-cli-command "pwsh")))
 
 (use-package clojure-ts-mode
-  :disabled
   :when (and (treesit-available-p) (treesit-ready-p 'clojure 'message))
   :mode
   ("\\.\\(clj\\|edn\\)\\'" . clojure-ts-mode)
