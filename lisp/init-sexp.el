@@ -50,6 +50,13 @@ sexp before point and insert output into current position."
   ("\\.\\(cljd?\\|edn\\)\\'" . clojure-mode)
   ("\\.cljs\\'" . clojurescript-mode))
 
+(use-package clojure-ts-mode
+  :when (and (treesit-available-p) (treesit-ready-p 'clojure 'message))
+  :mode
+  ("\\.\\(clj\\|edn\\)\\'" . clojure-ts-mode)
+  ("\\.cljs\\'" . clojure-ts-clojurescript-mode)
+  ("\\.cljd\\'" . clojure-ts-clojuredart-mode))
+
 (use-package cider
   :after (:any clojure-mode clojure-ts-mode)
   :bind (:map cider-start-map
@@ -59,13 +66,6 @@ sexp before point and insert output into current position."
   ;; https://github.com/clojure-emacs/cider/issues/3588
   (when (string= "powershell" cider-clojure-cli-command)
     (setq cider-clojure-cli-command "pwsh")))
-
-(use-package clojure-ts-mode
-  :when (and (treesit-available-p) (treesit-ready-p 'clojure 'message))
-  :mode
-  ("\\.\\(clj\\|edn\\)\\'" . clojure-ts-mode)
-  ("\\.cljs\\'" . clojurescript-ts-mode)
-  ("\\.cljd\\'" . clojure-dart-ts-mode))
 
 (use-package sly
   :bind ((:map sly-mode-map
@@ -82,6 +82,9 @@ sexp before point and insert output into current position."
               ("C-c C-x C-j" . racket-run)
               ("C-c C-x C-x" . racket-xp-mode)
               ("C-c C-x C-e" . racket-eval-last-sexp)))
+
+(use-package fennel-mode
+  :mode ("\\.fnl\\'" . fennel-mode))
 
 (provide 'init-sexp)
 
