@@ -31,7 +31,7 @@
           (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
           (json "https://github.com/tree-sitter/tree-sitter-json")
           (kotlin "https://github.com/fwcd/tree-sitter-kotlin")
-          (lua "https://github.com/MunifTanjim/tree-sitter-lua")
+          (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
           (python "https://github.com/tree-sitter/tree-sitter-python")
           (racket "https://github.com/6cdh/tree-sitter-racket")
           (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
