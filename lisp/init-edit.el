@@ -16,12 +16,7 @@
 (use-package project
   :defer t
   :init
-  (defun my-project-magit ()
-    "Start `magit-status' in the current project."
-    (interactive)
-    (magit-status (project-root (project-current t))))
-
-  (defun my-project-search ()
+  (defun my-project-find-regexp ()
     "Start `consult-ripgrep' or `consult-grep' in the current project."
     (interactive)
     (let ((root (project-root (project-current t))))
@@ -29,21 +24,18 @@
           (consult-ripgrep root)
         (consult-grep root))))
 
-  (defun my-project-find ()
+  (defun my-project-find-file ()
     "Start `consult-fd' or `consult-find' in the current project."
     (interactive)
     (let ((root (project-root (project-current t))))
       (if (or (executable-find "fd") (executable-find "fdfind"))
           (consult-fd root)
         (consult-find root))))
-  :custom
-  (project-switch-commands '((project-find-file "Find file" ?F)
-                             (project-find-dir "Find directory")
-                             (project-eshell "Eshell")
-                             (my-project-magit "Magit status" ?g)
-                             (my-project-find "Find" ?f)
-                             (my-project-search "Search" ?s)
-                             (project-any-command "Other"))))
+  :config
+  (advice-add #'project-find-regexp :override #'my-project-find-regexp)
+  (advice-add #'project-find-file :override #'my-project-find-file)
+  (keymap-set project-prefix-map "m" #'magit-project-status)
+  (add-to-list 'project-switch-commands '(magit-project-status "Magit") t))
 
 (use-package tab-bar
   :defer t
@@ -93,18 +85,7 @@
 
 (use-package tabspaces
   :vc (:url "https://github.com/dalugm/tabspaces" :rev :newest)
-  :init
-  (defun my--tabspaces-setup ()
-    "Setup for `tabspaces'."
-    (tabspaces-mode +1)
-    (tab-bar-rename-tab "default")
-    ;; Move `*Messages*' to frame's `buffer-list'.
-    (when (get-buffer "*Messages*")
-      (set-frame-parameter nil
-                           'buffer-list
-                           (cons (get-buffer "*Messages*")
-                                 (frame-parameter nil 'buffer-list)))))
-  :hook (after-init . my--tabspaces-setup)
+  :hook (after-init . tabspaces-mode)
   :config
   ;; Integrate workspace buffers into `consult-buffer'.
   (with-eval-after-load 'consult
@@ -191,30 +172,22 @@
                ("C-a" . avy-isearch)
                ("C-'" . avy-isearch)))
   :custom (avy-style 'at-full)
-  :config
+  :init
   (defun my-avy-copy-thing-at-point ()
     "Copy thing at point using `avy'."
     (interactive)
     (save-excursion
       (avy-goto-word-or-subword-1)
-      (let ((thing (cl-case (read-char
-                             (format
-                              "Copy thing at point (%s: word %s: symbol %s: list %s: url): "
-                              (propertize "w" 'face 'error)
-                              (propertize "s" 'face 'error)
-                              (propertize "l" 'face 'error)
-                              (propertize "u" 'face 'error)))
-                     (?w 'word)
-                     (?s 'symbol)
-                     (?l 'list)
-                     (?u 'url))))
-        (kill-new (thing-at-point thing))
-        (message "%s copied." thing)))))
-
-(use-package avy-zh
-  :vc (:url "https://github.com/dalugm/avy-zh" :rev :newest)
-  :after avy
-  :config (global-avy-zh-mode +1))
+      (kill-new (thing-at-point
+                 (cl-case (read-char "w: word, s: symbol, l: list, u: url")
+                   (?w 'word)
+                   (?s 'symbol)
+                   (?l 'list)
+                   (?u 'url))))))
+  :config
+  (use-package avy-zh
+    :vc (:url "https://github.com/dalugm/avy-zh" :rev :newest)
+    :config (avy-zh-mode +1)))
 
 (use-package expreg
   :bind (("C-=" . expreg-expand)

@@ -9,6 +9,8 @@
 
 (use-package standard-themes)
 
+(use-package ef-themes)
+
 (use-package doom-themes)
 
 (use-package sinolor-themes

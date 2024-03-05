@@ -297,21 +297,22 @@ URL `http://blog.binchen.org/posts/code-faster-by-extending-emacs-evil-text-obje
   (defmacro my--evil-adjust-major-mode-keymap (mode &optional replace)
     "Use MODE\\='s keymap in `evil-normal-state' after MODE loaded.
 
-If MODE provides a feature REPLACE, to change the keymap use REPLACE instead.
-URL `https://github.com/emacs-evil/evil/issues/511'."
+MODE's feature might be provided as REPLACE, in that situation, use
+REPLACE instead.  URL `https://github.com/emacs-evil/evil/issues/511'."
     `(with-eval-after-load (quote ,(if replace replace mode))
        (evil-make-overriding-map ,(intern (concat mode "-mode-map")) 'normal)
        (add-hook (quote ,(intern (concat mode "-mode-hook")))
                  #'evil-normalize-keymaps)))
 
-  (my--evil-adjust-major-mode-keymap "view")
-  (my--evil-adjust-major-mode-keymap "git-timemachine"))
+  (my--evil-adjust-major-mode-keymap "git-timemachine")
+  (my--evil-adjust-major-mode-keymap "view"))
 
 (use-package evil-zh
   :vc (:url "https://github.com/dalugm/evil-zh" :rev :newest)
-  :config (global-evil-zh-mode +1))
+  :hook (evil-mode . evil-zh-mode))
 
 (use-package evil-surround
+  :after evil
   :config
   (global-evil-surround-mode +1)
 
@@ -376,6 +377,7 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
                   (append alist evil-surround-pairs-alist))))
 
 (use-package evil-nerd-commenter
+  :after evil
   :bind ((:map evil-normal-state-map
                ("gc" . evilnc-comment-operator)
                ("gp" . evilnc-copy-and-comment-operator)

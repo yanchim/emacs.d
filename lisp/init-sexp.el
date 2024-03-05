@@ -69,8 +69,6 @@ sexp before point and insert output into current position."
 
 (use-package sly
   :bind ((:map sly-mode-map
-               ;; Unbind completion in `sly-mode-map'.
-               ("C-c C-i" . nil)
                ("C-c C-x C-j" . sly)
                ("C-c C-x C-q" . sly-disconnect))
          (:map sly-doc-map
