@@ -130,28 +130,6 @@
   (winum-format "%s ")
   (winum-mode-line-position 0))
 
-(use-package color-rg
-  :vc (:url "https://github.com/manateelazycat/color-rg" :rev :newest)
-  :custom
-  (color-rg-recenter-match-line t)
-  (color-rg-mac-load-path-from-shell nil)
-  :bind
-  (("C-c s s" . color-rg-search-input)
-   ("C-c s c" . color-rg-search-input-in-current-file)
-   ("C-c s C" . color-rg-search-symbol-in-current-file)
-   ("C-c s S" . color-rg-customized-search)
-   ("C-c s p" . color-rg-search-project)
-   ("C-c s M-n" . color-rg-search-symbol)
-   (:map isearch-mode-map
-         ("M-s M-s" . isearch-toggle-color-rg))
-   ;; Vim-like.
-   (:map color-rg-mode-map
-         ("h" . color-rg-jump-prev-file)
-         ("l" . color-rg-jump-next-file))
-   (:map color-rg-mode-edit-map
-         ("C-c C-h" . color-rg-jump-prev-file)
-         ("C-c C-l" . color-rg-jump-next-file))))
-
 ;; Jump between texts.
 ;; https://emacsredux.com/blog/2015/07/19/ace-jump-mode-is-dead-long-live-avy
 (use-package avy

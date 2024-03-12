@@ -2,7 +2,7 @@
 
 ;;; Commentary:
 ;;
-;; Show necessary messages only.
+;; Show necessary messages only on modeline.
 ;;
 
 ;;; Code:
@@ -47,16 +47,6 @@
   "Show major mode only.")
 (put 'my--mode-line-modes 'risky-local-variable t)
 
-(defvar my--mode-line-encoding
-  '(:eval
-    (let ((sys (coding-system-plist buffer-file-coding-system)))
-      (if (memq (plist-get sys :category)
-                '(coding-category-undecided coding-category-utf-8))
-          "UTF-8"
-        (upcase (symbol-name (plist-get sys :name))))))
-  "Display file encoding.")
-(put 'my--mode-line-encoding 'risky-local-variable t)
-
 ;;;; Setup.
 
 (defvar-local my-mode-line-format-left nil
@@ -87,8 +77,6 @@
                 " "
                 my--mode-line-modes
                 (vc-mode vc-mode)
-                " "
-                my--mode-line-encoding
                 " "))
 
 (defvar my-mode-line-format

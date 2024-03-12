@@ -2,7 +2,7 @@
 ;; elements are described in detail in the docstring of
 ;; `tempo-define-template' in `tempo'.
 
-c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode
+c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 
 (class "class " p " {" n> r> n "}")
 (dow "do {" n> p n "} while (" p ")" >)
@@ -11,8 +11,6 @@ c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode js-mode js-ts-mode 
 (switch "switch (" p ") {" n> r> n "}" >)
 (ter "(" (p "cond") ") ? " (p "then") " : " (p "else") ";")
 (while "while(" p ") {" n> r> n "}" >)
-
-(if "if (" p ") {" n> r> n "}")
 
 c-mode
 
@@ -44,7 +42,6 @@ clojure-mode clojure-ts-mode
 (letfn "(letfn [" p "]" n> r> ")")
 (loop "(loop [" p "]" n> r> ")")
 (macro "(defmacro " p "\n  \"" (p "doc") "\"\n  [" p "]" n> r> ")")
-(main "(defn -main [& args]" n> r> ")")
 (map "(map " p " " p ")")
 (mapi "(map-indexed " p " " p ")")
 (ns "(ns " r ")")
@@ -58,6 +55,10 @@ clojure-mode clojure-ts-mode
 (use "(:use [" p "])")
 (whenn "(when-not " p n> r> ")")
 (whenl "(when-let [" p "]" n> r> ")")
+
+clojure-mode clojure-ts-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
+
+(main "(defn -main [& args]" n> r> ")")
 
 clojure-mode clojure-ts-mode emacs-lisp-mode fennel-mode lisp-mode racket-mode ;; Specify multiple modes
 
@@ -241,11 +242,17 @@ elixir-mode elixir-ts-mode
 
 emacs-lisp-mode lisp-mode
 
+(cond "(cond" n "(" q "))" >)
 (defun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
 (ifl "(if-let (" p ")" n> r> ")")
 (lambda "(lambda (" p ")" n> r> ")")
 (let "(let (" p ")" n> r> ")")
 (lets "(let* (" p ")" n> r> ")")
+(local "(defvar-local " r ")")
+(param "(defparameter " r ")")
+(progn "(progn" n> r> ")")
+(setf "(setf " r ")")
+(var "(defvar " r ")")
 (whenl "(when-let (" p ")" n> r> ")")
 (whilel "(while-let (" p ")" n> r> ")")
 
@@ -255,24 +262,20 @@ emacs-lisp-mode
 (andl "(and-let* (" p ")" n> r> ")")
 (autoload ";;;###autoload")
 (command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive" p ")" n> r> ")")
-(cond "(cond" n "(" q "))" >)
 (const "(defconst " p "\n  \"" p "\")")
 (custom "(defcustom " p "\n  \"" p "\"" n> ":type '" p ")")
 (dolist "(dolist (" p ")" n> r> ")")
 (dotimes "(dotimes (" p ")" n> r> ")")
 (face "(defface " p " '((t :inherit " p "))\n  \"" p "\")")
 (group "(defgroup " p " nil\n  \"" p "\"" n> ":group '" p n> ":prefix \"" p "-\")")
-(local "(defvar-local " p "\n  \"" p "\")")
 (loop "(cl-loop for " p " in " p " do" n> r> ")")
 (m "(message \"" r "\")")
 (macro "(defmacro " p " (" p ")\n  \"" p "\"" n> r> ")")
 (pcase "(pcase " (p "scrutinee") n "(" q "))" >)
 (pcasel "(pcase-let (" p ")" n> r> ")")
 (pcasels "(pcase-let* (" p ")" n> r> ")")
-(progn "(progn" n> r> ")")
 (pt "(point)")
 (rec "(letrec (" p ")" n> r> ")")
-(var "(defvar " p "\n  \"" p "\")")
 (advice "(defun " (p "adv" name) " (&rest app)" n> p n> "(apply app))" n>
         "(advice-add #'" (p "fun") " " (p ":around") " #'" (s name) ")")
 (header ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
@@ -350,7 +353,7 @@ js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 (cer "console.error(" r ");")
 (cin "console.info(" r ");")
 (clg "console.log(" r ");")
-(clf "console.log('" (p "var" var) "', " var ");")
+(clf "console.log('" (p "var" var) ": ', " var ");")
 (cli "console.log(`" r "`);")
 (cwn "console.warn(" r ");")
 (doc "/**" n " * " r n " */")
@@ -395,6 +398,19 @@ latex-mode
 (trivlist "\\begin{trivlist}\n" r> n> "\\end{trivlist}")
 (verbatim "\\begin{verbatim}\n" r> n> "\\end{verbatim}")
 (verbatimm "\\begin{verbatim*}\n" r> n> "\\end{verbatim*}")
+
+markdown-mode
+
+(toc (let ((start "# Table of Contents")
+           (end "<!-- :TOC: -->"))
+       (concat start
+               (make-string
+                (max (- fill-column
+                        (length start)
+                        (length end))
+                     1)
+                ? )
+               end)))
 
 org-mode
 
