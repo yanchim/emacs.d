@@ -2,14 +2,14 @@
 ;; elements are described in detail in the docstring of
 ;; `tempo-define-template' in `tempo'.
 
-c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
+c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 
 (class "class " p " {" n> r> n "}")
 (dow "do {" n> p n "} while (" p ")" >)
 (for "for (" p ") {" n> r> n "}" >)
 (if "if (" p ") {" n> r> n "}" >)
 (switch "switch (" p ") {" n> r> n "}" >)
-(ter "(" (p "cond") ") ? " (p "then") " : " (p "else") ";")
+(ter "(" (p "pred") ") ? " (p "then") " : " (p "else") ";")
 (while "while(" p ") {" n> r> n "}" >)
 
 c-mode
@@ -122,7 +122,8 @@ dart-mode dart-ts-mode
 
 dart-mode dart-ts-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
-(arpc "@riverpod\nclass " (p "name" name) " extends _$" name " {" n>
+(arpc "@riverpod" n
+      "class " (p "name" name) " extends _$" name " {" n>
       "@override" n>
       "Future<" (p "dynamic") "> build() async => " (p "throw UnimplementedError()") ";" n
       "}")
@@ -342,9 +343,11 @@ heex-mode heex-ts-mode html-mode html-ts-mode nxml-mode web-mode
      "</body>" > n
      "</html>" n)
 
-java-mode
+java-mode java-ts-mode
 
-(class "public class " (p (file-name-base (or (buffer-file-name) (buffer-name)))) " {" n> r> n "}")
+(p "System.out.print(" p ");")
+(pf "System.out.printf(" p ");")
+(pl "System.out.println(" p ");")
 
 js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 
@@ -523,7 +526,7 @@ sh-mode bash-ts-mode
 (case "case " (p "cond") " in" n> p ")" n> (p "expr") n> ";;" n> r> n "esac")
 (for "for " p " in " p "; do" n> r> n "done")
 (fn "function " p " {" n> r> n "}")
-(if "if " (p "cond") "; then" n> r> n "fi")
+(if "if " (p "pred") "; then" n> r> n "fi")
 (select "select " p " in " p "; do" n> r> n "done")
 (until "until " p "; do" n> r> n "done")
 (while "while " p "; do" n> r> n "done")
