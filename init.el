@@ -73,7 +73,6 @@
 (require 'init-evil)
 (require 'init-markup)
 (require 'init-snippet)
-(require 'init-chinese)
 
 ;; Program.
 (require 'init-sexp)
