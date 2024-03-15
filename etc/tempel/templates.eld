@@ -28,6 +28,7 @@ c-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
 clojure-mode clojure-ts-mode
 
+(cmt "(comment " n> r> ")")
 (cond "(cond" n> "(" p ") " p n> ":else " r ")")
 (condp "(condp " (p "pred") " " (p "expr") n> r> ")")
 (def "(def " r ")")
@@ -103,8 +104,8 @@ dart-mode dart-ts-mode
 (dp "@override" n> "void dispose() {" n> r> n> "super.dispose();" n "}" >)
 (fzj "factory " (p "name" name) ".fromJson(Map<String, dynamic> json) => _$" name "FromJson(json);")
 (is "@override" n> "void initState() {" n> "super.initState();" n> r> n "}" >)
-(p "print(" p ")")
-(pv "print('" (p "var" var) ": $" var "')")
+(p "print(" r ")")
+(pv "print('" (r "var" var) ": $" var "')")
 (ss "setState(() {" n> r> n "});" >)
 (try "try {" n> r> n
      "} catch (e, s) { " > n>
@@ -262,7 +263,7 @@ emacs-lisp-mode
 (alias "(defalias '" p " '" p ")")
 (andl "(and-let* (" p ")" n> r> ")")
 (autoload ";;;###autoload")
-(command "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive" p ")" n> r> ")")
+(cmd "(defun " p " (" p ")\n  \"" p "\"" n> "(interactive" p ")" n> r> ")")
 (const "(defconst " p "\n  \"" p "\")")
 (custom "(defcustom " p "\n  \"" p "\"" n> ":type '" p ")")
 (dolist "(dolist (" p ")" n> r> ")")

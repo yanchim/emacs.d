@@ -39,6 +39,7 @@
           (toml "https://github.com/tree-sitter/tree-sitter-toml")
           (tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")
           (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
+          (typst "https://github.com/uben0/tree-sitter-typst")
           (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
   :custom
   (major-mode-remap-alist

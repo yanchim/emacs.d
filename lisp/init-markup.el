@@ -38,6 +38,13 @@ Show the heading too, if it is currently invisible."
                                (point)))
                            nil))))
 
+(use-package typst-ts-mode
+  :vc (:url "https://git.sr.ht/~meow_king/typst-ts-mode" :rev :newest)
+  :defer t
+  :custom
+  ;; Typst will open the compiled file automatically.
+  (typst-ts-mode-watch-options "--open"))
+
 (use-package markdown-mode
   :mode ("README\\.md\\'" . gfm-mode)
   :bind (:map markdown-mode-command-map
