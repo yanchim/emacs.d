@@ -2,6 +2,10 @@
 ;; elements are described in detail in the docstring of
 ;; `tempo-define-template' in `tempo'.
 
+c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode 
+
+(fn (p "void") " " (p "name") "(" p ") {" n> r> n "}" >)
+
 c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 
 (class "class " p " {" n> r> n "}")
@@ -91,6 +95,7 @@ clojure-mode clojure-ts-mode fennel-mode
 
 dart-mode dart-ts-mode
 
+(afn "Future<" (p "void") "> " (p "name") "(" p ") async {" n> r> n "}" >)
 (build "@override" n>
        "Widget build(BuildContext context) {" n>
        "return const Placeholder(" n>
@@ -105,7 +110,7 @@ dart-mode dart-ts-mode
 (fzj "factory " (p "name" name) ".fromJson(Map<String, dynamic> json) => _$" name "FromJson(json);")
 (is "@override" n> "void initState() {" n> "super.initState();" n> r> n "}" >)
 (p "print(" r ")")
-(pv "print('" (r "var" var) ": $" var "')")
+(pv "print('" (r "var" var) ": ${" var "}')")
 (ss "setState(() {" n> r> n "});" >)
 (try "try {" n> r> n
      "} catch (e, s) { " > n>

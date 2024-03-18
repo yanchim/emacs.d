@@ -20,7 +20,11 @@
   :vc (:url "https://github.com/jdtsmith/eglot-booster" :rev :newest)
   :when (executable-find "emacs-lsp-booster")
   :after eglot
-  :config (eglot-booster-mode))
+  :config (eglot-booster-mode +1))
+
+(use-package eglot-tempel
+  :after (eglot tempel)
+  :config (eglot-tempel-mode +1))
 
 (provide 'init-lsp)
 
