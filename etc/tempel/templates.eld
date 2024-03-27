@@ -2,7 +2,7 @@
 ;; elements are described in detail in the docstring of
 ;; `tempo-define-template' in `tempo'.
 
-c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode 
+c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode
 
 (fn (p "void") " " (p "name") "(" p ") {" n> r> n "}" >)
 
@@ -340,8 +340,8 @@ heex-mode heex-ts-mode html-mode html-ts-mode nxml-mode web-mode
 (tpl "<!DOCTYPE html>" n
      "<html lang=\"en\">" n
      "<head>" > n
-     "<meta content=\"text/html; charset=utf-8\" http-equiv=\"Content-Type\"" > n
-     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"" > n
+     "<meta http-equiv=\"content-type\" content=\"text/html; charset=UTF-8\" />" > n
+     "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />" > n
      "<title>" (r "HTML5 template") "</title>" > n
      "</head>" > n
      "<body>" > n
@@ -407,6 +407,11 @@ latex-mode
 (trivlist "\\begin{trivlist}\n" r> n> "\\end{trivlist}")
 (verbatim "\\begin{verbatim}\n" r> n> "\\end{verbatim}")
 (verbatimm "\\begin{verbatim*}\n" r> n> "\\end{verbatim*}")
+
+lisp-mode
+
+(export "(:export " r ")")
+(use "(:use " r ")")
 
 markdown-mode
 

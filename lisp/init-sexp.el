@@ -70,6 +70,7 @@ sexp before point and insert output into current position."
 (use-package sly
   :bind ((:map sly-mode-map
                ("C-c C-x C-j" . sly)
+               ("C-c C-x C-c" . sly-connect)
                ("C-c C-x C-q" . sly-disconnect))
          (:map sly-doc-map
                ("C-l" . sly-documentation)))

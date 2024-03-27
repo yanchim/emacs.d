@@ -16,7 +16,10 @@
 ;;;; Evil leader.
          ("<leader><SPC>" . execute-extended-command)
          ("<leader>;" . eval-expression)
+;;;; Evil leader code.
          ("<leader>cc" . compile)
+         ("<leader>cf" . apheleia-format-buffer)
+         ("<leader>cF" . apheleia-goto-error)
          ("<leader>cp" . project-compile)
          ("<leader>cr" . recompile)
 ;;;;; Evil leader file.
