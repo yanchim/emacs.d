@@ -33,6 +33,7 @@
 ;;;; Use-package.
 
 (setq use-package-always-ensure t)
+(setq use-package-vc-prefer-newest t)
 ;; It must be set before loading `use-package'.
 (setq use-package-enable-imenu-support t)
 

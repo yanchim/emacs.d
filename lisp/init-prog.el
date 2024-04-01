@@ -125,7 +125,7 @@
   :hook ((prog-mode text-mode) . subword-mode))
 
 (use-package eldoc-box
-  :vc (:url "https://github.com/dalugm/eldoc-box" :rev :newest)
+  :vc (:url "https://github.com/dalugm/eldoc-box")
   :when (display-graphic-p)
   :hook (eldoc-mode . eldoc-box-hover-mode)
   :custom
@@ -210,7 +210,7 @@
 
 (use-package dart-ts-mode
   :when (and (treesit-available-p) (treesit-ready-p 'dart 'message))
-  :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode" :rev :newest)
+  :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode")
   :mode "\\.dart\\'")
 
 (use-package kotlin-ts-mode

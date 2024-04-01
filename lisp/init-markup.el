@@ -39,7 +39,7 @@ Show the heading too, if it is currently invisible."
                            nil))))
 
 (use-package typst-ts-mode
-  :vc (:url "https://git.sr.ht/~meow_king/typst-ts-mode" :rev :newest)
+  :vc (:url "https://git.sr.ht/~meow_king/typst-ts-mode")
   :defer t
   :custom
   ;; Typst will open the compiled file automatically.

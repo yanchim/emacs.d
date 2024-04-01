@@ -8,7 +8,7 @@
 ;;; Code:
 
 (use-package emmet-mode
-  :vc (:url "https://github.com/dalugm/emmet-mode" :rev :newest)
+  :vc (:url "https://github.com/dalugm/emmet-mode")
   :hook (css-mode
          heex-ts-mode
          html-mode

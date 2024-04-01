@@ -37,11 +37,12 @@ clojure-mode clojure-ts-mode
 (condp "(condp " (p "pred") " " (p "expr") n> r> ")")
 (def "(def " r ")")
 (defn "(defn " p "\n  \"" (p "doc") "\"\n  [" p "]" n> r> ")")
+(defn- "(defn- " p "\n  \"" (p "doc") "\"\n  [" p "]" n> r> ")")
 (doall "(doall" n> r> ")")
 (dorun "(dorun" n> r> ")")
 (doseq "(doseq [" p "]" n> r> ")")
 (dotimes "(dotimes [" p "]" n> r> ")")
-(fn "(fn [" p "] " p ")")
+(fn "(fn [" p "] " r ")")
 (ifl "(if-let [" p "]" n> r> ")")
 (import "(:import (" p "))")
 (letfn "(letfn [" p "]" n> r> ")")
@@ -49,7 +50,9 @@ clojure-mode clojure-ts-mode
 (macro "(defmacro " p "\n  \"" (p "doc") "\"\n  [" p "]" n> r> ")")
 (map "(map " p " " p ")")
 (mapi "(map-indexed " p " " p ")")
+(mdoc "^{:doc \"" r "\"}")
 (ns "(ns " r ")")
+(once "(defonce " r ")")
 (pl "(println " r ")")
 (prn "(prn " r ")")
 (record "(defrecord " p " [" p "]" n> r> ")")
@@ -58,8 +61,8 @@ clojure-mode clojure-ts-mode
 (try "(try" n> p n> "(catch " (p "Exception") " e" n> r> "))")
 (type "(deftype " p " [" p "]" n> r> ")")
 (use "(:use [" p "])")
-(whenn "(when-not " p n> r> ")")
 (whenl "(when-let [" p "]" n> r> ")")
+(whenn "(when-not " p n> r> ")")
 
 clojure-mode clojure-ts-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
@@ -79,13 +82,6 @@ clojure-mode clojure-ts-mode fennel-mode
 (-> "(-> " r ")")
 (->> "(->> " r ")")
 (case "(case " (p "val") n> r> ")")
-(collect "(collect [" p "]" n> r> ")")
-(icollect "(icollect [" p "]" n> r> ")")
-(ipairs "(ipairs " r ")")
-(pairs "(pairs " r ")")
-(tin "(table.insert " r ")")
-(trm "(table.remove " r ")")
-(tset "(tset " r ")")
 (do "(do" n> r> ")")
 (doto "(doto " p n> r> ")")
 (for "(for [" p "]" n> r> ")")
@@ -305,13 +301,20 @@ eshell-mode
 
 fennel-mode
 
+(collect "(collect [" p "]" n> r> ")")
 (each "(each [" p "]" n> r> ")")
 (fn "(fn " (p "name") " [" p "]" n> "\"" (p "doc") "\"" n> r> ")")
+(icollect "(icollect [" p "]" n> r> ")")
+(ipairs "(ipairs " r ")")
 (lambda "(lambda " (p "name") " [" p "]" n> r> ")")
 (local "(local " r ")")
 (match "(match " p n> r> ")")
+(pairs "(pairs " r ")")
 (require "(require :" r ")")
 (set "(set " r ")")
+(tin "(table.insert " r ")")
+(trm "(table.remove " r ")")
+(tset "(tset " r ")")
 (var "(var " r ")")
 
 fundamental-mode ;; Available everywhere
@@ -347,7 +350,7 @@ heex-mode heex-ts-mode html-mode html-ts-mode nxml-mode web-mode
      "<body>" > n
      "<div id=\"app\"></div>" > n
      "</body>" > n
-     "</html>" n)
+     "</html>")
 
 java-mode java-ts-mode
 
@@ -490,46 +493,60 @@ rst-mode
 
 rust-mode rust-ts-mode
 
+(afn "async " (i fn))
+(afnr "async " (i fnr))
+(afns "async " (i fns))
+(afnw "async " (i fnw))
 (allow "#[allow(" (p "lint") ")]")
 (allow! "#![allow(" (p "lint") ")]")
+(anfn "|" (p "arg") "| {" n> r> n "}" >)
 (asrt "assert!(" (p "pred") ")")
 (aseq "assert_eq!(" (p "expected") ", " (p "actual") ");")
 (case (p "pattern") " => " (p "expr") ",")
 (cfg "#[cfg(" (p "opt") ")]")
 (cfgv "#[cfg(" (p "opt") " = \"" (p "val") "\")]")
+(d "dbg!(" r ")")
 (deny "#[deny(" (p "lint") ")]")
 (deny! "#![deny(" (p "lint") ")]")
 (derive "#[derive(" (p "Trait") ")]")
-(enum "enum " p " {" n> r> n "}")
 (ep "eprint!(" r ");")
 (epl "eprintln!(" r ");")
-(fn "fn " (p "name") "(" p ") {" n> r> n "}")
-(fnc "|" (p "arg") "| {" n> r> n "}")
-(fns "fn " (p "name") "(&self) {" n> r> n "}")
-(fnw "fn " (p "name") "<" p ">(" p ") where " p " {" n> r> n "}")
-(for "for " p " in " p " {" n> r> n "}")
+(fn "fn " (p "name") "(" p ") {" n> r> n "}" >)
+(fnr "fn " (p "name") "(" p ") -> " p " {" n> r> n "}" >)
+(fns "fn " (p "name") "(&self" p ") {" n> r> n "}" >)
+(fnw "fn " (p "name") "<" p ">(" p ") where " p " {" n> r> n "}" >)
+(for "for " p " in " p " {" n> r> n "}" >)
 (if "if " p " {" n> r> n "}" >)
 (ifl "if let " (p "pattern") " = " (p "expr") " {" n> r> n "}" >)
-(impl "impl " p " {" n> r> n "}")
-(implf "impl " p " for " p " {" n> r> n "}")
 (loop "loop {" n> r> n "}" >)
-(macro "macro_rules! " p " {" n> r> n "}")
-(main "fn main() {" n> r> n "}")
 (match "match " (p "expr") " {" n> r> n "}" >)
 (pfn "pub " (i fn))
+(pfnr "pub " (i fnr))
 (pfns "pub " (i fns))
 (pfnw "pub " (i fnw))
 (p "print!(" r ");")
 (pl "println!(" r ");")
 (spawn "spawn(proc() {" n> r> n "});" >)
-(struct "struct " p " {" n> r> n "}")
 (test "#[test]" n (i fn))
-(trait "trait " p " {" n> r> n "}")
-(union "union " p " {" n> r> n "}")
 (warn "#[warn(" (p "lint") ")]")
 (warn! "#![warn(" (p "lint") ")]")
 (while "while " p " {" n> r> n "}" >)
 (whilel "while let " (p "pattern") " = " (p "expr") " {" n> r> n "}" >)
+
+rust-mode rust-ts-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
+
+(display "impl Display for " p " {" n>
+         "fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {" n>
+         "write!(f, \"" r "\")" n> "}" n
+         "}" >)
+(enum "enum " p " {" n> r> n "}")
+(impl "impl " p " {" n> r> n "}")
+(implf "impl " p " for " p " {" n> r> n "}")
+(main "fn main() {" n> r> n "}" >)
+(macro "macro_rules! " p " {" n> r> n "}")
+(struct "struct " p " {" n> r> n "}")
+(trait "trait " p " {" n> r> n "}")
+(union "union " p " {" n> r> n "}")
 
 sh-mode bash-ts-mode
 

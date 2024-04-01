@@ -117,7 +117,7 @@ access from `emacsclient'."
           (separedit-abort))))))
 
 (use-package xiaoshuo-mode
-  :vc (:url "https://github.com/dalugm/xiaoshuo-mode" :rev :newest)
+  :vc (:url "https://github.com/dalugm/xiaoshuo-mode")
   :bind ("C-c t x" . xiaoshuo-mode))
 
 (provide 'init-misc)

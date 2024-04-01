@@ -46,7 +46,7 @@
 
 (use-package zh-lib
   :defer t
-  :vc (:url "https://github.com/dalugm/zh-lib.el" :rev :newest)
+  :vc (:url "https://github.com/dalugm/zh-lib.el")
   :custom (zh-lib-scheme 'simplified-traditional-quanpin-all))
 
 (use-package marginalia
@@ -84,7 +84,7 @@
                  (window-parameters (mode-line-format . none)))))
 
 (use-package tabspaces
-  :vc (:url "https://github.com/dalugm/tabspaces" :rev :newest)
+  :vc (:url "https://github.com/dalugm/tabspaces")
   :hook (after-init . tabspaces-mode)
   :config
   ;; Integrate workspace buffers into `consult-buffer'.
@@ -164,7 +164,7 @@
                    (?u 'url))))))
   :config
   (use-package avy-zh
-    :vc (:url "https://github.com/dalugm/avy-zh" :rev :newest)
+    :vc (:url "https://github.com/dalugm/avy-zh")
     :config (avy-zh-mode +1)))
 
 (use-package expreg

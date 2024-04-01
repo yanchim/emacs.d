@@ -311,7 +311,7 @@ REPLACE instead.  URL `https://github.com/emacs-evil/evil/issues/511'."
   (my--evil-adjust-major-mode-keymap "view"))
 
 (use-package evil-zh
-  :vc (:url "https://github.com/dalugm/evil-zh" :rev :newest)
+  :vc (:url "https://github.com/dalugm/evil-zh")
   :hook (evil-mode . evil-zh-mode))
 
 (use-package evil-surround

@@ -26,7 +26,7 @@
 (use-package zenburn-theme)
 
 (use-package sinolor-themes
-  :vc (:url "https://github.com/dalugm/sinolor-themes" :rev :newest))
+  :vc (:url "https://github.com/dalugm/sinolor-themes"))
 
 (provide 'init-theme)
 

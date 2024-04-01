@@ -97,22 +97,23 @@
 
 ;;;; Misc
 
-;; ;; If you want to customize time format, read document of
-;; ;; `format-time-string' and customize `display-time-format'.
-;; (setq display-time-format "%a %b %e")
-
 ;; Unify the eol mnemonics for all systems.
 (setq eol-mnemonic-unix ":")
 (setq eol-mnemonic-mac "/")
 (setq eol-mnemonic-dos "\\")
+
+;; ;; If you want to customize time format, read document of
+;; ;; `format-time-string' and customize `display-time-format'.
+;; (setq display-time-format "%a %b %e")
 
 (setq system-time-locale "C")
 (setq display-time-24hr-format t)
 (setq display-time-day-and-date t)
 ;; Do NOT display the load average.
 (setq display-time-default-load-average nil)
-;; Show date in mode-line.
-(display-time)
+
+;; ;; Show date in mode-line.
+;; (display-time-mode +1)
 
 ;; Make the position number update correctly in all cases.
 (line-number-mode +1)

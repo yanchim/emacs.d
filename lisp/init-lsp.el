@@ -17,7 +17,7 @@
          ("C-c l r" . eglot-rename)))
 
 (use-package eglot-booster
-  :vc (:url "https://github.com/jdtsmith/eglot-booster" :rev :newest)
+  :vc (:url "https://github.com/jdtsmith/eglot-booster")
   :when (executable-find "emacs-lsp-booster")
   :after eglot
   :config (eglot-booster-mode +1))
