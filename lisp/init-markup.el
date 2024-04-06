@@ -21,7 +21,7 @@
   (defun my-valign-fancy-bar ()
     "Toggle valign fancy bar."
     (interactive)
-    (setq valign-fancy-bar (not valign-fancy-bar)))
+    (setopt valign-fancy-bar (not valign-fancy-bar)))
 
   ;; Compatible with `outline-mode'.
   (define-advice outline-show-entry (:override nil)
@@ -103,12 +103,11 @@ Show the heading too, if it is currently invisible."
   (markdown-gfm-additional-languages "Mermaid")
   :hook (markdown-mode . (lambda ()
                            "The markdown files may contain tables, so do not wrap lines."
-                           (setq-local truncate-lines t)))
+                           (setq truncate-lines t)))
   :config
   ;; `multimarkdown' is necessary for `highlight.js' and `mermaid.js'.
   (when (executable-find "multimarkdown")
-    (setq markdown-command "multimarkdown")))
+    (setopt markdown-command "multimarkdown")))
 
 (provide 'init-markup)
-
 ;;; init-markup.el ends here

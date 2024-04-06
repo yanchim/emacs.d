@@ -93,24 +93,25 @@
     my-mode-line-format-right)
   "My customized mode-line.")
 
-(setq-default mode-line-format my-mode-line-format)
+(setopt mode-line-format my-mode-line-format)
 
 ;;;; Misc
 
 ;; Unify the eol mnemonics for all systems.
-(setq eol-mnemonic-unix ":")
-(setq eol-mnemonic-mac "/")
-(setq eol-mnemonic-dos "\\")
+(setopt eol-mnemonic-unix ":"
+        eol-mnemonic-mac "/"
+        eol-mnemonic-dos "\\")
 
 ;; ;; If you want to customize time format, read document of
 ;; ;; `format-time-string' and customize `display-time-format'.
-;; (setq display-time-format "%a %b %e")
+;; (setopt display-time-format "%a %b %e")
 
-(setq system-time-locale "C")
-(setq display-time-24hr-format t)
-(setq display-time-day-and-date t)
-;; Do NOT display the load average.
-(setq display-time-default-load-average nil)
+;; Time format.
+(setopt system-time-locale "C"
+        display-time-24hr-format t
+        display-time-day-and-date t
+        ;; Do NOT display the load average.
+        display-time-default-load-average nil)
 
 ;; ;; Show date in mode-line.
 ;; (display-time-mode +1)
@@ -123,5 +124,4 @@
 (size-indication-mode +1)
 
 (provide 'init-modeline)
-
 ;;; init-modeline.el ends here

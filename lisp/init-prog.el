@@ -11,36 +11,36 @@
   :ensure nil
   :when (treesit-available-p)
   :init
-  (setq treesit-language-source-alist
-        '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-          (c "https://github.com/tree-sitter/tree-sitter-c")
-          (clojure "https://github.com/sogaiu/tree-sitter-clojure")
-          (cmake "https://github.com/uyha/tree-sitter-cmake")
-          (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-          (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-          (css "https://github.com/tree-sitter/tree-sitter-css")
-          (dart "https://github.com/UserNobody14/tree-sitter-dart")
-          (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
-          (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
-          (erlang "https://github.com/WhatsApp/tree-sitter-erlang")
-          (go "https://github.com/tree-sitter/tree-sitter-go")
-          (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
-          (heex "https://github.com/phoenixframework/tree-sitter-heex")
-          (html "https://github.com/tree-sitter/tree-sitter-html")
-          (java "https://github.com/tree-sitter/tree-sitter-java")
-          (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
-          (json "https://github.com/tree-sitter/tree-sitter-json")
-          (kotlin "https://github.com/fwcd/tree-sitter-kotlin")
-          (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
-          (python "https://github.com/tree-sitter/tree-sitter-python")
-          (racket "https://github.com/6cdh/tree-sitter-racket")
-          (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
-          (rust "https://github.com/tree-sitter/tree-sitter-rust")
-          (toml "https://github.com/tree-sitter/tree-sitter-toml")
-          (tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")
-          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
-          (typst "https://github.com/uben0/tree-sitter-typst")
-          (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+  (setopt treesit-language-source-alist
+          '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+            (c "https://github.com/tree-sitter/tree-sitter-c")
+            (clojure "https://github.com/sogaiu/tree-sitter-clojure")
+            (cmake "https://github.com/uyha/tree-sitter-cmake")
+            (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+            (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+            (css "https://github.com/tree-sitter/tree-sitter-css")
+            (dart "https://github.com/UserNobody14/tree-sitter-dart")
+            (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+            (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
+            (erlang "https://github.com/WhatsApp/tree-sitter-erlang")
+            (go "https://github.com/tree-sitter/tree-sitter-go")
+            (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+            (heex "https://github.com/phoenixframework/tree-sitter-heex")
+            (html "https://github.com/tree-sitter/tree-sitter-html")
+            (java "https://github.com/tree-sitter/tree-sitter-java")
+            (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+            (json "https://github.com/tree-sitter/tree-sitter-json")
+            (kotlin "https://github.com/fwcd/tree-sitter-kotlin")
+            (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
+            (python "https://github.com/tree-sitter/tree-sitter-python")
+            (racket "https://github.com/6cdh/tree-sitter-racket")
+            (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
+            (rust "https://github.com/tree-sitter/tree-sitter-rust")
+            (toml "https://github.com/tree-sitter/tree-sitter-toml")
+            (tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")
+            (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
+            (typst "https://github.com/uben0/tree-sitter-typst")
+            (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
   :custom
   (major-mode-remap-alist
    '((c-mode          . c-ts-mode)
@@ -139,13 +139,13 @@
                ("C-M-a" . eldoc-box-beginning)
                ("C-M-e" . eldoc-box-end)))
   :config
-  (setq eldoc-doc-buffer-separator
-        (concat "\n"
-                (propertize "-"
-                            'display '(space :align-to right)
-                            'face '(:strike-through t)
-                            'font-lock-face '(:strike-through t))
-                "\n")))
+  (setopt eldoc-doc-buffer-separator
+          (concat "\n"
+                  (propertize "-"
+                              'display '(space :align-to right)
+                              'face '(:strike-through t)
+                              'font-lock-face '(:strike-through t))
+                  "\n")))
 
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -205,7 +205,7 @@
 (use-package tex-mode
   :defer t
   :config
-  (setq tex-command "xelatex")
+  (setopt tex-command "xelatex")
   (add-to-list 'tex-compile-commands '("xelatex %f" t "%r.pdf")))
 
 (use-package dart-ts-mode
@@ -218,5 +218,4 @@
   :mode "\\.kts?\\'")
 
 (provide 'init-prog)
-
 ;;; init-prog.el ends here

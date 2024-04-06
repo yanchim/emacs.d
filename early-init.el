@@ -8,7 +8,7 @@
 ;;; Code:
 
 ;; Prevent outdated byte code files from being loaded.
-(setq load-prefer-newer t)
+(setopt load-prefer-newer t)
 
 ;; Faster to disable these here (before they've been initialized).
 (push '(tool-bar-lines . nil) default-frame-alist)

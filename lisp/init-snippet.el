@@ -53,5 +53,4 @@ will be tried first."
   (global-tempel-abbrev-mode))
 
 (provide 'init-snippet)
-
 ;;; init-snippet.el ends here

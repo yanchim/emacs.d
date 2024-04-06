@@ -96,5 +96,4 @@
          ("C-c k r" . cape-rfc1345)))
 
 (provide 'init-corfu)
-
 ;;; init-corfu.el ends here

@@ -27,5 +27,4 @@
   :config (eglot-tempel-mode +1))
 
 (provide 'init-lsp)
-
 ;;; init-lsp.el ends here

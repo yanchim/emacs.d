@@ -121,8 +121,8 @@
   :config
   ;; Inherits from `avy'.
   (with-eval-after-load 'avy
-    (setq aw-keys avy-keys)
-    (setq aw-background avy-background)))
+    (setopt aw-keys avy-keys
+            aw-background avy-background)))
 
 (use-package winum
   :hook (after-init . winum-mode)
@@ -177,5 +177,4 @@
   :bind ("C-c e u" . vundo))
 
 (provide 'init-edit)
-
 ;;; init-edit.el ends here

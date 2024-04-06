@@ -10,7 +10,7 @@
 (use-package evil
   :init
   ;; Use Emacs keys in INSERT state.
-  (setq evil-disable-insert-state-bindings t)
+  (setopt evil-disable-insert-state-bindings t)
   :hook (after-init . evil-mode)
   :bind (;; Evil leader key bindings.
 ;;;; Evil leader.
@@ -292,10 +292,10 @@ URL `http://blog.binchen.org/posts/code-faster-by-extending-emacs-evil-text-obje
                ("\\*scratch\\*"      . normal)))
     (add-to-list 'evil-buffer-regexps b))
 
-  (setq evil-emacs-state-modes
-        (append
-         '(calender-mode dired-mode erc-mode image-mode)
-         evil-emacs-state-modes))
+  (setopt evil-emacs-state-modes
+          (append
+           '(calender-mode dired-mode erc-mode image-mode)
+           evil-emacs-state-modes))
 
   (defmacro my--evil-adjust-major-mode-keymap (mode &optional replace)
     "Use MODE\\='s keymap in `evil-normal-state' after MODE loaded.
@@ -352,16 +352,15 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
 
   (add-hook 'org-mode-hook
             (lambda ()
-              (let ((alist '(
-                             (?b . ("*" . "*"))
-                             (?c . ("~" . "~"))
-                             (?i . ("/" . "/"))
-                             (?s . ("+" . "+"))
-                             (?u . ("_" . "_"))
-                             (?v . ("=" . "="))
-                             )))
-                (setq evil-surround-pairs-alist
-                      (append alist evil-surround-pairs-alist)))))
+              (dolist (alist '(
+                               (?b . ("*" . "*"))
+                               (?c . ("~" . "~"))
+                               (?i . ("/" . "/"))
+                               (?s . ("+" . "+"))
+                               (?u . ("_" . "_"))
+                               (?v . ("=" . "="))
+                               ))
+                (push alist evil-surround-pairs-alist))))
 
   (let ((alist '(
                  (?Q . ("《 " . " 》")) (?q . ("《" . "》"))
@@ -376,8 +375,8 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
                  (?I . ("〔 " . " 〕")) (?i . ("〔" . "〕"))
                  (?O . ("｛ " . " ｝")) (?o . ("｛" . "｝"))
                  )))
-    (setq-default evil-surround-pairs-alist
-                  (append alist evil-surround-pairs-alist))))
+    (setopt evil-surround-pairs-alist
+            (append alist evil-surround-pairs-alist))))
 
 (use-package evil-nerd-commenter
   :after evil
@@ -391,5 +390,4 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
                ("gy" . evilnc-yank-and-comment-operator))))
 
 (provide 'init-evil)
-
 ;;; init-evil.el ends here

@@ -121,5 +121,4 @@ access from `emacsclient'."
   :bind ("C-c t x" . xiaoshuo-mode))
 
 (provide 'init-misc)
-
 ;;; init-misc.el ends here

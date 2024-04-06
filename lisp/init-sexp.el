@@ -65,7 +65,7 @@ sexp before point and insert output into current position."
   :config
   ;; https://github.com/clojure-emacs/cider/issues/3588
   (when (string= "powershell" cider-clojure-cli-command)
-    (setq cider-clojure-cli-command "pwsh")))
+    (setopt cider-clojure-cli-command "pwsh")))
 
 (use-package sly
   :bind ((:map sly-mode-map
@@ -86,5 +86,4 @@ sexp before point and insert output into current position."
   :mode ("\\.fnl\\'" . fennel-mode))
 
 (provide 'init-sexp)
-
 ;;; init-sexp.el ends here
