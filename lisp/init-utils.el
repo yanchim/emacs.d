@@ -15,20 +15,11 @@
 (defconst my-mac-p (eq system-type 'darwin)
   "Running on Mac system.")
 
-(defconst my-cygwin-p (eq system-type 'cygwin)
-  "Running on Cygwin system.")
-
 (defconst my-win-p (eq system-type 'windows-nt)
   "Running on Windows system.")
 
-(defconst my-mac-x-p (and (display-graphic-p) my-mac-p)
-  "Running under X on Mac system.")
-
-(defconst my-linux-x-p (and (display-graphic-p) my-linux-p)
-  "Running under X on GNU/Linux system.")
-
-(defconst my-root-p (string-equal "root" (getenv "USER"))
-  "Running as root.")
+(defconst my-wsl-p (string-match-p "Microsoft" (shell-command-to-string "uname -a"))
+  "Running on WSL (Windows Subsystem for Linux).")
 
 ;;;; Use-package.
 

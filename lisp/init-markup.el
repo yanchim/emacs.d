@@ -58,12 +58,6 @@ Show the heading too, if it is currently invisible."
   (markdown-italic-underscore t)
   (markdown-make-gfm-checkboxes-buttons t)
 
-  ;; This is set to `nil' by default, which causes a wrong-type-arg error
-  ;; when you use `markdown-open'. These are more sensible defaults.
-  (markdown-open-command (cond
-                          (my-mac-p "open")
-                          (my-linux-p "xdg-open")))
-
   (markdown-content-type "application/xhtml+xml")
   (markdown-css-paths '("https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css"
                         "https://cdn.jsdelivr.net/gh/highlightjs/cdn-release/build/styles/github.min.css"))

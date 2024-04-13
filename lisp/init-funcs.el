@@ -120,8 +120,7 @@ With a prefix ARG, rename based on current name."
 (defun my-open-file-externally (file)
   "Open FILE externally using the default application of the system."
   (interactive "fOpen externally: ")
-  (if (and (eq system-type 'windows-nt)
-           (fboundp 'w32-shell-execute))
+  (if (and my-win-p (fboundp 'w32-shell-execute))
       (w32-shell-execute "open" file)
     (call-process (pcase system-type
                     ('darwin "open")
@@ -275,7 +274,7 @@ Key is a symbol as the name, value is a plist specifying the search url.")
 (keymap-global-set "C-c m o" #'my-occur-dwim)
 
 (defun my-hide-dos-eol ()
-  "Do not show  in files containing mixed UNIX and DOS line endings."
+  "Do not show CR in files with mixed UNIX and DOS line endings."
   (interactive)
   (unless buffer-display-table
     (setq buffer-display-table (make-display-table)))
@@ -520,12 +519,16 @@ pangu-spacing. The excluded puncuation will be matched to group
           `(("http" . ,my-http-proxy)
             ("https" . ,my-http-proxy)
             ("no_proxy" . "^\\(localhost\\|192.168.*\\|10.*\\)")))
+  (setenv "http_proxy" (format "http://%s" my-http-proxy))
+  (setenv "https_proxy" (format "http://%s" my-http-proxy))
   (my-show-http-proxy))
 
 (defun my-disable-http-proxy ()
   "Disable HTTP/HTTPS proxy."
   (interactive)
   (setopt url-proxy-services nil)
+  (setenv "http_proxy" "")
+  (setenv "https_proxy" "")
   (my-show-http-proxy))
 
 (defun my-toggle-http-proxy ()
@@ -541,86 +544,41 @@ pangu-spacing. The excluded puncuation will be matched to group
 (defun my-show-socks-proxy ()
   "Show SOCKS proxy."
   (interactive)
-  (if (bound-and-true-p socks-noproxy)
-      (message "Current SOCKS%d proxy is \"%s:%s\"."
+  (if (eq url-gateway-method 'socks)
+      (message "Current SOCKS%d proxy is \"%s:%d\"."
                (cadddr socks-server)
-               (cadr socks-server)
-               (caddr socks-server))
+               (cadr   socks-server)
+               (caddr  socks-server))
     (message "No SOCKS proxy.")))
 
 (defun my-enable-socks-proxy ()
   "Enable SOCKS proxy."
   (interactive)
   (require 'socks)
-  (let* ((proxy (string-split my-socks-proxy ":"))
-         (host (car proxy))
-         (port (string-to-number (cadr proxy))))
+  (let ((host (car  my-socks-proxy))
+        (port (cadr my-socks-proxy)))
     (setopt url-gateway-method 'socks
             socks-server `("Default server" ,host ,port 5)
-            socks-noproxy '("localhost")))
-  (setenv "all_proxy" (concat "socks5://" my-socks-proxy))
+            socks-noproxy '("localhost"))
+    (setenv "all_proxy" (format "socks5://%s:%s" host port)))
   (my-show-socks-proxy))
 
 (defun my-disable-socks-proxy ()
   "Disable SOCKS proxy."
   (interactive)
-  (setopt url-gateway-method 'native
-          socks-server nil
-          socks-noproxy nil)
+  (setopt url-gateway-method 'native)
   (setenv "all_proxy" "")
   (my-show-socks-proxy))
 
 (defun my-toggle-socks-proxy ()
   "Toggle SOCKS proxy."
   (interactive)
-  (if (bound-and-true-p socks-noproxy)
+  (if (eq url-gateway-method 'socks)
       (my-disable-socks-proxy)
     (my-enable-socks-proxy)))
 
 (keymap-global-set "C-c t p s" #'my-toggle-socks-proxy)
 (keymap-global-set "C-c t p S" #'my-show-socks-proxy)
-
-(defun my-show-wsl-socks-proxy ()
-  "Show SOCKS proxy in WSL."
-  (interactive)
-  (if (bound-and-true-p socks-noproxy)
-      (message "Current SOCKS%d proxy in WSL is \"%s:%s\"."
-               (cadddr socks-server)
-               (cadr socks-server)
-               (caddr socks-server))
-    (message "No SOCKS proxy in WSL.")))
-
-(defun my-enable-wsl-socks-proxy ()
-  "Enable SOCKS proxy in WSL."
-  (interactive)
-  (require 'socks)
-  (let* ((proxy (string-split my-wsl-socks-proxy ":"))
-         (host (car proxy))
-         (port (string-to-number (cadr proxy))))
-    (setopt url-gateway-method 'socks
-            socks-server `("Default server" ,host ,port 5)
-            socks-noproxy '("localhost")))
-  (setenv "all_proxy" (concat "socks5://" my-wsl-socks-proxy))
-  (my-show-wsl-socks-proxy))
-
-(defun my-disable-wsl-socks-proxy ()
-  "Disable SOCKS proxy in WSL."
-  (interactive)
-  (setopt url-gateway-method 'native
-          socks-server nil
-          socks-noproxy nil)
-  (setenv "all_proxy" "")
-  (my-show-wsl-socks-proxy))
-
-(defun my-toggle-wsl-socks-proxy ()
-  "Toggle SOCKS proxy in WSL."
-  (interactive)
-  (if (bound-and-true-p socks-noproxy)
-      (my-disable-wsl-socks-proxy)
-    (my-enable-wsl-socks-proxy)))
-
-(keymap-global-set "C-c t p w" #'my-toggle-wsl-socks-proxy)
-(keymap-global-set "C-c t p W" #'my-show-wsl-socks-proxy)
 
 ;;;; JUST4FUN.
 
