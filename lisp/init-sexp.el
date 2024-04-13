@@ -45,6 +45,24 @@ sexp before point and insert output into current position."
                    lisp-interaction-mode-map))
   (keymap-set map "C-c C-p" #'my-eval-print-last-sexp))
 
+(use-package sly
+  :bind ((:map sly-mode-map
+               ("C-c C-x C-j" . sly)
+               ("C-c C-x C-c" . sly-connect)
+               ("C-c C-x C-q" . sly-disconnect))
+         (:map sly-doc-map
+               ("C-l" . sly-documentation)))
+  :custom (inferior-lisp-program "sbcl"))
+
+(use-package sly-asdf :after sly)
+(use-package sly-quicklisp :after sly)
+
+(use-package racket-mode
+  :bind (:map racket-mode-map
+              ("C-c C-x C-j" . racket-run)
+              ("C-c C-x C-x" . racket-xp-mode)
+              ("C-c C-x C-e" . racket-eval-last-sexp)))
+
 (use-package clojure-mode
   :mode
   ("\\.\\(cljd?\\|edn\\)\\'" . clojure-mode)
@@ -58,7 +76,6 @@ sexp before point and insert output into current position."
   ("\\.cljd\\'" . clojure-ts-clojuredart-mode))
 
 (use-package cider
-  :after (:any clojure-mode clojure-ts-mode)
   :bind (:map cider-start-map
               ("r" . cider-restart)
               ("C-r" . cider-restart))
@@ -66,21 +83,6 @@ sexp before point and insert output into current position."
   ;; https://github.com/clojure-emacs/cider/issues/3588
   (when (string= "powershell" cider-clojure-cli-command)
     (setopt cider-clojure-cli-command "pwsh")))
-
-(use-package sly
-  :bind ((:map sly-mode-map
-               ("C-c C-x C-j" . sly)
-               ("C-c C-x C-c" . sly-connect)
-               ("C-c C-x C-q" . sly-disconnect))
-         (:map sly-doc-map
-               ("C-l" . sly-documentation)))
-  :custom (inferior-lisp-program "sbcl"))
-
-(use-package racket-mode
-  :bind (:map racket-mode-map
-              ("C-c C-x C-j" . racket-run)
-              ("C-c C-x C-x" . racket-xp-mode)
-              ("C-c C-x C-e" . racket-eval-last-sexp)))
 
 (use-package fennel-mode
   :mode ("\\.fnl\\'" . fennel-mode))
