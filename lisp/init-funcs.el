@@ -234,30 +234,6 @@ Key is a symbol as the name, value is a plist specifying the search url.")
 
 (keymap-global-set "C-c m h" #'my-toggle-selective-display)
 
-;; https://www.emacswiki.org/emacs/RecreateScratchBuffer
-(defun my-switch-scratch-buffer ()
-  "Create or switch to the *scratch* buffer."
-  (interactive)
-  (if (get-buffer "*scratch*")
-      (switch-to-buffer "*scratch*")
-    (progn
-      (switch-to-buffer (get-buffer-create "*scratch*"))
-      (funcall initial-major-mode)
-      (insert initial-scratch-message))))
-
-(keymap-global-set "C-c X" #'my-switch-scratch-buffer)
-
-(defun my-switch-messages-buffer ()
-  "Create or switch to the *Message* buffer."
-  (interactive)
-  (if (get-buffer "*Messages*")
-      (switch-to-buffer "*Messages*")
-    (progn
-      (switch-to-buffer (get-buffer-create "*Messages*"))
-      (messages-buffer-mode))))
-
-(keymap-global-set "C-c M" #'my-switch-messages-buffer)
-
 (defun my-occur-dwim ()
   "Call `occur' with a sane default."
   (interactive)

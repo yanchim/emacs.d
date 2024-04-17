@@ -46,10 +46,30 @@ sexp before point and insert output into current position."
   (keymap-set map "C-c C-p" #'my-eval-print-last-sexp))
 
 (use-package sly
+  :config
+  (defun my-sly-mrepl-switch (&rest _)
+    "Switch to the last Lisp/Sly-Mrepl buffer."
+    (interactive)
+    (if (derived-mode-p 'sly-mrepl-mode)
+        (if-let ((buf (seq-find (lambda (b)
+                                  (with-current-buffer b
+                                    (derived-mode-p 'lisp-mode)))
+                                (buffer-list))))
+            (if-let ((win (get-buffer-window buf)))
+                (select-window win)
+              (pop-to-buffer buf))
+          (user-error "No Lisp buffer found"))
+      (if-let ((buf (sly-mrepl--find-create (sly-current-connection))))
+          (if-let ((win (get-buffer-window buf)))
+              (select-window win)
+            (pop-to-buffer buf))
+        (user-error "No Sly-Mrepl buffer found"))))
+  (advice-add 'sly-mrepl :override #'my-sly-mrepl-switch)
+
   :bind ((:map sly-mode-map
-               ("C-c C-x C-j" . sly)
                ("C-c C-x C-c" . sly-connect)
-               ("C-c C-x C-q" . sly-disconnect))
+               ("C-c C-x C-q" . sly-disconnect)
+               ("C-c C-x C-j" . sly))
          (:map sly-doc-map
                ("C-l" . sly-documentation)))
   :custom (inferior-lisp-program "sbcl"))
