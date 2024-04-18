@@ -9,6 +9,7 @@
 
 (use-package evil
   :init
+  (setopt evil-want-C-i-jump nil)
   ;; Use Emacs keys in INSERT state.
   (setopt evil-disable-insert-state-bindings t)
   :hook (after-init . evil-mode)
@@ -160,7 +161,8 @@
                ("glj" . avy-goto-line-below)
                ("glk" . avy-goto-line-above)
                ("gle" . avy-goto-end-of-line)
-               ("M-." . xref-find-definitions))
+               ;; Unbind `evil-repeat-pop-next'.
+               ("M-." . nil))
          (:map evil-command-line-map
                ("C-a" . move-beginning-of-line)
                ("C-e" . move-end-of-line)
