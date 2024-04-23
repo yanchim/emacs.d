@@ -160,23 +160,20 @@
          ("C-c c e" . citre-edit-tags-file-recipe)
          ("C-c c h" . citre-peek)
          ("C-c c t" . citre-update-this-tags-file)
-         ("C-c c j" . my-citre-jump)
-         ("C-c c J" . my-citre-jump-back))
-  :custom (citre-auto-enable-citre-mode-modes '(prog-mode))
-  :commands (citre-jump-back)
+         ("C-c c j" . citre-jump)
+         ("C-c c J" . citre-jump-back))
+  :custom
+  (citre-auto-enable-citre-mode-modes '(prog-mode))
+  (citre-default-create-tags-file-location 'global-cache)
   :config
-  (defun my-citre-jump ()
-    "Fallback to `xref' when citre failed."
-    (interactive)
-    (condition-case _
-        (citre-jump)
-      (error (call-interactively #'xref-find-definitions))))
-  (defun my-citre-jump-back ()
-    "Fallback to `xref' when citre failed."
-    (interactive)
-    (condition-case _
-        (citre-jump-back)
-      (error (call-interactively #'xref-go-back)))))
+  ;; Add Elisp to the backend lists.
+  (citre-register-backend 'elisp
+                          (citre-xref-backend-to-citre-backend
+                           'elisp
+                           (lambda () (derived-mode-p 'emacs-lisp-mode))))
+  (add-to-list 'citre-find-definition-backends 'elisp)
+  (add-to-list 'citre-find-reference-backends 'elisp))
+
 
 (use-package apheleia
   :bind (("C-c c f" . apheleia-format-buffer)
