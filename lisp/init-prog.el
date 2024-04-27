@@ -177,7 +177,11 @@
 
 (use-package apheleia
   :bind (("C-c c f" . apheleia-format-buffer)
-         ("C-c c F" . apheleia-goto-error)))
+         ("C-c c F" . apheleia-goto-error))
+  :config
+  (add-to-list 'apheleia-formatters '(rustfmt . ("rustfmt" "--quiet"
+                                                 "--emit" "stdout"
+                                                 "--edition" "2021"))))
 
 ;;;; Major modes.
 
