@@ -2,6 +2,17 @@
 ;; elements are described in detail in the docstring of
 ;; `tempo-define-template' in `tempo'.
 
+bash-ts-mode sh-mode
+
+(b "#!/usr/bin/env " (p "sh"))
+(case "case " (p "cond") " in" n> p ")" n> (p "expr") n> ";;" n> r> n "esac")
+(for "for " p " in " p "; do" n> r> n "done")
+(fn "function " p " {" n> r> n "}")
+(if "if " (p "pred") "; then" n> r> n "fi")
+(select "select " p " in " p "; do" n> r> n "done")
+(until "until " p "; do" n> r> n "done")
+(while "while " p "; do" n> r> n "done")
+
 c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode
 
 (fn (p "void") " " (p "name") "(" p ") {" n> r> n "}" >)
@@ -32,7 +43,7 @@ c-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
 clojure-mode clojure-ts-mode
 
-(cmt "(comment " n> r> ")")
+(comment "(comment" n> r> n> ":done)")
 (cond "(cond" n> "(" p ") " p n> ":else " r ")")
 (condp "(condp " (p "pred") " " (p "expr") n> r> ")")
 (def "(def " r ")")
@@ -44,7 +55,7 @@ clojure-mode clojure-ts-mode
 (dotimes "(dotimes [" p "]" n> r> ")")
 (fn "(fn [" p "] " r ")")
 (ifl "(if-let [" p "]" n> r> ")")
-(import "(:import (" p "))")
+(import "(:import [" p "])")
 (letfn "(letfn [" p "]" n> r> ")")
 (loop "(loop [" p "]" n> r> ")")
 (macro "(defmacro " p "\n  \"" (p "doc") "\"\n  [" p "]" n> r> ")")
@@ -75,7 +86,7 @@ clojure-mode clojure-ts-mode emacs-lisp-mode fennel-mode lisp-mode racket-mode ;
 (if "(if " (p "pred") n> r> ")")
 (not "(not " r ")")
 (or "(or " r ")")
-(when "(when " p n> r> ")")
+(when "(when " (p "pred") n> r> ")")
 
 clojure-mode clojure-ts-mode fennel-mode
 
@@ -328,7 +339,7 @@ heex-mode heex-ts-mode html-mode html-ts-mode nxml-mode web-mode
 (br "<br />" >)
 (doc "<!DOCTYPE html>")
 (doc11 "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">")
-(doc4 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">")
+(doc4 "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">")
 (form "<form method=\"" p "\" action=\"" p "\">" n> r> n "</form>" >)
 (head "<head>" n> r> n "</head>" >)
 (html "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"" (p "en" en) "\" lang=\"" en "\">" n> r> n "</html>" >)
@@ -368,7 +379,6 @@ js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 (clf "console.log('" (p "var" var) ": ', " var ");")
 (cli "console.log(`" r "`);")
 (cwn "console.warn(" r ");")
-(doc "/**" n " * " r n " */")
 (fn "function " p "(" p ") {" n> r> n "}" >)
 (afn "async " (i fn))
 (ip "import " r ";")
@@ -376,7 +386,7 @@ js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 (uc "const " (p "cachedFn") " = useCallback(" (p "fn") ", [" r "]);")
 (uct "const " p " = useContext(" r ");")
 (ue "useEffect(() => {" n> "return " p ";" n "}, [" r "]);" >)
-(um "const " (p "momoized") " = useMemo(() => " (p "rst") ", [" r "]);")
+(um "const " (p "memoized") " = useMemo(() => " (p "rst") ", [" r "]);")
 (ur "const [" (p "state") ", " (p "dispatch") "] = useReducer(" (p "reducer") ", " (p "args") ");")
 (urf "const " (p "ref") " = useRef(" r ");")
 (us "const [" (p "var" var) ", set" (upcase-initials var) "] = useState(" r ");")
@@ -509,55 +519,46 @@ rust-mode rust-ts-mode
 (deny "#[deny(" (p "lint") ")]")
 (deny! "#![deny(" (p "lint") ")]")
 (derive "#[derive(" (p "Trait") ")]")
-(ep "eprint!(" r ");")
-(epl "eprintln!(" r ");")
+(display "impl Display for " p " {" n>
+         "fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {" n>
+         "write!(f, \"" r "\")" n> "}" n
+         "}")
+(enum "enum " p " {" n> r> n> "}")
+(ep "eprint!(" r ")")
+(epl "eprintln!(" r ")")
 (fn "fn " (p "name") "(" p ") {" n> r> n "}" >)
-(fnr "fn " (p "name") "(" p ") -> " p " {" n> r> n "}" >)
+(fnr "fn " (p "name") "(" p ") -> " (p "()") " {" n> r> n "}" >)
 (fns "fn " (p "name") "(&self" p ") {" n> r> n "}" >)
 (fnw "fn " (p "name") "<" p ">(" p ") where " p " {" n> r> n "}" >)
 (for "for " p " in " p " {" n> r> n "}" >)
 (if "if " p " {" n> r> n "}" >)
 (ifl "if let " (p "pattern") " = " (p "expr") " {" n> r> n "}" >)
+(impl "impl " p " {" n> r> n "}")
+(implf "impl " p " for " p " {" n> r> n "}")
 (loop "loop {" n> r> n "}" >)
+(macro "macro_rules! " p " {" n> r> n> "}")
+(main "fn main() {" n> r> n "}")
 (match "match " (p "expr") " {" n> r> n "}" >)
+(mod "mod " (p "module") " {" n> r> n "}" >)
+(penum "pub " (i enum))
 (pfn "pub " (i fn))
 (pfnr "pub " (i fnr))
 (pfns "pub " (i fns))
 (pfnw "pub " (i fnw))
-(p "print!(" r ");")
-(pl "println!(" r ");")
+(p "print!(" r ")")
+(pl "println!(" r ")")
+(pmod "pub " (i mod))
+(pstruct "pub " (i struct))
 (spawn "spawn(proc() {" n> r> n "});" >)
+(struct "struct " p " {" n> r> n> "}")
 (test "#[test]" n (i fn))
+(t "todo!()")
+(trait "trait " p " {" n> r> n> "}")
+(union "union " p " {" n> r> n "}")
 (warn "#[warn(" (p "lint") ")]")
 (warn! "#![warn(" (p "lint") ")]")
 (while "while " p " {" n> r> n "}" >)
 (whilel "while let " (p "pattern") " = " (p "expr") " {" n> r> n "}" >)
-
-rust-mode rust-ts-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
-
-(display "impl Display for " p " {" n>
-         "fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {" n>
-         "write!(f, \"" r "\")" n> "}" n
-         "}" >)
-(enum "enum " p " {" n> r> n "}")
-(impl "impl " p " {" n> r> n "}")
-(implf "impl " p " for " p " {" n> r> n "}")
-(main "fn main() {" n> r> n "}" >)
-(macro "macro_rules! " p " {" n> r> n "}")
-(struct "struct " p " {" n> r> n "}")
-(trait "trait " p " {" n> r> n "}")
-(union "union " p " {" n> r> n "}")
-
-sh-mode bash-ts-mode
-
-(b "#!/usr/bin/env " (p "sh"))
-(case "case " (p "cond") " in" n> p ")" n> (p "expr") n> ";;" n> r> n "esac")
-(for "for " p " in " p "; do" n> r> n "done")
-(fn "function " p " {" n> r> n "}")
-(if "if " (p "pred") "; then" n> r> n "fi")
-(select "select " p " in " p "; do" n> r> n "done")
-(until "until " p "; do" n> r> n "done")
-(while "while " p "; do" n> r> n "done")
 
 srt-mode subed-srt-mode text-mode
 
@@ -594,6 +595,23 @@ text-mode
      "--8<---------------cut here---------------end--------------->8---" n)
 (rot13 (p "plain text" text) n "----" n (rot13 text))
 (calc (p "taylor(sin(x),x=0,3)" formula) n "----" n (format "%s" (calc-eval formula)))
+
+typst-mode typst-ts-mode
+
+(break "#pagebreak()")
+(code "```" (p "lang") n> r n> "```")
+(codei "```" (p "lang") " " r "```")
+(image "#image(\"" r "\")")
+(link "#link(\"" p "\")[" r "]")
+(set "#set " r)
+(show "#show " r)
+(toc "#show outline.entry.where(" n>
+     "level: 1" n>
+     "): it => {" n>
+     "v(12pt, weak: true)" n>
+     "strong(it)" n>
+     "}" n>
+     "#outline(indent: auto)")
 
 ;; Local Variables:
 ;; mode: lisp-data
