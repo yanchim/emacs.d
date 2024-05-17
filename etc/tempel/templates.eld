@@ -43,7 +43,7 @@ c-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
 clojure-mode clojure-ts-mode
 
-(comment "(comment" n> r> n> ":done)")
+(comment "(comment" n> p n> ":" (p "done") ")")
 (cond "(cond" n> "(" p ") " p n> ":else " r ")")
 (condp "(condp " (p "pred") " " (p "expr") n> r> ")")
 (def "(def " r ")")
@@ -69,6 +69,7 @@ clojure-mode clojure-ts-mode
 (record "(defrecord " p " [" p "]" n> r> ")")
 (reduce "(reduce " p " " p ")")
 (require "(:require [" p "])")
+(run "(run! " r ")")
 (try "(try" n> p n> "(catch " (p "Exception") " e" n> r> "))")
 (type "(deftype " p " [" p "]" n> r> ")")
 (use "(:use [" p "])")
@@ -546,7 +547,9 @@ rust-mode rust-ts-mode
 (pfns "pub " (i fns))
 (pfnw "pub " (i fnw))
 (p "print!(" r ")")
+(pv "print!(\"" (p "value" val) ": {" val "}\")")
 (pl "println!(" r ")")
+(plv "println!(\"" (p "value" val) ": {" val "}\")")
 (pmod "pub " (i mod))
 (pstruct "pub " (i struct))
 (spawn "spawn(proc() {" n> r> n "});" >)
