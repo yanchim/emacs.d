@@ -101,6 +101,9 @@ sexp before point and insert output into current position."
          (:map cider-start-map
                ("r" . cider-restart)
                ("C-r" . cider-restart)))
+  :custom
+  ;; Require Java >= 20.
+  (cider-enable-nrepl-jvmti-agent t)
   :config
   ;; https://github.com/clojure-emacs/cider/issues/3588
   (when (string= "powershell" cider-clojure-cli-command)
