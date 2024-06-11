@@ -516,7 +516,7 @@ rust-mode rust-ts-mode
 (ass "assert!(" (p "pred") ")")
 (asseq "assert_eq!(" (p "expected") ", " (p "actual") ");")
 (assne "assert_ne!(" (p "expected") ", " (p "actual") ");")
-(case (p "pattern") " => " (p "expr") ",")
+(case (p "pattern") " => " (p "expr"))
 (cfg "#[cfg(" (p "opt") ")]")
 (ct "#[cfg(\"test\")]")
 (cv "#[cfg(" (p "opt") " = \"" (p "val") "\")]")

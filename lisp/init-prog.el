@@ -42,7 +42,8 @@
             (tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")
             (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
             (typst "https://github.com/uben0/tree-sitter-typst")
-            (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+            (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+            (zig "https://github.com/maxxnino/tree-sitter-zig")))
   :custom
   (major-mode-remap-alist
    '((c-mode          . c-ts-mode)
@@ -84,40 +85,8 @@
   (compilation-ask-about-save nil)
   (compilation-always-kill t)
   (compilation-scroll-output 'first-error)
-  :config
-  ;; Colorize output of Compilation Mode.
-  ;; https://stackoverflow.com/a/3072831/355252
-  (require 'ansi-color)
-
-  (defun my--colorize-compilation-buffer ()
-    "Colorize a compilation mode buffer."
-    ;; Don't mess with child modes such as grep, ack, ag, etc.
-    (when (eq major-mode 'compilation-mode)
-      (let ((inhibit-read-only t))
-        (ansi-color-apply-on-region (point-min) (point-max)))))
-
-  (add-hook 'compilation-filter-hook #'my--colorize-compilation-buffer)
-
-  (defvar my-last-compilation-buffer nil
-    "The last buffer in which compilation took place.")
-
-  (defun my--save-compilation-buffer (&rest _)
-    "Save the last compilation buffer to find it later."
-    (setq my-last-compilation-buffer next-error-last-buffer))
-
-  (advice-add 'compilation-start :after #'my--save-compilation-buffer)
-
-  (defun my--find-prev-compilation (orig &optional edit-command)
-    "Find the previous compilation buffer, if present, and recompile there."
-    (if (and (null edit-command)
-             (not (derived-mode-p 'compilation-mode))
-             my-last-compilation-buffer
-             (buffer-live-p (get-buffer my-last-compilation-buffer)))
-        (with-current-buffer my-last-compilation-buffer
-          (funcall orig edit-command))
-      (funcall orig edit-command)))
-
-  (advice-add 'recompile :around #'my--find-prev-compilation))
+  :hook
+  (compilation-filter . ansi-color-compilation-filter))
 
 (use-package etags
   :defer t
@@ -175,7 +144,6 @@
                            (lambda () (derived-mode-p 'emacs-lisp-mode))))
   (add-to-list 'citre-find-definition-backends 'elisp)
   (add-to-list 'citre-find-reference-backends 'elisp))
-
 
 (use-package apheleia
   :bind (("C-c c f" . apheleia-format-buffer)
