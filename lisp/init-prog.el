@@ -118,9 +118,6 @@
                               'font-lock-face '(:strike-through t))
                   "\n")))
 
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
-
 (use-package evil-nerd-commenter
   :bind (("C-c c l" . evilnc-comment-or-uncomment-lines)
          ("C-c c d" . evilnc-copy-and-comment-lines)
@@ -187,6 +184,9 @@
 (use-package kotlin-ts-mode
   :when (and (treesit-available-p) (treesit-ready-p 'kotlin 'message))
   :mode "\\.kts?\\'")
+
+(use-package zig-mode
+  :mode "\\.zig\\'")
 
 (provide 'init-prog)
 ;;; init-prog.el ends here

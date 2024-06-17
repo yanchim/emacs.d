@@ -657,6 +657,32 @@ typst-mode typst-ts-mode
      "}" n>
      "#outline(indent: auto)")
 
+zig-mode zig-ts-mode
+
+(arr "[" (p "_") "]" (p "type") "{" r "}")
+(case (p "pattern") " => " (p "expr"))
+(const "const " (p "name") ": " (p "type") " = " r ";")
+(enum "const " (p "Name") " = enum {" n> r> n "};" >)
+(enumt "const " (p "Name") " = enum(" (p "type") ") {" n> r> n "};" >)
+(err "const " (p "Name") "Error = error {" n> r> n "};" >)
+(fn "fn " (p "name") "(" p ") {" n> r> n "}" >)
+(fnr "fn " (p "name") "(" p ") " (p "void") " {" n> r> n "}" >)
+(for "for (" p ") |" p "| {" n> r> n "}" >)
+(gfn "fn " (p "name") "(comptime T: type, " p ") type {" n> r> n "}" >)
+(if "if (" p ") {" n> r> n "}" >)
+(ifi "if (" p ") " p " else " r)
+(ifn "inline " (i fn))
+(imp "const " (p "name") " = @import(\"" (r "lib") "\");")
+(main "pub fn main() void {" n> r> n "}")
+(std "const std = @import(\"std\");")
+(struct "const " (p "Name") " = struct {" n> r> n "}" >)
+(switch "switch (" p ") {" n> (i case) "," n> "else => " p "," n "}" >)
+(test "test \"" (p "name") "\" {" n> r> n "}" >)
+(union "const " (p "Name") " = union {" n> r> n "};" >)
+(var "var " (p "name") ": " (p "type") " = " r ";")
+(while "while (" p ") {" n> r> n "}" >)
+(whilei "while (" p ") : (" p ") {" n> r> n "}" >)
+
 ;; Local Variables:
 ;; mode: lisp-data
 ;; outline-regexp: "[a-z]"
