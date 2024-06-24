@@ -1,8 +1,8 @@
-;;; init-ido.el --- Ido setup -*- lexical-binding: t; -*-
+;;; init-ido.el --- Ido-mode setup -*- lexical-binding: t; -*-
 
 ;;; Commentary:
 ;;
-;;  Ido configuration.
+;;  Interactively DO thins with buffers and files.
 ;;
 
 ;;; Code:
