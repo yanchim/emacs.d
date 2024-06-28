@@ -26,6 +26,7 @@ c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-m
 c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 
 (class "class " p " {" n> r> n "}")
+(doc "/**" n " * " r n " */")
 (dow "do {" n> p n "} while (" p ")" >)
 (for "for (" p ") {" n> r> n "}" >)
 (if "if (" p ") {" n> r> n "}" >)
@@ -385,7 +386,7 @@ js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 (ce "console.error(" r ");")
 (ci "console.log(`" r "`);")
 (cl "console.log(" r ");")
-(cv "console.log('" (p "var" var) ": ', " var ");")
+(cv "console.log('" (p "var" var) ":', " var ");")
 (cw "console.warn(" r ");")
 (eac (p "el") ".appendChild(" r ");")
 (erc (p "el") ".removeChild(" r ");")
@@ -416,7 +417,7 @@ js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 (qs "const " (p "el") " = " (p "document") ".querySelector('" r "');")
 (qsa "const " (p "els") " = Array.from(" (p "document") ".querySelectorAll('" r "'));")
 (rel (p "document") ".removeEventListener('" (p "event") "', '" (p "listener") "');")
-(rd (p "collection") ".reduce((" (p "accu") ", " (p "curr") ") => {" n> r> n "});" >)
+(rd (p "collection") ".reduce((" (p "prev") ", " (p "curr") ") => {" n> r> n "});" >)
 (rq "const " p " = require('" (r "module") "');")
 (siv "setInterval(() => {" n> p n "}, " (p "interval") ");" >)
 (sleep "await new Promise((r) => setTimeout(r, " (r "1000") "));")
@@ -708,6 +709,7 @@ zig-mode zig-ts-mode
 (enum "const " (p "Name") " = enum {" n> r> n "};" >)
 (enumt "const " (p "Name") " = enum(" (p "type") ") {" n> r> n "};" >)
 (err "const " (p "Name") "Error = error {" n> r> n "};" >)
+(expect "const expect = @import(\"std\").testing.expect;")
 (fn "fn " (p "name") "(" p ") {" n> r> n "}" >)
 (fnr "fn " (p "name") "(" p ") " (p "void") " {" n> r> n "}" >)
 (for "for (" p ") |" p "| {" n> r> n "}" >)
