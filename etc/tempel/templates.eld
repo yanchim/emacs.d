@@ -25,28 +25,80 @@ c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-m
 
 c++-mode c++-ts-mode c-mode c-ts-mode dart-mode dart-ts-mode java-mode java-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 
-(class "class " p " {" n> r> n "}")
 (doc "/**" n " * " r n " */")
-(dow "do {" n> p n "} while (" p ")" >)
+(dowhile "do {" n> p n "} while (" p ")" >)
 (for "for (" p ") {" n> r> n "}" >)
 (if "if (" p ") {" n> r> n "}" >)
-(switch "switch (" p ") {" n> r> n "}" >)
+(switch "switch (" (p "key") ") {" n> "case " (p "value") ":" > n> r> n "break;" > n> "default:" > n> "break;" > n "}" >)
 (te "(" (p "pred") ") ? " (p "then") " : " (p "else") ";")
 (while "while(" p ") {" n> r> n "}" >)
 
-c-mode
+c++-mode c++-ts-mode
 
+(cin "std::cin >> " r ";")
+(cout "std::cout << " r ";")
+(class "class " (p "MyClass" class) " {" n
+       "public:" n>
+       class "();" > n>
+       class "(" class " &&) = default;" > n>
+       class "(const " class "&) = default;" > n>
+       class " &operator=(" class " &&) = default;" > n>
+       class " &operator=(const " class " &) = default;" > n>
+       "~" class "();" > n n
+       "private:" n> r> n
+       "};" n n
+       class "::" class "() {}" n n
+       class "::~" class "() {}")
+(classi "class " (p "MyClass" class) " {" n
+        "public:" n>
+        class "() = default;" > n>
+        class "(" class " &&) = default;" > n>
+        class "(const " class "&) = default;" > n>
+        class " &operator=(" class " &&) = default;" > n>
+        class " &operator=(const " class " &) = default;" > n>
+        "~" class "() = default;" > n n
+        "private:" n> r> n
+        "};")
+(classe "class " (p "MyClass" class) " {" n
+        "public:" n> p n
+        "private:" n> r> n
+        "};")
+(fore "for (auto " (p "elem") " : " (p "collection") ") {" n> r> n "}")
+(io "#include <iostream>")
+(ns "namespace " (p "Namespace") " {" n> r> n "}")
+
+c++-mode c++-ts-mode c-mode c-ts-mode
+
+(def "#define " (p "MACRO"))
+(deff "#define " (p "MACRO") "(" p ") (" r ")")
+(enum "enum " (p "Enum") " {" n> r> n "};")
+(err "#error \"" r "\"")
+(fnd (p "void") " " (p "name") "(" p ");")
+(main "int main(int argc, char *argv[]) {" n> p n n> "return 0;" n "}")
+(ifd "#if " (p "cond" cond) n r n "#endif /* if " cond " */")
+(ifdef "#ifdef " (p "cond" cond) n r n "#endif /* ifdef " cond " */")
+(ifndef "#ifndef " (p "cond" cond) n r n "#endif /* ifndef " cond " */")
+(init (i io) n n (i main))
+(inc "#include <" r ">")
+(incl "#include \"" r "\"")
 (p "printf(" r ");")
+(pv "printf(\"" (p "var" var) " = %" (p "d") "\", " var ");")
+(warn "#warning \"" r "\"")
 
-c-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
+c-mode c-ts-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
-(inc "#include <" (p (concat (file-name-base (or (buffer-file-name) (buffer-name))) ".h")) ">")
-(incc "#include \"" (p (concat (file-name-base (or (buffer-file-name) (buffer-name))) ".h")) "\"")
-(io "#include <stdio.h>")
+(ass "assert(" r ");")
+(assh "#include <assert.h>")
 (compile "// -*- compile-command: \"gcc -Wall -o " (file-name-sans-extension (buffer-name)) " " (buffer-name) " && ./" (file-name-sans-extension (buffer-name)) "\" -*-")
-(main "int main() {" n> p n n> "return 0;" n "}")
-(std "#include <stdlib.h>")
+(io "#include <stdio.h>")
+(lib "#include <stdlib.h>")
+(once "#ifndef " (p "FILE" file) "_H" n "#define " file "_H" n r n "#endif /* end of include guard: " file "_H */")
+(sass "static_assert(" (p "expr") ", " (p "message") ");")
+(st "struct " (p "name") " {" n> r> n "};")
 (str "#include <string.h>")
+(td "typedef " (p "void") " " (p "alias") ";")
+(tds "typedef struct " p " " (p "alias") ";")
+(tdu "typedef union " p " " (p "alias") ";")
 
 clojure-mode clojure-ts-mode
 
@@ -265,7 +317,7 @@ elixir-mode elixir-ts-mode
 emacs-lisp-mode lisp-mode
 
 (cond "(cond" n "(" q "))" >)
-(defun "(defun " p " (" p ")\n  \"" p "\"" n> r> ")")
+(defun "(defun " (p "name") " (" p ")" n> "\"" (p "doc") "\"" n> r> ")")
 (ifl "(if-let (" p ")" n> r> ")")
 (lambda "(lambda (" p ")" n> r> ")")
 (let "(let (" p ")" n> r> ")")
@@ -371,6 +423,10 @@ heex-mode heex-ts-mode html-mode html-ts-mode nxml-mode web-mode
 (style "<style tyle=\"text/css\" media=\"" (p "screen") "\">" n> r> n "</style>")
 (tag "<" (p "tag" tag) ">" r "</" tag ">")
 (tags "<" p " />")
+
+java-mode java-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
+
+(class "class " p " {" n> r> "}")
 
 java-mode java-ts-mode
 

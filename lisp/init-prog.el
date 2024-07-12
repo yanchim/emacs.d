@@ -185,7 +185,8 @@
   :mode "\\.nix\\'")
 
 (use-package zig-mode
-  :mode "\\.zig\\'")
+  :mode "\\.zig\\'"
+  :custom (zig-format-on-save nil))
 
 (provide 'init-prog)
 ;;; init-prog.el ends here

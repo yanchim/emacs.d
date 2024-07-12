@@ -91,6 +91,7 @@
          ("<localleader>,"  . execute-extended-command)
          ("<localleader>."  . evil-ex)
          ("<localleader>;"  . eval-expression)
+         ("<localleader>w"  . save-buffer)
          ("<localleader>aa" . avy-goto-char-2)
          ("<localleader>ac" . avy-goto-char-timer)
          ("<localleader>ae" . avy-goto-end-of-line)
@@ -150,7 +151,11 @@
          ("<localleader>rr" . my-rotate-windows)
          ("<localleader>tt" . my-toggle-two-split-window)
          ("<localleader>xo" . ace-window)
-         ("<localleader>ws" . ace-swap-window)
+;;;; Window.
+         ("s-h" . evil-window-left)
+         ("s-j" . evil-window-down)
+         ("s-k" . evil-window-up)
+         ("s-l" . evil-window-right)
 ;;;; Evil state bindings.
          (:map evil-normal-state-map
                ("]b" . next-buffer)
@@ -211,12 +216,10 @@
 
   (keymap-set evil-normal-state-map "] SPC" #'evil-unimpaired-insert-newline-below)
 
-  (defun my--evil-disable-ex-highlight ()
+  (define-advice keyboard-quit (:before () evil-ex-nohighlight)
     "Disable evil ex search buffer highlight."
     (when (evil-ex-hl-active-p 'evil-ex-search)
-      (evil-ex-nohighlight) t))
-
-  (advice-add 'keyboard-quit :before #'my--evil-disable-ex-highlight)
+      (evil-ex-nohighlight)))
 
   (defun my--evil-paren-range (count beg end type inclusive)
     "Get minimum range of paren text object.
