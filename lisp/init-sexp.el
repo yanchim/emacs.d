@@ -104,7 +104,8 @@ sexp before point and insert output into current position."
   (cider-enable-nrepl-jvmti-agent t)
   :config
   ;; https://github.com/clojure-emacs/cider/issues/3588
-  (when (string= "powershell" cider-clojure-cli-command)
+  (when (and (string= "powershell" cider-clojure-cli-command)
+             (executable-find "pwsh"))
     (setopt cider-clojure-cli-command "pwsh")))
 
 (use-package fennel-mode
