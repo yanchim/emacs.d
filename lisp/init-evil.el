@@ -149,8 +149,8 @@
          (:map evil-normal-state-map
                ("]b" . next-buffer)
                ("[b" . previous-buffer)
-               ("]e" . flymake-goto-next-error)
-               ("[e" . flymake-goto-prev-error)
+               ("]d" . flymake-goto-next-error)
+               ("[d" . flymake-goto-prev-error)
                ("]h" . diff-hl-next-hunk)
                ("[h" . diff-hl-previous-hunk)
                ("g1" . avy-goto-char-timer)
