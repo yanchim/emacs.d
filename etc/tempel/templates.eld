@@ -676,7 +676,7 @@ rust-mode rust-ts-mode
 (pfnw "pub " (i fnw))
 (pl "println!(" r ")")
 (pmod "pub " (i mod))
-(ps "pub " (i s))
+(pst "pub " (i st))
 (ptt "pub " (i tt))
 (spawn "spawn(proc() {" n> r> n "});" >)
 (st "struct " (p "Name") " {" n> r> n> "}")
