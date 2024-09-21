@@ -165,6 +165,7 @@
   (add-to-list 'whitespace-display-mappings '(space-mark #x200b [?.])))
 
 (use-package uniquify
+  :ensure nil
   :defer t
   :custom
   ;; Don't muck with special buffers.
