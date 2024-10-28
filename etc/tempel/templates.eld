@@ -318,7 +318,6 @@ emacs-lisp-mode lisp-mode
 
 (cond "(cond" n "(" q "))" >)
 (defun "(defun " (p "name") " (" p ")" n> "\"" (p "doc") "\"" n> r> ")")
-(ifl "(if-let (" p ")" n> r> ")")
 (lambda "(lambda (" p ")" n> r> ")")
 (let "(let (" p ")" n> r> ")")
 (lets "(let* (" p ")" n> r> ")")
@@ -328,7 +327,6 @@ emacs-lisp-mode lisp-mode
 (setf "(setf " r ")")
 (unless "(unless " (p "pred") n> r> ")")
 (var "(defvar " r ")")
-(whenl "(when-let (" p ")" n> r> ")")
 (whilel "(while-let (" p ")" n> r> ")")
 
 emacs-lisp-mode
@@ -343,6 +341,8 @@ emacs-lisp-mode
 (dotimes "(dotimes (" p ")" n> r> ")")
 (face "(defface " p " '((t :inherit " p "))" n> "\"" (p "doc") "\")")
 (group "(defgroup " (p "group") " nil" n> "\"" (p "doc") "\"" n> ":group '" p n> ":prefix \"" p "-\")")
+(ifl "(if-let* (" p ")" n> r> ")")
+(letrec "(letrec (" p ")" n> r> ")")
 (loop "(cl-loop for " p " in " p " do" n> r> ")")
 (m "(message \"" r "\")")
 (macro "(defmacro " (p "macro") " (" p ")" n> "\"" (p "doc") "\"" n> r> ")")
@@ -350,7 +350,7 @@ emacs-lisp-mode
 (pcasel "(pcase-let (" p ")" n> r> ")")
 (pcasels "(pcase-let* (" p ")" n> r> ")")
 (pt "(point)")
-(rec "(letrec (" p ")" n> r> ")")
+(whenl "(when-let* (" p ")" n> r> ")")
 (advice "(defun " (p "adv" name) " (&rest app)" n> p n> "(apply app))" n>
         "(advice-add #'" (p "fun") " " (p ":around") " #'" (s name) ")")
 (header ";;; " (file-name-nondirectory (or (buffer-file-name) (buffer-name)))
@@ -552,8 +552,10 @@ latex-mode
 
 lisp-mode
 
+(ifl "(if-let (" p ")" n> r> ")")
 (export "(:export " r ")")
 (use "(:use " r ")")
+(whenl "(when-let (" p ")" n> r> ")")
 
 lua-mode lua-ts-mode
 
@@ -788,7 +790,7 @@ text-mode
 
 tsx-ts-mode
 
-(rc "function " (file-name-base (buffer-file-name)) "(" p ") {" n>
+(rc "function " (p (file-name-base (buffer-file-name))) "(" p ") {" n>
     "return (" n>
     "<>" n> r> n> "</>" n>
     ");" n>

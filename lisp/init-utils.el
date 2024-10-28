@@ -57,7 +57,7 @@
     ;; Comment each line below first line.
     "\n"
     "\n;; "
-    (if-let ((fortune-prog (executable-find "fortune")))
+    (if-let* ((fortune-prog (executable-find "fortune")))
         (replace-regexp-in-string
          ;; Remove extra escape sequences.
          (rx (or (seq ?\n eol)
