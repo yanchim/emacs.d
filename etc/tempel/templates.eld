@@ -431,6 +431,21 @@ go-mode go-ts-mode
 (type "type (" n> (p "NewType") " " (p "SourceType") n ")")
 (var "var (" n> (p "name") " " (p "type") " = " (p "value") n ")")
 
+haskell-mode haskell-ts-mode
+
+(case "case " (p "var") " of" n>
+      (p "cond") " -> " (p "val") n>
+      "otherwise -> " (p "other"))
+(class "class " (p "Name") " where" n> q)
+(data "data " (p "Type") " = " q)
+(doc "{-" n q n "-}")
+(fn (p "function" fn) " :: " (p "Type") n
+    fn " " (p "args") " " q)
+(main "main :: IO ()" n "main = do " q)
+(module "module " (p "Name") " where" n> q)
+(p "print " q)
+(prag "{-# " (p "PRAGMA") " #-}")
+
 heex-mode heex-ts-mode html-mode html-ts-mode nxml-mode web-mode
 
 (a "<a href=\"" (p "#") "\">" r "</a>")
@@ -462,6 +477,26 @@ heex-mode heex-ts-mode html-mode html-ts-mode nxml-mode web-mode
 (style "<style tyle=\"text/css\" media=\"" (p "screen") "\">" n> r> n "</style>")
 (tag "<" (p "tag" tag) ">" r "</" tag ">")
 (tags "<" p " />")
+
+hy-mode hy-ts-mode
+
+(cond "(cond" n> (p "pred") n> p n> "True" n> q ")")
+(cut "(cut " (p "var") " " (p "range") ")")
+(defclass "(defclass " (p "name") " [" p "]" n> "(defn __init__ " "[self" p "]" n> q "))")
+(defn "(defn " (p "name") " [" p "]" n> "\"" (p "doc") "\"" n> r> ")")
+(do "(do" n> r> ")")
+(fn "(fn [" p "] " q ")")
+(for "(for [" p "]" n> r> ")")
+(lambda "(lambda " (p "name") " [" p "]" n> r> ")")
+(lfor "(lfor " (p "var") " " (p "list") " " q ")")
+(get "(get " (p "var") " " (p "0") ")")
+(if "(if " (p "pred") n> (p "then") n> (p "else") ")")
+(import "(import " q ")")
+(print "(print " q ")")
+(require "(require " q ")")
+(set "(set " r ")")
+(setv "(setv " r ")")
+(while "(while " (p "pred") n> r> ")")
 
 java-mode java-ts-mode js-mode js-ts-mode tsx-ts-mode typescript-mode typescript-ts-mode web-mode
 

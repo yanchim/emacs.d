@@ -117,5 +117,8 @@ sexp before point and insert output into current position."
 (use-package fennel-mode
   :mode ("\\.fnl\\'" . fennel-mode))
 
+(use-package hy-mode
+  :mode ("\\.hy\\'" . hy-mode))
+
 (provide 'init-sexp)
 ;;; init-sexp.el ends here
