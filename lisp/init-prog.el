@@ -24,6 +24,7 @@
             (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
             (go "https://github.com/tree-sitter/tree-sitter-go")
             (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+            (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
             (heex "https://github.com/phoenixframework/tree-sitter-heex")
             (html "https://github.com/tree-sitter/tree-sitter-html")
             (java "https://github.com/tree-sitter/tree-sitter-java")
@@ -144,11 +145,14 @@
   :bind (("C-c c f" . apheleia-format-buffer)
          ("C-c c F" . apheleia-goto-error))
   :config
-  (add-to-list 'apheleia-mode-alist '(python-mode . ruff))
-  (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff))
+  (add-to-list 'apheleia-formatters
+               '(google-java-format . ("google-java-format" "--aosp" "-")))
   (add-to-list 'apheleia-formatters '(rustfmt . ("rustfmt" "--quiet"
-                                                 "--emit" "stdout"
-                                                 "--edition" "2021"))))
+                                                 "--edition" "2021"
+                                                 "--emit" "stdout")))
+
+  (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff))
+  (add-to-list 'apheleia-mode-alist '(python-mode . ruff)))
 
 ;;;; Major modes.
 
@@ -180,6 +184,11 @@
   :when (and (treesit-available-p) (treesit-ready-p 'dart 'message))
   :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode")
   :mode "\\.dart\\'")
+
+(use-package haskell-ts-mode
+  :when (and (treesit-available-p) (treesit-ready-p 'haskell 'message))
+  :mode "\\.hs\\'"
+  :config (with-eval-after-load 'eglot (haskell-ts-setup-eglot)))
 
 (use-package nix-ts-mode
   :when (and (treesit-available-p) (treesit-ready-p 'nix 'message))
