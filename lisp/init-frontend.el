@@ -21,6 +21,8 @@
          web-mode))
 
 (use-package web-mode
+  :bind (:map web-mode-map
+              ("C-c C-w" . nil))
   :mode "\\.\\(?:cs\\|[px]\\)?html?\\'"
   :mode "\\.\\(?:tpl\\|blade\\)\\(?:\\.php\\)?\\'"
   :mode "\\.as[cp]x\\'"
