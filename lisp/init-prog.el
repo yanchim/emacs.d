@@ -31,6 +31,7 @@
             (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
             (jsdoc "https://github.com/tree-sitter/tree-sitter-jsdoc")
             (json "https://github.com/tree-sitter/tree-sitter-json")
+            (just "https://github.com/IndianBoy42/tree-sitter-just")
             (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
             (markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" nil "tree-sitter-markdown/src")
             (markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" nil "tree-sitter-markdown-inline/src")
@@ -185,10 +186,16 @@
   :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode")
   :mode "\\.dart\\'")
 
+(use-package fsharp-mode :defer t)
+
 (use-package haskell-ts-mode
   :when (and (treesit-available-p) (treesit-ready-p 'haskell 'message))
   :mode "\\.hs\\'"
   :config (with-eval-after-load 'eglot (haskell-ts-setup-eglot)))
+
+(use-package just-ts-mode
+  :when (and (treesit-available-p) (treesit-ready-p 'just 'message))
+  :defer t)
 
 (use-package nix-ts-mode
   :when (and (treesit-available-p) (treesit-ready-p 'nix 'message))
@@ -219,8 +226,10 @@
     (interactive)
     (rust--compile nil "%s doc --open" rust-cargo-bin)))
 
+(use-package tuareg :defer t)
+
 (use-package zig-mode
-  :mode "\\.zig\\'"
+  :defer t
   :custom (zig-format-on-save nil))
 
 (provide 'init-prog)
