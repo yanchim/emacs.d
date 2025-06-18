@@ -64,20 +64,16 @@
 (require 'init-corfu)
 
 (require 'init-prog)
+(require 'init-sexp)
+(require 'init-lsp)
 (require 'init-check)
 
-;; Handy tools though not must have.
 (require 'init-misc)
 (require 'init-theme)
 (require 'init-reader)
 (require 'init-evil)
 (require 'init-markup)
 (require 'init-snippet)
-
-;; Program.
-(require 'init-sexp)
-(require 'init-frontend)
-(require 'init-lsp)
 
 ;; Personal setup.
 (load (expand-file-name "~/.custom.el") t nil)

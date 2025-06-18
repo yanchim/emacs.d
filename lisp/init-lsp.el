@@ -32,5 +32,9 @@
   :after (eglot tempel)
   :config (eglot-tempel-mode +1))
 
+(use-package ocaml-eglot
+  :after (eglot neocaml)
+  :config (ocaml-eglot +1))
+
 (provide 'init-lsp)
 ;;; init-lsp.el ends here

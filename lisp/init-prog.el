@@ -12,17 +12,47 @@
   :when (treesit-available-p)
   :init
   (setopt treesit-language-source-alist
-          '((c3 "https://github.com/c3lang/tree-sitter-c3")
+          '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+            (c "https://github.com/tree-sitter/tree-sitter-c")
+            (c3 "https://github.com/c3lang/tree-sitter-c3")
             (clojure "https://github.com/sogaiu/tree-sitter-clojure")
+            (cmake "https://github.com/uyha/tree-sitter-cmake")
+            (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+            (csharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
+            (css "https://github.com/tree-sitter/tree-sitter-css")
             (dart "https://github.com/UserNobody14/tree-sitter-dart")
+            (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
+            (doxygen "https://github.com/tree-sitter-grammars/tree-sitter-doxygen")
+            (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
+            (go "https://github.com/tree-sitter/tree-sitter-go")
+            (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
             (haskell "https://github.com/tree-sitter/tree-sitter-haskell")
+            (heex "https://github.com/phoenixframework/tree-sitter-heex")
+            (html "https://github.com/tree-sitter/tree-sitter-html")
+            (java "https://github.com/tree-sitter/tree-sitter-java")
+            (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+            (jsdoc "https://github.com/tree-sitter/tree-sitter-jsdoc")
+            (json "https://github.com/tree-sitter/tree-sitter-json")
             (just "https://github.com/IndianBoy42/tree-sitter-just")
+            (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
             (markdown "https://github.com/tree-sitter-grammars/tree-sitter-markdown" nil "tree-sitter-markdown/src")
             (markdown-inline "https://github.com/tree-sitter-grammars/tree-sitter-markdown" nil "tree-sitter-markdown-inline/src")
             (nix "https://github.com/nix-community/tree-sitter-nix")
+            (ocaml "https://github.com/tree-sitter/tree-sitter-ocaml" nil "grammars/ocaml/src")
+            (ocaml-interface "https://github.com/tree-sitter/tree-sitter-ocaml" nil "grammars/interface/src")
             (odin "https://github.com/tree-sitter-grammars/tree-sitter-odin")
+            (php "https://github.com/tree-sitter/tree-sitter-php" nil "php/src")
+            (phpdoc "https://github.com/claytonrcarter/tree-sitter-phpdoc")
+            (purescript "https://github.com/postsolar/tree-sitter-purescript")
+            (python "https://github.com/tree-sitter/tree-sitter-python")
+            (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
             (rust "https://github.com/tree-sitter/tree-sitter-rust")
+            (toml "https://github.com/tree-sitter-grammars/tree-sitter-toml")
+            (tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")
+            (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
             (typst "https://github.com/uben0/tree-sitter-typst")
+            (vue "https://github.com/tree-sitter-grammars/tree-sitter-vue")
+            (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml")
             (zig "https://github.com/maxxnino/tree-sitter-zig")))
   :custom
   (major-mode-remap-alist
@@ -37,6 +67,7 @@
      (javascript-mode . js-ts-mode)
      (js-json-mode    . json-ts-mode)
      (js-mode         . js-ts-mode)
+     (mhtml-mode      . mhtml-ts-mode)
      (python-mode     . python-ts-mode)
      (ruby-mode       . ruby-ts-mode)
      (sh-mode         . bash-ts-mode)))
@@ -126,14 +157,11 @@
   :bind (("C-c c f" . apheleia-format-buffer)
          ("C-c c F" . apheleia-goto-error))
   :config
-  (add-to-list 'apheleia-formatters
-               '(google-java-format . ("google-java-format" "--aosp" "-")))
-  (add-to-list 'apheleia-formatters '(rustfmt . ("rustfmt" "--quiet"
-                                                 "--edition" "2021"
-                                                 "--emit" "stdout")))
-
   (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff))
-  (add-to-list 'apheleia-mode-alist '(python-mode . ruff)))
+  (add-to-list 'apheleia-mode-alist '(python-mode . ruff))
+
+  (setf (alist-get 'google-java-format apheleia-formatters)
+        '("google-java-format" "--aosp" "-")))
 
 ;;;; Major modes.
 
@@ -147,14 +175,6 @@
   (python-indent-guess-indent-offset nil)
   (python-indent-offset 4))
 
-(use-package nxml
-  :mode
-  ("\\.[^.]*proj\\'" . nxml-mode)
-  ("\\.xaml\\'" . nxml-mode)
-  ("\\.p\\(?:list\\|om\\)\\'" . nxml-mode)
-  ("\\.xs\\(?:d\\|lt\\)\\'" . nxml-mode)
-  ("\\.rss\\'" . nxml-mode))
-
 (use-package tex-mode
   :defer t
   :config
@@ -162,34 +182,51 @@
   (add-to-list 'tex-compile-commands '("xelatex %f" t "%r.pdf")))
 
 (use-package c3-ts-mode
-  :when (and (treesit-available-p) (treesit-ready-p 'c3 'message))
+  :when (treesit-available-p)
   :vc (:url "https://github.com/c3lang/c3-ts-mode")
   :mode "\\.c3\\'")
 
 (use-package dart-ts-mode
-  :when (and (treesit-available-p) (treesit-ready-p 'dart 'message))
+  :when (treesit-available-p)
   :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode")
   :mode "\\.dart\\'")
 
 (use-package fsharp-mode :defer t)
 
 (use-package odin-ts-mode
-  :when (and (treesit-available-p) (treesit-ready-p 'odin 'message))
+  :when (treesit-available-p)
   :vc (:url "https://github.com/Sampie159/odin-ts-mode")
   :mode "\\.odin\\'")
 
 (use-package haskell-ts-mode
-  :when (and (treesit-available-p) (treesit-ready-p 'haskell 'message))
-  :mode "\\.hs\\'"
-  :config (with-eval-after-load 'eglot (haskell-ts-setup-eglot)))
+  :when (treesit-available-p)
+  :bind ("C-c C-z" . run-haskell)
+  :config
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(haskell-ts-mode
+                   . ("haskell-language-server-wrapper" "--lsp")))))
+
+(use-package neocaml
+  :when (treesit-available-p)
+  :vc (:url "https://github.com/bbatsov/neocaml")
+  :mode (("\\.ml\\'" . neocaml-mode)
+         ("\\.mli\\'" . neocamli-mode))
+  :hook (neocaml-mode . neocaml-repl-minor-mode)
+  :config
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '((neocaml-mode :language-id "ocaml") . ("ocamllsp")))))
 
 (use-package just-ts-mode
-  :when (and (treesit-available-p) (treesit-ready-p 'just 'message))
+  :when (treesit-available-p)
   :defer t)
 
 (use-package nix-ts-mode
-  :when (and (treesit-available-p) (treesit-ready-p 'nix 'message))
+  :when (treesit-available-p)
   :mode "\\.nix\\'")
+
+(use-package purescript-mode :defer t)
 
 (use-package rust-mode
   :bind (:map rust-mode-map
@@ -216,7 +253,10 @@
     (interactive)
     (rust--compile nil "%s doc --open" rust-cargo-bin)))
 
-(use-package tuareg :defer t)
+(use-package vue-ts-mode
+  :when (treesit-available-p)
+  :vc (:url "https://github.com/8uff3r/vue-ts-mode")
+  :mode "\\.[nu]vue\\'")
 
 (use-package zig-mode
   :defer t
