@@ -118,6 +118,9 @@
 ;; Fix Emacs performance when edit so-long files.
 (global-so-long-mode +1)
 
+;; Make word-based commands stop inside symbols.
+(global-subword-mode +1)
+
 ;; https://www.emacswiki.org/emacs/SavePlace
 (save-place-mode +1)
 
@@ -215,7 +218,6 @@
 (keymap-global-set "C-c t k" #'visual-line-mode)
 (keymap-global-set "C-c t l" #'display-line-numbers-mode)
 (keymap-global-set "C-c t r" #'cua-rectangle-mark-mode)
-(keymap-global-set "C-c t s" #'subword-mode)
 (keymap-global-set "C-c t t" #'load-theme)
 (keymap-global-set "C-c t v" #'view-mode)
 
