@@ -65,7 +65,6 @@
 
 (require 'init-prog)
 (require 'init-sexp)
-(require 'init-lsp)
 (require 'init-check)
 
 (require 'init-misc)
@@ -76,7 +75,7 @@
 (require 'init-snippet)
 
 ;; Personal setup.
-(load (expand-file-name "~/.custom.el") t nil)
+(load (expand-file-name "~/.custom.el") t)
 
 (message "Emacs ready in %s with %d garbage collections."
          (format "%.2f seconds"

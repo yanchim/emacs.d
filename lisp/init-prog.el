@@ -88,6 +88,31 @@
       (when (treesit-ready-p parser 'message)
         (add-to-list 'auto-mode-alist alist)))))
 
+(use-package eglot
+  :bind (("C-c l l" . eglot)
+         ("C-c l a" . eglot-code-actions)
+         ("C-c l c" . eglot-show-workspace-configuration)
+         ("C-c l d" . eglot-find-declaration)
+         ("C-c l f" . eglot-format)
+         ("C-c l h" . eldoc)
+         ("C-c l i" . eglot-find-implementation)
+         ("C-c l n" . eglot-rename)
+         ("C-c l q" . eglot-shutdown)
+         ("C-c l t" . eglot-find-typeDefinition)
+         ("C-c l R" . eglot-reconnect)
+         ("C-c l Q" . eglot-shutdown-all)))
+
+(use-package eglot-booster
+  :vc (:url "https://github.com/jdtsmith/eglot-booster")
+  :when (executable-find "emacs-lsp-booster")
+  :after eglot
+  :custom (eglot-booster-io-only t)
+  :config (eglot-booster-mode +1))
+
+(use-package eglot-tempel
+  :after (eglot tempel)
+  :config (eglot-tempel-mode +1))
+
 (use-package compile
   :bind (("C-c c k" . compile)
          ("C-c c r" . recompile))
@@ -97,13 +122,6 @@
   (compilation-scroll-output 'first-error)
   :hook
   (compilation-filter . ansi-color-compilation-filter))
-
-(use-package etags
-  :defer t
-  :custom (tags-revert-without-query t))
-
-(use-package subword
-  :hook ((prog-mode text-mode) . subword-mode))
 
 (use-package eldoc-box
   :vc (:url "https://github.com/dalugm/eldoc-box")
@@ -205,18 +223,23 @@
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '(haskell-ts-mode
-                   . ("haskell-language-server-wrapper" "--lsp")))))
+                   . ("haskell-language-server-wrapper" "--lsp"))))
+  :mode "\\.hs\\'")
 
 (use-package neocaml
   :when (treesit-available-p)
   :vc (:url "https://github.com/bbatsov/neocaml")
-  :mode (("\\.ml\\'" . neocaml-mode)
-         ("\\.mli\\'" . neocamli-mode))
   :hook (neocaml-mode . neocaml-repl-minor-mode)
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '((neocaml-mode :language-id "ocaml") . ("ocamllsp")))))
+                 '((neocaml-mode :language-id "ocaml") . ("ocamllsp"))))
+  :mode (("\\.mli\\'" . neocamli-mode)
+         ("\\.ml\\'" . neocaml-mode)))
+
+(use-package ocaml-eglot
+  :after (eglot neocaml)
+  :config (ocaml-eglot +1))
 
 (use-package just-ts-mode
   :when (treesit-available-p)
@@ -256,7 +279,37 @@
 (use-package vue-ts-mode
   :when (treesit-available-p)
   :vc (:url "https://github.com/8uff3r/vue-ts-mode")
-  :mode "\\.[nu]vue\\'")
+  :config
+  (with-eval-after-load 'eglot
+    ;; Eglot with vuels.
+    (add-to-list 'eglot-server-programs
+                 '(vue-ts-mode . (eglot-vuels "vue-language-server" "--stdio")))
+
+    (defclass eglot-vuels (eglot-lsp-server) ()
+      :documentation "vue-language-server")
+
+    (cl-defmethod eglot-initialization-options ((server eglot-vuels))
+      "Pass through required cquery initialization options"
+      (let* ((no-warnings "NODE_NO_WARNINGS=1")
+             (filter "| sed -n '2p'")
+             (base "pnpm list --parseable typescript")
+             (global "pnpm list --global --parseable typescript")
+             (space " ")
+             (tsdk-base-path
+              (string-trim-right
+               (shell-command-to-string
+                (concat no-warnings space base space filter))))
+             (tsdk-global-path
+              (string-trim-right
+               (shell-command-to-string
+                (concat no-warnings space global space filter))))
+             (tsdk-path (expand-file-name "lib"
+                                          (if (string-empty-p tsdk-base-path)
+                                              tsdk-global-path
+                                            tsdk-base-path))))
+        `( :typescript (:tsdk ,tsdk-path)
+           :vue (:hybridMode :json-false)))))
+  :mode "\\.[nu]?vue\\'")
 
 (use-package zig-mode
   :defer t
