@@ -238,8 +238,9 @@
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '((neocaml-mode :language-id "ocaml") . ("ocamllsp"))))
-  :mode (("\\.mli\\'" . neocamli-mode)
-         ("\\.ml\\'" . neocaml-mode)))
+  :mode
+  (("\\.mli\\'" . neocamli-mode)
+   ("\\.ml\\'" . neocaml-mode)))
 
 (use-package ocaml-eglot
   :after (eglot neocaml)
@@ -247,7 +248,7 @@
 
 (use-package just-ts-mode
   :when (treesit-available-p)
-  :defer t)
+  :mode "\\.[Jj]ust\\(file\\)?\\'")
 
 (use-package nix-ts-mode
   :when (treesit-available-p)
@@ -284,26 +285,25 @@
   :config
   (with-eval-after-load 'eglot
     ;; Eglot with vuels.
+    (defcustom my--eglot-vuels-path "/path/to/@vue/language-server"
+      "Path to vue-language-server."
+      :type '(string :tag "Path to vuels"))
+
     (add-to-list 'eglot-server-programs
-                 '(vue-ts-mode . (eglot-vuels "vue-language-server" "--stdio")))
+                 '(vue-ts-mode . (eglot-vtsls "vtsls" "--stdio")))
 
-    (defclass eglot-vuels (eglot-lsp-server) ()
-      :documentation "vue-language-server")
+    (defclass eglot-vtsls (eglot-lsp-server) ()
+      :documentation "vtsls-language-server")
 
-    (cl-defmethod eglot-initialization-options ((server eglot-vuels))
+    (cl-defmethod eglot-initialization-options ((server eglot-vtsls))
       "Pass through required cquery initialization options"
-      (let* ((get-ts-root
-              (lambda (&optional global)
-                (let* ((pnpm-root-cmd (format "pnpm root %s" (if global "--global" "")))
-                       (node-modules-dir (string-trim-right (shell-command-to-string pnpm-root-cmd)))
-                       (ts-dir (expand-file-name "typescript" node-modules-dir)))
-                  (when (file-exists-p ts-dir)
-                    ts-dir))))
-             (ts-package-path (or (funcall get-ts-root) (funcall get-ts-root t)))
-             (tsdk-path (and ts-package-path (expand-file-name "lib" ts-package-path))))
-        (when tsdk-path
-          `( :typescript (:tsdk ,tsdk-path)
-             :vue (:hybridMode :json-false))))))
+      `(:vtsls
+        (:tsserver
+         (:globalPlugins
+          [( :name "@vue/typescript-plugin"
+             :location ,my--eglot-vuels-path
+             :languages ["vue"]
+             :configNamespace "typescript")])))))
   :mode "\\.[nu]?vue\\'")
 
 (use-package zig-ts-mode
