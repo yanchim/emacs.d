@@ -199,6 +199,9 @@
   :mode ("\\.[cm]js\\'" . js-mode)
   :custom (js-indent-level 2))
 
+(use-package lua-ts-mode
+  :custom (lua-ts-indent-offset 3))
+
 (use-package python
   :mode ("\\.[cir]py\\'" . python-mode)
   :custom
