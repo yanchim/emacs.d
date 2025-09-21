@@ -235,9 +235,9 @@ ATTRS."
 ;; Emoji display.
 (set-fontset-font t 'emoji
                   (font-spec
-                   :family (concat
-                            (if my-mac-p "Apple" "Noto")
-                            " Color Emoji"))
+                   :family (string-join
+                            `(,(if my-mac-p "Apple" "Noto") "Color" "Emoji")
+                            " "))
                   nil 'prepend)
 
 ;; https://www.reddit.com/r/emacs/comments/988paa/emacs_on_windows_seems_lagging/

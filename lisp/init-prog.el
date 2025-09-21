@@ -214,9 +214,6 @@
   (setopt tex-command "xelatex")
   (add-to-list 'tex-compile-commands '("xelatex %f" t "%r.pdf")))
 
-(use-package fsharp-mode :defer t)
-(use-package purescript-mode :defer t)
-
 (use-package c3-ts-mode
   :when (treesit-available-p)
   :vc (:url "https://github.com/c3lang/c3-ts-mode")
@@ -227,20 +224,31 @@
   :vc (:url "https://github.com/50ways2sayhard/dart-ts-mode")
   :mode "\\.dart\\'")
 
-(use-package odin-ts-mode
-  :when (treesit-available-p)
-  :vc (:url "https://github.com/Sampie159/odin-ts-mode")
-  :mode "\\.odin\\'")
+(use-package fsharp-mode
+  :bind (:map fsharp-mode-map
+              ("C-c C-x C-j" . run-fsharp)))
+
+(use-package eglot-fsharp :after (eglot fsharp-mode))
 
 (use-package haskell-ts-mode
   :when (treesit-available-p)
-  :bind ("C-c C-z" . run-haskell)
+  :bind (:map haskell-ts-mode-map
+              ("C-c C-x C-j" . run-haskell))
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '(haskell-ts-mode
-                   . ("haskell-language-server-wrapper" "--lsp"))))
-  :mode "\\.hs\\'")
+                   . ("haskell-language-server-wrapper" "--lsp")))))
+
+(use-package purescript-mode :defer t)
+
+(use-package just-ts-mode
+  :when (treesit-available-p)
+  :mode "\\.[Jj]ust\\(file\\)?\\'")
+
+(use-package nix-ts-mode
+  :when (treesit-available-p)
+  :mode "\\.nix\\'")
 
 (use-package neocaml
   :when (treesit-available-p)
@@ -258,13 +266,10 @@
   :after (eglot neocaml)
   :config (ocaml-eglot +1))
 
-(use-package just-ts-mode
+(use-package odin-ts-mode
   :when (treesit-available-p)
-  :mode "\\.[Jj]ust\\(file\\)?\\'")
-
-(use-package nix-ts-mode
-  :when (treesit-available-p)
-  :mode "\\.nix\\'")
+  :vc (:url "https://github.com/Sampie159/odin-ts-mode")
+  :mode "\\.odin\\'")
 
 (use-package rust-mode
   :bind (:map rust-mode-map
