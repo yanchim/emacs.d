@@ -7,16 +7,16 @@
 
 ;;; Code:
 
-(use-package doom-themes)
+(use-package modus-themes)
 
 (use-package ef-themes)
 
-(use-package modus-themes)
+(use-package standard-themes)
+
+(use-package doom-themes)
 
 (use-package sinolor-themes
   :vc (:url "https://github.com/dalugm/sinolor-themes"))
-
-(use-package standard-themes)
 
 (use-package tao-theme)
 

@@ -284,7 +284,7 @@
               ("C-c C-p C-r" . rust-playpen-region)
               ("C-c C-r C-c" . rust-compile-release)
               ("C-c C-r C-r" . rust-run-release))
-  :custom (rust-mode-treesitter-derive t)
+  ;; :custom (rust-mode-treesitter-derive t)
   :config
   (defun my-rust-doc ()
     "Build documentation using `cargo doc'."
@@ -304,7 +304,7 @@
     ;; Eglot with vuels.
     (defcustom my--eglot-vuels-path "/path/to/@vue/language-server"
       "Path to vue-language-server."
-      :type '(string :tag "Path to vuels"))
+      :type '(directory :tag "Path to vuels"))
 
     (add-to-list 'eglot-server-programs
                  '(vue-ts-mode . (eglot-vtsls "vtsls" "--stdio")))
