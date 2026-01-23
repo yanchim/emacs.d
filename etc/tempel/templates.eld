@@ -409,7 +409,9 @@ fennel-mode
 
 fundamental-mode ;; Available everywhere
 
-(today (format-time-string "%Y-%m-%d"))
+(today (format-time-string "%Y-%m-%d")
+       :ann "Today's date"
+       :doc "Insert today's date")
 
 go-mode go-ts-mode
 
@@ -604,6 +606,12 @@ latex-mode
 (itemize "\\begin{itemize}" n> "\\item " r> n> "\\end{itemize}" >)
 (letter "\\begin{letter}" n> r> n> "\\end{letter}" >)
 (math "\\begin{math}" n> r> n> "\\end{math}" >)
+(matrix (p (read-number "Rows: ") rows noinsert)
+        (p (read-number "Cols: ") cols noinsert)
+        "\\begin{" (p "pmatrix" type) "}" n
+        (* (1- rows) (p " ") (* (1- cols) " & " (p " ")) "\\\\" n)
+        (p " ") (* (1- cols) " & " (p " ")) n
+        "\\end{" type "}")
 (minipage "\\begin{minipage}[t]{0.5\linewidth}" n> r> n> "\\end{minipage}" >)
 (quotation "\\begin{quotation}" n> r> n> "\\end{quotation}" >)
 (quote "\\begin{quote}" n> r> n> "\\end{quote}" >)
@@ -849,23 +857,36 @@ texinfo-mode
 
 text-mode
 
+(block "┌────" n
+       "| " r n
+       "└────")
+(block-ascii ",---" n
+             "| " r n
+             "`---")
 (box "┌─" (make-string (length str) ?─) "─┐" n
      "│ " (s str)                       " │" n
      "└─" (make-string (length str) ?─) "─┘" n)
-(abox "+-" (make-string (length str) ?-) "-+" n
-      "| " (s str)                       " |" n
-      "+-" (make-string (length str) ?-) "-+" n)
-(fm (p "content") n n
-    "        [32m《" p "》[m [33m—— " r "[m" n
-    "%")
-(fp "[32m《" p "》[m" n
-    "[33m" p "[m" n
-    r n
-    "%")
+(box-ascii "+-" (make-string (length str) ?-) "-+" n
+           "| " (s str)                       " |" n
+           "+-" (make-string (length str) ?-) "-+" n)
+(fortune-motto (p "content") n n
+               "        [32m《" p "》[m [33m—— " r "[m" n
+               "%")
+(fortune-poet "[32m《" p "》[m" n
+              "[33m" p "[m" n
+              r n
+              "%")
+(calc (p "taylor(sin(x),x=0,3)" formula) n
+      "----" n
+      (format "%s" (calc-eval formula)))
 (cut "--8<---------------cut here---------------start------------->8---" n r n
      "--8<---------------cut here---------------end--------------->8---" n)
 (rot13 (p "plain text" text) n "----" n (rot13 text))
-(calc (p "taylor(sin(x),x=0,3)" formula) n "----" n (format "%s" (calc-eval formula)))
+(table (p (read-number "Rows: ") rows noinsert)
+       (p (read-number "Cols: ") cols noinsert)
+       "| " (p "  ") (* (1- cols) " | " (p "  ")) " |" n
+       "|" (* cols "----|") n
+       (* rows "| " (p "  ") (* (1- cols) " | " (p "  ")) " |" n))
 
 tsx-ts-mode
 

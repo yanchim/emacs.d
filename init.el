@@ -1915,6 +1915,34 @@ sexp before point and insert output into current position."
   ;; Visit version controlled symlink without asking
   (setq vc-follow-symlinks t))
 
+(use-package smerge-mode
+  :preface
+
+  (defun my-smerge-resolve-all (keep)
+    "Resolves all conflicts while keeping KEEP side.
+
+KEEP is one of `upper', `base', `lower'."
+    (interactive
+     (list (intern (completing-read "Keep: " '(upper base lower)))))
+    (let ((resolve-func
+           (pcase keep
+             ('upper #'smerge-keep-upper)
+             ('base  #'smerge-keep-base)
+             ('lower #'smerge-keep-lower)
+             (_ (error "Invalid keep value: %s" keep))))
+          (resolve-count 0))
+      (save-excursion
+        (goto-char (point-min))
+        (while (ignore-errors (not (smerge-next)))
+          (funcall resolve-func)
+          (cl-incf resolve-count)))
+      (if (> resolve-count 0)
+          (message "Resolved %d conflict(s) using `%s'" resolve-count keep)
+        (message "No conflicts found"))))
+
+  :bind (:map smerge-basic-map
+              ("R" . my-smerge-resolve-all)))
+
 (use-package magit
   :bind (("C-x g"   . magit-status)
          ("C-c v g" . magit-status)
@@ -2807,13 +2835,17 @@ URL `https://stackoverflow.com/a/22418983/4921402'."
 
 (use-package tempel
   :preface
+
   (defun my--tempel-include (elt)
-    "Add ELT (i template) to include templates by name in another template."
-    (when (eq (car-safe elt) 'i)
-      (if-let* ((template (alist-get (cadr elt) (tempel--templates))))
-          (cons 'l template)
-        (message "Template %s not found" (cadr elt))
-        nil)))
+    (pcase elt
+      (`(i ,inc)
+       (cons 'l (or (alist-get inc (tempel--templates))
+                    (error "Template %s not found" inc))))))
+
+  (defun my--tempel-repeat (elt fields)
+    (pcase elt
+      (`(* ,count . ,rest)
+       (cons 'l (cl-loop for i below (eval count fields) append rest)))))
 
   (defun my--tempel-setup-capf ()
     "Add the Tempel Capf to `completion-at-point-functions'.
@@ -2834,24 +2866,27 @@ Add before the Capfs, such that it will be tried first."
   ;; :custom
   ;; (tempel-trigger-prefix "<")
 
-  :bind (("M-+" . tempel-complete)
-         ("M-_" . tempel-expand)
-         ("M-*" . tempel-insert))
+  :bind
+
+  (("M-+" . tempel-complete)
+   ("M-_" . tempel-expand)
+   ("M-*" . tempel-insert))
+
+  :init
+
+  ;; ;; Optionally make the Tempel templates available to Abbrev,
+  ;; ;; either locally or globally. `expand-abbrev' is bound to C-x '
+  ;; ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
+  ;; (global-tempel-abbrev-mode +1)
+
+  :hook
+
+  ((conf-mode prog-mode text-mode) . my--tempel-setup-capf)
 
   :config
 
   (add-to-list 'tempel-user-elements #'my--tempel-include)
-
-  :init
-
-  (add-hook 'conf-mode-hook #'my--tempel-setup-capf)
-  (add-hook 'prog-mode-hook #'my--tempel-setup-capf)
-  (add-hook 'text-mode-hook #'my--tempel-setup-capf)
-
-  ;; Optionally make the Tempel templates available to Abbrev,
-  ;; either locally or globally. `expand-abbrev' is bound to C-x '
-  ;; (add-hook 'prog-mode-hook #'tempel-abbrev-mode)
-  (global-tempel-abbrev-mode +1))
+  (add-to-list 'tempel-user-elements #'my--tempel-repeat))
 
 ;;; Org
 
