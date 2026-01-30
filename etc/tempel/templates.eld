@@ -4,7 +4,6 @@
 
 bash-ts-mode sh-mode
 
-(b "#!/usr/bin/env " (p "sh"))
 (case "case \"$" (p "VAR") "\" in" n>
       (p "1") ") echo 1" n> ";;" n>
       (p "2|3") ") echo 2 or 3" n> ";;" n>
@@ -16,6 +15,7 @@ bash-ts-mode sh-mode
 (elif "elif " (p "pred") "; then" n> r>)
 (else "else" n> r>)
 (select "select " p " in " p "; do" n> r> n "done")
+(shebang "#!/usr/bin/env " (p "sh"))
 (until "until " p "; do" n> r> n "done")
 (while "while " p "; do" n> r> n "done")
 
@@ -134,6 +134,7 @@ clojure-mode clojure-ts-mode
 clojure-mode clojure-ts-mode :when (re-search-backward "^\\S-*$" (line-beginning-position) 'noerror)
 
 (main "(defn -main [& args]" n> r> ")")
+(shebang "#!/usr/bin/env bb")
 
 clojure-mode clojure-ts-mode emacs-lisp-mode fennel-mode lisp-mode racket-mode ;; Specify multiple modes
 

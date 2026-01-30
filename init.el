@@ -1746,6 +1746,7 @@ sexp before point and insert output into current position."
                ("C-c C-v C-d" . sly-inspect-definition)
                ("C-c C-x C-c" . sly-connect)
                ("C-c C-x C-q" . sly-disconnect)
+               ("C-c C-q"     . sly-quit-lisp)
                ("C-c C-x C-j" . sly))
          (:map sly-doc-map
                ("C-l" . sly-documentation)))
