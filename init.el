@@ -3357,6 +3357,8 @@ Show the heading too, if it is currently invisible."
   :if (treesit-available-p)
   :vc (:url "https://codeberg.org/meow_king/typst-ts-mode")
   :custom (typst-ts-indent-offset 2)
+  :config
+  (add-to-list 'eglot-server-programs '(typst-ts-mode . ("tinymist")))
   :mode "\\.typ\\'")
 
 ;;; Reader
