@@ -1666,17 +1666,33 @@ More details are inside `my-load-font'."
   (add-to-list 'citre-find-reference-backends 'elisp))
 
 (use-package apheleia
-  :bind (("C-c c f" . apheleia-format-buffer)
-         ("C-c c F" . apheleia-goto-error))
   :config
-  (add-to-list 'apheleia-mode-alist '(python-ts-mode . ruff))
-  (add-to-list 'apheleia-mode-alist '(python-mode . ruff))
-  (add-to-list 'apheleia-mode-alist '(vue-ts-mode . prettier))
+
+  (let ((formatter-mode-mapping
+         '((oxfmt . ( css-mode css-ts-mode scss-mode
+                      conf-toml-mode toml-ts-mode
+                      html-mode html-ts-mode
+                      js-mode js-ts-mode
+                      js-json-mode json-mode json-ts-mode
+                      markdown-mode markdown-ts-mode
+                      typescript-mode typescript-ts-mode tsx-ts-mode
+                      vue-ts-mode
+                      yaml-ts-mode))
+           (ruff . (python-mode python-ts-mode)))))
+    (dolist (rule formatter-mode-mapping)
+      (let ((formatter (car rule))
+            (modes     (cdr rule)))
+        (dolist (mode modes)
+          (add-to-list 'apheleia-mode-alist `(,mode . ,formatter))))))
 
   (setf (alist-get 'rustfmt apheleia-formatters)
         '("rustfmt" "--edition" "2024" "--quiet" "--emit" "stdout"))
   (setf (alist-get 'google-java-format apheleia-formatters)
-        '("google-java-format" "--aosp" "-")))
+        '("google-java-format" "--aosp" "-"))
+
+  :bind
+  (("C-c c f" . apheleia-format-buffer)
+   ("C-c c F" . apheleia-goto-error)))
 
 (use-package elisp-mode
   :ensure nil
