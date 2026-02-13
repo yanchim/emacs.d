@@ -134,8 +134,8 @@ excluded puncuation, then the characters that need
 pangu-spacing. The excluded puncuation will be matched to group
 3, and shortcut the matching for Chinese characters.  Thus group
 1 and group 2 will both be non-nil when a pangu space is needed."
-    :group 'convenience
-    :type 'regexp)
+    :type 'regexp
+    :group 'convenience)
 
   (defun my-pangu-spacing-current-buffer ()
     "Pangu space current buffer."
@@ -620,6 +620,11 @@ number."
                   list
                   "，"))))
 
+  (defun my--pulse-highlight-region (fn beg end &rest args)
+    "Momentarily highlight the region between BEG and END."
+    (pulse-momentary-highlight-region beg end)
+    (apply fn beg end args))
+
   :init
   ;; Handle large files
   ;; https://emacs-china.org/t/topic/25811/9
@@ -668,6 +673,8 @@ number."
   (when my-use-gbk-dos-coding-system
     (add-to-list 'process-coding-system-alist
                  '("[rR][gG]" . (utf-8 . gbk-dos))))
+
+  (advice-add 'kill-ring-save :around #'my--pulse-highlight-region)
 
   :bind
 
@@ -1854,8 +1861,8 @@ sexp before point and insert output into current position."
     (add-to-list 'eglot-server-programs
                  '((neocaml-mode :language-id "ocaml") . ("ocamllsp"))))
   :mode
-  (("\\.mli\\'" . neocamli-mode)
-   ("\\.ml\\'" . neocaml-mode)))
+  (("\\.mli\\'" . neocaml-interface-mode)
+   ("\\.ml\\'"  . neocaml-mode)))
 
 (use-package ocaml-eglot
   :after (eglot neocaml)
@@ -2507,6 +2514,8 @@ REPLACE instead.  URL `https://github.com/emacs-evil/evil/issues/511'."
 
   (keymap-set evil-normal-state-map "] SPC" #'evil-unimpaired-insert-newline-below)
 
+  (advice-add 'evil-yank :around #'my--pulse-highlight-region)
+
   (define-advice keyboard-quit (:before () evil-ex-nohighlight)
     "Disable evil ex search buffer highlight."
     (when (evil-ex-hl-active-p 'evil-ex-search)
@@ -3135,6 +3144,21 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
   :defer t
   :custom (org-confirm-babel-evaluate nil)
   :config
+  (defun my-org-babel-highlight-result ()
+    "Highlight the result of the current source block.
+Adapt from `org-babel-remove-result'."
+    (interactive)
+    (when-let* ((location (org-babel-where-is-src-block-result))
+                (case-fold-search t))
+      (save-excursion
+        (goto-char location)
+        (when (looking-at org-babel-result-regexp)
+          (pulse-momentary-highlight-region
+           (1+ (match-end 0))
+           (progn (forward-line) (org-babel-result-end)))))))
+
+  (add-hook 'org-babel-after-execute-hook #'my-org-babel-highlight-result)
+
   (define-advice org-babel-execute-src-block (:around (fn &rest args) lazy-load-languages)
     "Load languages when needed."
     (let* ((language (org-element-property :language (org-element-at-point)))
