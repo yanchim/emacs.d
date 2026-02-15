@@ -1854,12 +1854,11 @@ sexp before point and insert output into current position."
 
 (use-package neocaml
   :if (treesit-available-p)
-  :vc (:url "https://github.com/bbatsov/neocaml")
   :hook (neocaml-mode . neocaml-repl-minor-mode)
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '((neocaml-mode :language-id "ocaml") . ("ocamllsp"))))
+                 '((neocaml-mode neocaml-interface-mode) . ("ocamllsp"))))
   :mode
   (("\\.mli\\'" . neocaml-interface-mode)
    ("\\.ml\\'"  . neocaml-mode)))
