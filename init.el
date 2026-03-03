@@ -1581,7 +1581,7 @@ More details are inside `my-load-font'."
                   (yaml       . (,(rx ".y" (opt "a") "ml" eos) . yaml-ts-mode))))
     (let ((parser (car list))
           (alist (cdr list)))
-      (when (treesit-ready-p parser 'message)
+      (when (treesit-language-available-p parser)
         (add-to-list 'auto-mode-alist alist)))))
 
 (use-package js
@@ -1853,7 +1853,7 @@ sexp before point and insert output into current position."
   (add-to-list 'treesit-language-source-alist
                '(haskell
                  . ("https://github.com/tree-sitter/tree-sitter-haskell")))
-  (unless (treesit-ready-p 'haskell 'message)
+  (unless (treesit-language-available-p 'haskell)
     (treesit-install-language-grammar 'haskell))
 
   (with-eval-after-load 'eglot
@@ -1867,7 +1867,7 @@ sexp before point and insert output into current position."
   :config
   (add-to-list 'treesit-language-source-alist
                '(just . ("https://github.com/casey/tree-sitter-just")))
-  (unless (treesit-ready-p 'just 'message)
+  (unless (treesit-language-available-p 'just)
     (treesit-install-language-grammar 'just))
   :defer t)
 
@@ -1876,7 +1876,7 @@ sexp before point and insert output into current position."
   :config
   (add-to-list 'treesit-language-source-alist
                '(nix . ("https://github.com/nix-community/tree-sitter-nix")))
-  (unless (treesit-ready-p 'nix 'message)
+  (unless (treesit-language-available-p 'nix)
     (treesit-install-language-grammar 'nix))
   :defer t)
 
@@ -1926,7 +1926,7 @@ sexp before point and insert output into current position."
   :config
   (add-to-list 'treesit-language-source-alist
                '(vue . ("https://github.com/tree-sitter-grammars/tree-sitter-vue")))
-  (unless (treesit-ready-p 'vue 'message)
+  (unless (treesit-language-available-p 'vue)
     (treesit-install-language-grammar 'vue))
   :mode "\\.[nu]?vue\\'")
 
@@ -1935,8 +1935,8 @@ sexp before point and insert output into current position."
   :vc (:url "https://codeberg.org/meow_king/zig-ts-mode")
   :config
   (add-to-list 'treesit-language-source-alist
-               '(zig . ("https://github.com/maxxnino/tree-sitter-zig")))
-  (unless (treesit-ready-p 'zig 'message)
+               '(zig . ("https://github.com/tree-sitter-grammars/tree-sitter-zig")))
+  (unless (treesit-language-available-p 'zig)
     (treesit-install-language-grammar 'zig))
   :mode "\\.zig\\(?:\\.zon\\)?\\'")
 
@@ -2017,12 +2017,6 @@ KEEP is one of `upper', `base', `lower'."
   (vertico-cycle t)
   :hook
   (after-init . vertico-mode))
-
-(use-package vertico-sort
-  :ensure nil
-  :after vertico
-  :custom
-  (vertico-sort-function 'vertico-sort-history-length-alpha))
 
 ;; Persist history over Emacs restarts for vertico
 (use-package savehist
@@ -2930,39 +2924,35 @@ URL `https://kitchingroup.cheme.cmu.edu/blog/2016/11/07/Better-equation-numberin
           results
           equation-number)
       (setq results (cl-loop for (begin . env)
-                             in (org-element-map
-                                    (org-element-parse-buffer)
-                                    'latex-environment
+                             in (org-element-map (org-element-parse-buffer) 'latex-environment
                                   (lambda (env)
-                                    (cons
-                                     (org-element-property :begin env)
-                                     (org-element-property :value env))))
-                             collect
-                             (cond
-                              ((and (string-match "\\\\begin{equation}" env)
-                                    (not (string-match "\\\\tag{" env)))
-                               (cl-incf counter)
-                               (cons begin counter))
-                              ((and (string-match "\\\\begin{align}" env)
-                                    (string-match "\\\\notag" env))
-                               (cl-incf counter)
-                               (cons begin counter))
-                              ((string-match "\\\\begin{align}" env)
-                               (prog2
-                                   (cl-incf counter)
-                                   (cons begin counter)
-                                 (with-temp-buffer
-                                   (insert env)
-                                   (goto-char (point-min))
-                                   ;; `\\' is used for a new line
-                                   ;; Each one leads to a number
-                                   (cl-incf counter (count-matches "\\\\$"))
-                                   ;; Unless there are nonumbers
-                                   (goto-char (point-min))
-                                   (cl-decf counter
-                                            (count-matches "\\nonumber")))))
-                              (t
-                               (cons begin nil)))))
+                                    (cons (org-element-property :begin env)
+                                          (org-element-property :value env))))
+                             collect (cond
+                                      ((and (string-match "\\\\begin{equation}" env)
+                                            (not (string-match "\\\\tag{" env)))
+                                       (cl-incf counter)
+                                       (cons begin counter))
+                                      ((and (string-match "\\\\begin{align}" env)
+                                            (string-match "\\\\notag" env))
+                                       (cl-incf counter)
+                                       (cons begin counter))
+                                      ((string-match "\\\\begin{align}" env)
+                                       (prog2
+                                           (cl-incf counter)
+                                           (cons begin counter)
+                                         (with-temp-buffer
+                                           (insert env)
+                                           (goto-char (point-min))
+                                           ;; `\\' is used for a new line
+                                           ;; Each one leads to a number
+                                           (cl-incf counter (count-matches "\\\\$"))
+                                           ;; Unless there are nonumbers
+                                           (goto-char (point-min))
+                                           (cl-decf counter
+                                                    (count-matches "\\nonumber")))))
+                                      (t
+                                       (cons begin nil)))))
       (when (setq equation-number (cdr (assoc (point) results)))
         (setf (car args)
               (concat
@@ -3407,12 +3397,16 @@ Show the heading too, if it is currently invisible."
   :config
   (add-to-list 'treesit-language-source-alist
                '(typst . ("https://github.com/uben0/tree-sitter-typst")))
-  (unless (treesit-ready-p 'typst 'message)
+  (unless (treesit-language-available-p 'typst)
     (treesit-install-language-grammar 'typst))
 
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs '(typst-ts-mode . ("tinymist"))))
-  :mode "\\.typ\\'")
+  :defer t)
+
+(use-package asciidoc-mode
+  :if (treesit-available-p)
+  :defer t)
 
 ;;; Reader
 
