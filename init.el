@@ -1613,6 +1613,10 @@ More details are inside `my-load-font'."
          ("C-c l t" . eglot-find-typeDefinition)
          ("C-c l R" . eglot-reconnect)
          ("C-c l Q" . eglot-shutdown-all))
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-extend-to-xref t)
+  (eglot-ignored-server-capabilities '(:documentHighlightProvider))
   :config
   ;; Use vtsls instead of ts_ls
   (add-to-list 'eglot-server-programs
@@ -1938,6 +1942,9 @@ sexp before point and insert output into current position."
                '(zig . ("https://github.com/tree-sitter-grammars/tree-sitter-zig")))
   (unless (treesit-language-available-p 'zig)
     (treesit-install-language-grammar 'zig))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs '(zig-ts-mode . ("zls"))))
   :mode "\\.zig\\(?:\\.zon\\)?\\'")
 
 ;;; Version control
