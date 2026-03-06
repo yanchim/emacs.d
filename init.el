@@ -1910,7 +1910,7 @@ sexp before point and insert output into current position."
     "Build and open documentation using `cargo doc'."
     (interactive)
     (rust--compile nil "%s doc --open" rust-cargo-bin))
-  ;; :custom (rust-mode-treesitter-derive t)
+  :custom (rust-mode-treesitter-derive t)
   :bind (:map rust-mode-map
               ("C-c C-c C-c" . rust-compile)
               ("C-c C-c C-d" . rust-dbg-wrap-or-unwrap)
