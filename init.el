@@ -760,7 +760,7 @@ number."
    ("C-c m x"   . execute-extended-command)))
 
 (use-package ffap
-  :bind (("C-x C-o" . ffap)))
+  :bind ("C-x C-o" . ffap))
 
 (use-package help
   :ensure nil
@@ -1611,6 +1611,7 @@ More details are inside `my-load-font'."
          ("C-c l n" . eglot-rename)
          ("C-c l q" . eglot-shutdown)
          ("C-c l t" . eglot-find-typeDefinition)
+         ("C-c l L" . eglot-events-buffer)
          ("C-c l R" . eglot-reconnect)
          ("C-c l Q" . eglot-shutdown-all))
   :custom
@@ -1662,28 +1663,24 @@ More details are inside `my-load-font'."
                               "--camel-case"))))
 
 (use-package eldoc-box
-  :vc (:url "https://github.com/dalugm/eldoc-box")
   :if (display-graphic-p)
   :hook ((eldoc-mode eglot-managed-mode) . eldoc-box-hover-mode)
   :custom
   (eldoc-box-only-multi-line t)
   (eldoc-box-clear-with-C-g t)
-  (eldoc-box-enable-frame-map t)
-  :bind (("C-c h h" . eldoc-box-help-at-point)
-         (:map eldoc-box-frame-map
-               ("C-M-n" . eldoc-box-scroll-up)
-               ("C-M-p" . eldoc-box-scroll-down)
-               ("C-M-a" . eldoc-box-beginning)
-               ("C-M-e" . eldoc-box-end)))
+  :bind ("C-c h h" . eldoc-box-help-at-point)
   :config
-  (add-hook 'eldoc-box-buffer-setup-hook #'eldoc-box-prettify-ts-errors 0 t)
-  (setq eldoc-doc-buffer-separator
-        (concat "\n"
-                (propertize "-"
-                            'display '(space :align-to right)
-                            'face '(:strike-through t)
-                            'font-lock-face '(:strike-through t))
-                "\n")))
+  (advice-add 'eldoc-box-buffer-setup
+              :before
+              (lambda (&rest _)
+                (bind-key* "C-M-p" #'eldoc-box-scroll-down)
+                (bind-key* "C-M-n" #'eldoc-box-scroll-up)))
+  (advice-add 'eldoc-box-quit-frame
+              :before
+              (lambda (&rest _)
+                (unbind-key "C-M-p" 'override-global-map)
+                (unbind-key "C-M-n" 'override-global-map)))
+  (add-hook 'eldoc-box-buffer-setup-hook #'eldoc-box-prettify-ts-errors 0 t))
 
 (use-package citre
   :bind (("C-c c a" . citre-ace-peek)
@@ -1938,22 +1935,17 @@ sexp before point and insert output into current position."
   :if (treesit-available-p)
   :vc (:url "https://codeberg.org/meow_king/zig-ts-mode")
   :config
-  (add-to-list 'treesit-language-source-alist
-               '(zig . ("https://github.com/tree-sitter-grammars/tree-sitter-zig")))
-  (unless (treesit-language-available-p 'zig)
-    (treesit-install-language-grammar 'zig))
-
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs '(zig-ts-mode . ("zls"))))
-  :mode "\\.zig\\(?:\\.zon\\)?\\'")
+  :defer t)
 
 ;;; Version control
 
 (use-package vc
   :defer t
-  :config
+  :custom
   ;; Visit version controlled symlink without asking
-  (setq vc-follow-symlinks t))
+  (vc-follow-symlinks t))
 
 (use-package smerge-mode
   :preface
@@ -2647,6 +2639,7 @@ URL `http://blog.binchen.org/posts/code-faster-by-extending-emacs-evil-text-obje
    ("<leader>ln" . eglot-rename)
    ("<leader>lq" . eglot-shutdown)
    ("<leader>lt" . eglot-find-typeDefinition)
+   ("<leader>lL" . eglot-events-buffer)
    ("<leader>lR" . eglot-reconnect)
    ("<leader>lQ" . eglot-shutdown-all)
 ;;;;; Evil leader my custom
@@ -3417,6 +3410,9 @@ Show the heading too, if it is currently invisible."
 
 ;;; Reader
 
+(use-package logview
+  :defer t)
+
 (use-package pdf-tools
   :if (display-graphic-p)
   :hook ((pdf-view-mode . pdf-isearch-minor-mode))
@@ -3432,16 +3428,10 @@ Show the heading too, if it is currently invisible."
 (use-package modus-themes
   :defer t)
 
-(use-package ef-themes
-  :after modus-themes
-  :defer t)
-
 (use-package standard-themes
-  :after modus-themes
   :defer t)
 
 (use-package sinolor-themes
-  :after modus-themes
   :vc (:url "https://github.com/dalugm/sinolor-themes")
   :defer t)
 
