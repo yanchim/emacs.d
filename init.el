@@ -47,8 +47,8 @@
 (eval-and-compile			; `use-package'
   (setopt use-package-vc-prefer-newest t
           use-package-always-ensure t
+          ;; use-package-verbose t
           use-package-enable-imenu-support t)
-  ;; (setopt use-package-verbose t)
   (require 'use-package))
 
 ;; Update GPG keyring for GNU ELPA
@@ -99,6 +99,7 @@ See also: `package-archives'."
                          ("nongnu" . "https://elpa.nongnu.org/nongnu/")
                          ("melpa"  . "https://melpa.org/packages/")))))
 
+  (package-vc-allow-build-commands t)
   (package-install-upgrade-built-in t))
 
 (use-package compat)
@@ -1517,218 +1518,63 @@ More details are inside `my-load-font'."
                         " "))
                       nil 'prepend)))
 
-;;; Program
+;;; Prog
 
-(use-package treesit
-  :ensure nil
-  :if (treesit-available-p)
+(use-package cc-mode
   :init
-  (setq treesit-language-source-alist
-        '((bash "https://github.com/tree-sitter/tree-sitter-bash")
-          (c "https://github.com/tree-sitter/tree-sitter-c")
-          (c-sharp "https://github.com/tree-sitter/tree-sitter-c-sharp")
-          (cmake "https://github.com/uyha/tree-sitter-cmake")
-          (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
-          (css "https://github.com/tree-sitter/tree-sitter-css")
-          (dockerfile "https://github.com/camdencheek/tree-sitter-dockerfile")
-          (elixir "https://github.com/elixir-lang/tree-sitter-elixir")
-          (go "https://github.com/tree-sitter/tree-sitter-go")
-          (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
-          (heex "https://github.com/phoenixframework/tree-sitter-heex")
-          (html "https://github.com/tree-sitter/tree-sitter-html")
-          (java "https://github.com/tree-sitter/tree-sitter-java")
-          (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
-          (jsdoc "https://github.com/tree-sitter/tree-sitter-jsdoc")
-          (json "https://github.com/tree-sitter/tree-sitter-json")
-          (lua "https://github.com/tree-sitter-grammars/tree-sitter-lua")
-          (php "https://github.com/tree-sitter/tree-sitter-php" nil "php/src")
-          (phpdoc "https://github.com/claytonrcarter/tree-sitter-phpdoc")
-          (python "https://github.com/tree-sitter/tree-sitter-python")
-          (ruby "https://github.com/tree-sitter/tree-sitter-ruby")
-          (rust "https://github.com/tree-sitter/tree-sitter-rust")
-          (toml "https://github.com/tree-sitter-grammars/tree-sitter-toml")
-          (tsx "https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")
-          (typescript "https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")
-          (yaml "https://github.com/tree-sitter-grammars/tree-sitter-yaml")))
-  :custom
-  (major-mode-remap-alist
-   '((c-mode          . c-ts-mode)
-     (c++-mode        . c++-ts-mode)
-     (c-or-c++-mode   . c-or-c++-ts-mode)
-     (conf-toml-mode  . toml-ts-mode)
-     (csharp-mode     . csharp-ts-mode)
-     (css-mode        . css-ts-mode)
-     (html-mode       . html-ts-mode)
-     (java-mode       . java-ts-mode)
-     (javascript-mode . js-ts-mode)
-     (js-json-mode    . json-ts-mode)
-     (js-mode         . js-ts-mode)
-     (mhtml-mode      . mhtml-ts-mode)
-     (python-mode     . python-ts-mode)
-     (ruby-mode       . ruby-ts-mode)
-     (sh-mode         . bash-ts-mode)))
+  (when (treesit-available-p)
+    (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+    (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode)))
   :config
-  ;; Add `*-ts-mode' to `auto-mode-alist'
-  (dolist (list `((cmake      . (,(rx (or "CMakeLists.txt" ".cmake") eos) . cmake-ts-mode))
-                  (dockerfile . (,(rx "Dockerfile" eos) . dockerfile-ts-mode))
-                  (elixir     . (,(rx (or ".elixir" (seq ".ex" (opt "s")) "mix.lock") eos) . elixir-ts-mode))
-                  (go         . (,(rx ".go" eos) . go-ts-mode))
-                  (gomod      . (,(rx "/go.mod" eos) . go-mod-ts-mode))
-                  (heex       . (,(rx "." (opt (any "hl")) "eex" eos) . heex-ts-mode))
-                  (lua        . (,(rx ".lua" eos) . lua-ts-mode))
-                  (tsx        . (,(rx "." (any "jt") "sx" eos) . tsx-ts-mode))
-                  (typescript . (,(rx ".ts" eos) . typescript-ts-mode))
-                  (yaml       . (,(rx ".y" (opt "a") "ml" eos) . yaml-ts-mode))))
-    (let ((parser (car list))
-          (alist (cdr list)))
-      (when (treesit-language-available-p parser)
-        (add-to-list 'auto-mode-alist alist)))))
+  (when (treesit-available-p)
+    (add-to-list 'treesit-language-source-alist
+                 '(c . ("https://github.com/tree-sitter/tree-sitter-c")))
+    (unless (treesit-language-available-p 'c)
+      (treesit-install-language-grammar 'c))
 
-(use-package js
-  :mode ("\\.[cm]js\\'" . js-mode)
-  :custom (js-indent-level 2))
+    (add-to-list 'treesit-language-source-alist
+                 '(cpp . ("https://github.com/tree-sitter/tree-sitter-cpp")))
+    (unless (treesit-language-available-p 'cpp)
+      (treesit-install-language-grammar 'cpp)))
+  :defer t)
 
-(use-package python
-  :mode ("\\.[cir]py\\'" . python-mode)
-  :custom
-  (python-indent-guess-indent-offset nil)
-  (python-indent-offset 4))
+(use-package clojure-mode
+  :defer t)
 
-(use-package tex-mode
-  :defer t
+(use-package clojure-ts-mode
+  :if (treesit-available-p)
+  :custom (clojure-ts-auto-remap t)
+  :after clojure-mode)
+
+(use-package cmake-ts-mode
+  :if (treesit-available-p)
   :config
-  (setq tex-command "xelatex")
-  (add-to-list 'tex-compile-commands '("xelatex %f" t "%r.pdf")))
+  (add-to-list 'treesit-language-source-alist
+               '(cmake . ("https://github.com/uyha/tree-sitter-cmake")))
+  (unless (treesit-language-available-p 'cmake)
+    (treesit-install-language-grammar 'cmake))
+  :mode "\\(?:CMakeLists\\.txt\\|\\.cmake\\)\\'")
 
-(use-package eglot
-  :bind (("C-c l l" . eglot)
-         ("C-c l a" . eglot-code-actions)
-         ("C-c l c" . eglot-show-workspace-configuration)
-         ("C-c l d" . eglot-find-declaration)
-         ("C-c l f" . eglot-format)
-         ("C-c l h" . eldoc)
-         ("C-c l i" . eglot-find-implementation)
-         ("C-c l n" . eglot-rename)
-         ("C-c l q" . eglot-shutdown)
-         ("C-c l t" . eglot-find-typeDefinition)
-         ("C-c l L" . eglot-events-buffer)
-         ("C-c l R" . eglot-reconnect)
-         ("C-c l Q" . eglot-shutdown-all))
-  :custom
-  (eglot-autoshutdown t)
-  (eglot-extend-to-xref t)
-  (eglot-ignored-server-capabilities '(:documentHighlightProvider))
+(use-package csharp-mode
+  :init
+  (when (treesit-available-p)
+    (add-to-list 'major-mode-remap-alist '(csharp-mode . csharp-ts-mode)))
   :config
-  ;; Use vtsls instead of ts_ls
-  (add-to-list 'eglot-server-programs
-               '(((js-mode :language-id "javascript")
-                  (js-ts-mode :language-id "javascript")
-                  (tsx-ts-mode :language-id "typescriptreact")
-                  (typescript-ts-mode :language-id "typescript")
-                  (typescript-mode :language-id "typescript"))
-                 "vtsls" "--stdio")))
+  (when (treesit-available-p)
+    (add-to-list 'treesit-language-source-alist
+                 '(c-sharp . ("https://github.com/tree-sitter/tree-sitter-c-sharp")))
+    (unless (treesit-language-available-p 'c-sharp)
+      (treesit-install-language-grammar 'c-sharp)))
+  :defer t)
 
-(use-package eglot-booster
-  :vc (:url "https://github.com/jdtsmith/eglot-booster")
-  :if (executable-find "emacs-lsp-booster")
-  :after eglot
-  :custom (eglot-booster-io-only t)
-  :config (eglot-booster-mode +1))
-
-(use-package eglot-tempel
-  :after (eglot tempel)
-  :config (eglot-tempel-mode +1))
-
-(use-package compile
-  :bind (("C-c c k" . compile)
-         ("C-c c r" . recompile))
-  :custom
-  (compilation-ask-about-save nil)
-  (compilation-always-kill t)
-  (compilation-scroll-output 'first-error)
-  :hook
-  (compilation-filter . ansi-color-compilation-filter))
-
-(use-package flymake
-  :bind (("C-c ! b" . flymake-show-buffer-diagnostics)
-         ("C-c ! p" . flymake-show-project-diagnostics)))
-
-(use-package flyspell
-  :defer t
+(use-package dockerfile-ts-mode
+  :if (treesit-available-p)
   :config
-  (when (executable-find "aspell")
-    (setq ispell-program-name "aspell"
-          ispell-extra-args '("--sug-mode=ultra"
-                              "--lang=en_US"
-                              "--camel-case"))))
-
-(use-package eldoc-box
-  :if (display-graphic-p)
-  :hook ((eldoc-mode eglot-managed-mode) . eldoc-box-hover-mode)
-  :custom
-  (eldoc-box-only-multi-line t)
-  (eldoc-box-clear-with-C-g t)
-  :bind ("C-c h h" . eldoc-box-help-at-point)
-  :config
-  (advice-add 'eldoc-box-buffer-setup
-              :before
-              (lambda (&rest _)
-                (bind-key* "C-M-p" #'eldoc-box-scroll-down)
-                (bind-key* "C-M-n" #'eldoc-box-scroll-up)))
-  (advice-add 'eldoc-box-quit-frame
-              :before
-              (lambda (&rest _)
-                (unbind-key "C-M-p" 'override-global-map)
-                (unbind-key "C-M-n" 'override-global-map)))
-  (add-hook 'eldoc-box-buffer-setup-hook #'eldoc-box-prettify-ts-errors 0 t))
-
-(use-package citre
-  :bind (("C-c c a" . citre-ace-peek)
-         ("C-c c e" . citre-edit-tags-file-recipe)
-         ("C-c c h" . citre-peek)
-         ("C-c c t" . citre-update-this-tags-file)
-         ("C-c c j" . citre-jump)
-         ("C-c c J" . citre-jump-back))
-  :custom
-  (citre-auto-enable-citre-mode-modes '(prog-mode))
-  (citre-default-create-tags-file-location 'global-cache)
-  :config
-  ;; Add Elisp to the backend lists
-  (citre-register-backend 'elisp
-                          (citre-xref-backend-to-citre-backend
-                           'elisp
-                           (lambda () (derived-mode-p 'emacs-lisp-mode))))
-  (add-to-list 'citre-find-definition-backends 'elisp)
-  (add-to-list 'citre-find-reference-backends 'elisp))
-
-(use-package apheleia
-  :config
-
-  (let ((formatter-mode-mapping
-         '((oxfmt . ( css-mode css-ts-mode scss-mode
-                      conf-toml-mode toml-ts-mode
-                      html-mode html-ts-mode
-                      js-mode js-ts-mode
-                      js-json-mode json-mode json-ts-mode
-                      markdown-mode markdown-ts-mode
-                      typescript-mode typescript-ts-mode tsx-ts-mode
-                      vue-ts-mode
-                      yaml-ts-mode))
-           (ruff . (python-mode python-ts-mode)))))
-    (dolist (rule formatter-mode-mapping)
-      (let ((formatter (car rule))
-            (modes     (cdr rule)))
-        (dolist (mode modes)
-          (add-to-list 'apheleia-mode-alist `(,mode . ,formatter))))))
-
-  (setf (alist-get 'rustfmt apheleia-formatters)
-        '("rustfmt" "--edition" "2024" "--quiet" "--emit" "stdout"))
-  (setf (alist-get 'google-java-format apheleia-formatters)
-        '("google-java-format" "--aosp" "-"))
-
-  :bind
-  (("C-c c f" . apheleia-format-buffer)
-   ("C-c c F" . apheleia-goto-error)))
+  (add-to-list 'treesit-language-source-alist
+               '(dockerfile . ("https://github.com/camdencheek/tree-sitter-dockerfile")))
+  (unless (treesit-language-available-p 'dockerfile)
+    (treesit-install-language-grammar 'dockerfile))
+  :mode "\\(?:Dockerfile\\(?:\\..*\\)?\\|\\.[Dd]ockerfile\\)\\'")
 
 (use-package elisp-mode
   :ensure nil
@@ -1770,6 +1616,321 @@ sexp before point and insert output into current position."
          (:map lisp-interaction-mode-map
                ("C-c C-p" . my-eval-print-last-sexp))))
 
+(use-package elixir-ts-mode
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(elixir . ("https://github.com/elixir-lang/tree-sitter-elixir")))
+  (unless (treesit-language-available-p 'elixir)
+    (treesit-install-language-grammar 'elixir))
+  :mode "\\(?:\\.elixir\\|\\.exs?\\|mix\\.lock\\)\\'")
+
+(use-package fennel-mode
+  :bind (:map fennel-mode-map
+              ("C-c C-x C-j" . fennel-repl)))
+
+(use-package fsharp-mode
+  :bind (:map fsharp-mode-map
+              ("C-c C-x C-j" . run-fsharp)))
+
+(use-package go-ts-mode
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(go . ("https://github.com/tree-sitter/tree-sitter-go")))
+  (unless (treesit-language-available-p 'go)
+    (treesit-install-language-grammar 'go))
+
+  (add-to-list 'treesit-language-source-alist
+               '(gomod . ("https://github.com/camdencheek/tree-sitter-go-mod")))
+  (unless (treesit-language-available-p 'gomod)
+    (treesit-install-language-grammar 'gomod))
+  :mode (("\\.go\\'" . go-ts-mode)
+         ("/go\\.mod\\'" . go-mod-ts-mode)))
+
+(use-package haskell-ts-mode
+  :if (treesit-available-p)
+  :bind (:map haskell-ts-mode-map
+              ("C-c C-x C-j" . run-haskell))
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(haskell . ("https://github.com/tree-sitter/tree-sitter-haskell")))
+  (unless (treesit-language-available-p 'haskell)
+    (treesit-install-language-grammar 'haskell))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(haskell-ts-mode . ("haskell-language-server-wrapper" "--lsp"))))
+  :mode "\\.hs\\'")
+
+(use-package heex-ts-mode
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(heex . ("https://github.com/phoenixframework/tree-sitter-heex")))
+  (unless (treesit-language-available-p 'heex)
+    (treesit-install-language-grammar 'heex))
+  :mode "\\.[hl]?eex\\'")
+
+(use-package java-ts-mode
+  :if (treesit-available-p)
+  :init
+  (add-to-list 'major-mode-remap-alist '(java-mode . java-ts-mode))
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(java . ("https://github.com/tree-sitter/tree-sitter-java")))
+  (unless (treesit-language-available-p 'java)
+    (treesit-install-language-grammar 'java))
+  :mode "\\.java\\'")
+
+(use-package js
+  :init
+  (when (treesit-available-p)
+    (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode)))
+  :custom (js-indent-level 2)
+  :config
+  (when (treesit-available-p)
+    (add-to-list 'treesit-language-source-alist
+                 '(javascript . ("https://github.com/tree-sitter/tree-sitter-javascript")))
+    (unless (treesit-language-available-p 'javascript)
+      (treesit-install-language-grammar 'javascript))
+
+    (add-to-list 'treesit-language-source-alist
+                 '(jsdoc . ("https://github.com/tree-sitter/tree-sitter-jsdoc")))
+    (unless (treesit-language-available-p 'jsdoc)
+      (treesit-install-language-grammar 'jsdoc)))
+  :mode ("\\.[cm]js\\'" . js-mode))
+
+(use-package json-ts-mode
+  :if (treesit-available-p)
+  :init
+  (add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(json . ("https://github.com/tree-sitter/tree-sitter-json")))
+  (unless (treesit-language-available-p 'json)
+    (treesit-install-language-grammar 'json))
+  :mode "\\.json\\'")
+
+(use-package just-ts-mode
+  :if (treesit-available-p)
+  :custom (just-ts-indent-offset 2)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(just . ("https://github.com/casey/tree-sitter-just")))
+  (unless (treesit-language-available-p 'just)
+    (treesit-install-language-grammar 'just))
+  :defer t)
+
+(use-package lua-ts-mode
+  :if (treesit-available-p)
+  :custom (lua-ts-indent-offset 2)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(lua . ("https://github.com/tree-sitter-grammars/tree-sitter-lua")))
+  (unless (treesit-language-available-p 'lua)
+    (treesit-install-language-grammar 'lua))
+  :mode "\\.lua\\'"
+  :interpreter "\\<lua\\(?:jit\\)?")
+
+(use-package neocaml
+  :if (treesit-available-p)
+  :hook (neocaml-base-mode . neocaml-repl-minor-mode)
+  :config
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '((neocaml-mode neocaml-interface-mode) . ("ocamllsp"))))
+  :bind (:map neocaml-repl-minor-mode-map
+              :package neocaml-repl
+              ("C-c C-x C-j" . neocaml-repl-switch-to-repl)))
+
+(use-package nix-ts-mode
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(nix . ("https://github.com/nix-community/tree-sitter-nix")))
+  (unless (treesit-language-available-p 'nix)
+    (treesit-install-language-grammar 'nix))
+  :defer t)
+
+(use-package php-ts-mode
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(php . ("https://github.com/tree-sitter/tree-sitter-php" nil "php/src")))
+  (unless (treesit-language-available-p 'php)
+    (treesit-install-language-grammar 'php))
+
+  (add-to-list 'treesit-language-source-alist
+               '(phpdoc . ("https://github.com/claytonrcarter/tree-sitter-phpdoc")))
+  (unless (treesit-language-available-p 'phpdoc)
+    (treesit-install-language-grammar 'phpdoc))
+  :mode "\\(?:\\.\\(?:php[s345]?\\|phtml\\|inc\\|stub\\)\\|/\\.php_cs\\(?:\\.dist\\)?\\)\\'"
+  :interpreter "php\\(?:-?[34578]\\(?:\\.[0-9]+\\)*\\)?")
+
+(use-package python
+  :init
+  (when (treesit-available-p)
+    (add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode)))
+  :custom
+  (python-indent-guess-indent-offset nil)
+  (python-indent-offset 4)
+  :config
+  (when (treesit-available-p)
+    (add-to-list 'treesit-language-source-alist
+                 '(python . ("https://github.com/tree-sitter/tree-sitter-python")))
+    (unless (treesit-language-available-p 'python)
+      (treesit-install-language-grammar 'python)))
+  :mode ("\\.[cir]py\\'" . python-mode))
+
+(use-package racket-mode
+  :bind (:map racket-mode-map
+              ("C-c C-x C-j" . racket-run)
+              ("C-c C-x C-x" . racket-xp-mode)
+              ("C-c C-x C-e" . racket-eval-last-sexp)))
+
+(use-package ruby-ts-mode
+  :if (treesit-available-p)
+  :init
+  (add-to-list 'major-mode-remap-alist '(ruby-mode . ruby-ts-mode))
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(ruby . ("https://github.com/tree-sitter/tree-sitter-ruby")))
+  (unless (treesit-language-available-p 'ruby)
+    (treesit-install-language-grammar 'ruby))
+  :mode "\\(?:\\.\\(?:rbw?\\|ru\\|rake\\|thor\\|axlsx\\|jbuilder\\|rabl\\|gemspec\\|podspec\\)\\|/\\(?:Gem\\|Rake\\|Cap\\|Thor\\|Puppet\\|Berks\\|Brew\\|Fast\\|Vagrant\\|Guard\\|Pod\\)file\\)\\'")
+
+(use-package rust-mode
+  :preface
+  (defun my-rust-doc ()
+    "Build documentation using `cargo doc'."
+    (interactive)
+    (rust--compile nil "%s doc" rust-cargo-bin))
+
+  (defun my-rust-doc-open ()
+    "Build and open documentation using `cargo doc'."
+    (interactive)
+    (rust--compile nil "%s doc --open" rust-cargo-bin))
+  :custom (rust-mode-treesitter-derive t)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(rust . ("https://github.com/tree-sitter/tree-sitter-rust")))
+  (unless (treesit-language-available-p 'rust)
+    (treesit-install-language-grammar 'rust))
+  :bind (:map rust-mode-map
+              ("C-c C-c C-c" . rust-compile)
+              ("C-c C-c C-d" . rust-dbg-wrap-or-unwrap)
+              ("C-c C-c C-m" . rust-toggle-mutability)
+              ;; Unbind `rust-dbg-wrap-or-unwrap' for doc
+              ("C-c C-d" . nil)
+              ("C-c C-d C-d" . my-rust-doc)
+              ("C-c C-d C-o" . my-rust-doc-open)
+              ("C-c C-p C-b" . rust-playpen-buffer)
+              ("C-c C-p C-r" . rust-playpen-region)
+              ("C-c C-r C-c" . rust-compile-release)
+              ("C-c C-r C-r" . rust-run-release)))
+
+(use-package sh-script
+  :init
+  (when (treesit-available-p)
+    (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode)))
+  :config
+  (when (treesit-available-p)
+    (add-to-list 'treesit-language-source-alist
+                 '(bash . ("https://github.com/tree-sitter/tree-sitter-bash")))
+    (unless (treesit-language-available-p 'bash)
+      (treesit-install-language-grammar 'bash)))
+  :defer t)
+
+(use-package tex-mode
+  :defer t
+  :config
+  (setq tex-command "xelatex")
+  (add-to-list 'tex-compile-commands '("xelatex %f" t "%r.pdf")))
+
+(use-package typescript-ts-mode
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "tsx/src")))
+  (unless (treesit-language-available-p 'tsx)
+    (treesit-install-language-grammar 'tsx))
+
+  (add-to-list 'treesit-language-source-alist
+               '(typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")))
+  (unless (treesit-language-available-p 'typescript)
+    (treesit-install-language-grammar 'typescript))
+  :mode (("\\.[jt]sx\\'" . tsx-ts-mode)
+         ("\\.ts\\'" . typescript-ts-mode)))
+
+(use-package vue-ts-mode
+  :vc (:url "https://github.com/8uff3r/vue-ts-mode")
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(vue . ("https://github.com/tree-sitter-grammars/tree-sitter-vue")))
+  (unless (treesit-language-available-p 'vue)
+    (treesit-install-language-grammar 'vue))
+  :mode "\\.[nu]?vue\\'")
+
+(use-package zig-ts-mode
+  :vc (:url "https://codeberg.org/meow_king/zig-ts-mode")
+  :if (treesit-available-p)
+  :config
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs '(zig-ts-mode . ("zls"))))
+  :defer t)
+
+;;;; Lsp
+
+(use-package eglot
+  :bind (("C-c l l" . eglot)
+         ("C-c l a" . eglot-code-actions)
+         ("C-c l c" . eglot-show-workspace-configuration)
+         ("C-c l d" . eglot-find-declaration)
+         ("C-c l f" . eglot-format)
+         ("C-c l h" . eldoc)
+         ("C-c l i" . eglot-find-implementation)
+         ("C-c l n" . eglot-rename)
+         ("C-c l q" . eglot-shutdown)
+         ("C-c l t" . eglot-find-typeDefinition)
+         ("C-c l L" . eglot-events-buffer)
+         ("C-c l R" . eglot-reconnect)
+         ("C-c l Q" . eglot-shutdown-all))
+  :custom
+  (eglot-autoshutdown t)
+  (eglot-extend-to-xref t)
+  (eglot-ignored-server-capabilities '(:documentHighlightProvider))
+  :config
+  ;; Use vtsls instead of ts_ls
+  (add-to-list 'eglot-server-programs
+               '(((js-mode :language-id "javascript")
+                  (js-ts-mode :language-id "javascript")
+                  (tsx-ts-mode :language-id "typescriptreact")
+                  (typescript-ts-mode :language-id "typescript")
+                  (typescript-mode :language-id "typescript"))
+                 "vtsls" "--stdio")))
+
+(use-package eglot-booster
+  :vc (:url "https://github.com/jdtsmith/eglot-booster")
+  :if (executable-find "emacs-lsp-booster")
+  :after eglot
+  :custom (eglot-booster-io-only t)
+  :config (eglot-booster-mode +1))
+
+(use-package eglot-tempel
+  :after (eglot tempel)
+  :config (eglot-tempel-mode +1))
+
+(use-package eglot-fsharp
+  :after (eglot fsharp-mode))
+
+(use-package ocaml-eglot
+  :after (eglot neocaml)
+  :config (ocaml-eglot +1))
+
+;;;; REPL
+
 (use-package sly
   :bind ((:map sly-mode-map
                ("C-c C-a C-c" . sly-asdf-compile-system)
@@ -1807,19 +1968,6 @@ sexp before point and insert output into current position."
 (use-package sly-asdf :after sly)
 (use-package sly-quicklisp :after sly)
 
-(use-package racket-mode
-  :bind (:map racket-mode-map
-              ("C-c C-x C-j" . racket-run)
-              ("C-c C-x C-x" . racket-xp-mode)
-              ("C-c C-x C-e" . racket-eval-last-sexp)))
-
-(use-package clojure-mode :defer t)
-
-(use-package clojure-ts-mode
-  :if (treesit-available-p)
-  :custom (clojure-ts-auto-remap t)
-  :after clojure-mode)
-
 (use-package cider
   :bind ((:map cider-eval-commands-map
                ("C-p" . cider-inspect-last-result)
@@ -1836,108 +1984,145 @@ sexp before point and insert output into current position."
              (executable-find "pwsh"))
     (setq cider-clojure-cli-command "pwsh")))
 
-(use-package fennel-mode
-  :bind (:map fennel-mode-map
-              ("C-c C-x C-j" . fennel-repl)))
+;;;; Compile
 
-(use-package fsharp-mode
-  :bind (:map fsharp-mode-map
-              ("C-c C-x C-j" . run-fsharp)))
+(use-package compile
+  :bind (("C-c c k" . compile)
+         ("C-c c r" . recompile))
+  :custom
+  (compilation-ask-about-save nil)
+  (compilation-always-kill t)
+  (compilation-scroll-output 'first-error)
+  :hook
+  (compilation-filter . ansi-color-compilation-filter))
 
-(use-package eglot-fsharp :after (eglot fsharp-mode))
+;;;; Vendor
 
-(use-package haskell-ts-mode
-  :if (treesit-available-p)
-  :bind (:map haskell-ts-mode-map
-              ("C-c C-x C-j" . run-haskell))
+(use-package apheleia
   :config
-  (add-to-list 'treesit-language-source-alist
-               '(haskell
-                 . ("https://github.com/tree-sitter/tree-sitter-haskell")))
-  (unless (treesit-language-available-p 'haskell)
-    (treesit-install-language-grammar 'haskell))
 
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '(haskell-ts-mode
-                   . ("haskell-language-server-wrapper" "--lsp"))))
-  :mode "\\.hs\\'")
+  (let ((formatter-mode-mapping
+         '((oxfmt . ( css-mode css-ts-mode scss-mode
+                      conf-toml-mode toml-ts-mode
+                      html-mode html-ts-mode
+                      js-mode js-ts-mode
+                      js-json-mode json-mode json-ts-mode
+                      markdown-mode markdown-ts-mode
+                      typescript-mode typescript-ts-mode tsx-ts-mode
+                      vue-ts-mode
+                      yaml-ts-mode))
+           (ruff . (python-mode python-ts-mode)))))
+    (dolist (rule formatter-mode-mapping)
+      (let ((formatter (car rule))
+            (modes     (cdr rule)))
+        (dolist (mode modes)
+          (add-to-list 'apheleia-mode-alist `(,mode . ,formatter))))))
 
-(use-package just-ts-mode
-  :if (treesit-available-p)
+  (setf (alist-get 'rustfmt apheleia-formatters)
+        '("rustfmt" "--edition" "2024" "--quiet" "--emit" "stdout"))
+  (setf (alist-get 'google-java-format apheleia-formatters)
+        '("google-java-format" "--aosp" "-"))
+
+  :bind
+  (("C-c c f" . apheleia-format-buffer)
+   ("C-c c F" . apheleia-goto-error)))
+
+(use-package citre
+  :bind (("C-c c a" . citre-ace-peek)
+         ("C-c c e" . citre-edit-tags-file-recipe)
+         ("C-c c h" . citre-peek)
+         ("C-c c t" . citre-update-this-tags-file)
+         ("C-c c j" . citre-jump)
+         ("C-c c J" . citre-jump-back))
+  :custom
+  (citre-auto-enable-citre-mode-modes '(prog-mode))
+  (citre-default-create-tags-file-location 'global-cache)
   :config
-  (add-to-list 'treesit-language-source-alist
-               '(just . ("https://github.com/casey/tree-sitter-just")))
-  (unless (treesit-language-available-p 'just)
-    (treesit-install-language-grammar 'just))
+  ;; Add Elisp to the backend lists
+  (citre-register-backend 'elisp
+                          (citre-xref-backend-to-citre-backend
+                           'elisp
+                           (lambda () (derived-mode-p 'emacs-lisp-mode))))
+  (add-to-list 'citre-find-definition-backends 'elisp)
+  (add-to-list 'citre-find-reference-backends 'elisp))
+
+(use-package eldoc-box
+  :if (display-graphic-p)
+  :hook ((eldoc-mode eglot-managed-mode) . eldoc-box-hover-mode)
+  :custom
+  (eldoc-box-only-multi-line t)
+  (eldoc-box-clear-with-C-g t)
+  :bind ("C-c h h" . eldoc-box-help-at-point)
+  :config
+  (advice-add 'eldoc-box-buffer-setup
+              :before
+              (lambda (&rest _)
+                (bind-key* "C-M-p" #'eldoc-box-scroll-down)
+                (bind-key* "C-M-n" #'eldoc-box-scroll-up)))
+  (advice-add 'eldoc-box-quit-frame
+              :before
+              (lambda (&rest _)
+                (unbind-key "C-M-p" 'override-global-map)
+                (unbind-key "C-M-n" 'override-global-map)))
+  (add-hook 'eldoc-box-buffer-setup-hook #'eldoc-box-prettify-ts-errors 0 t))
+
+(use-package flymake
+  :bind (("C-c ! b" . flymake-show-buffer-diagnostics)
+         ("C-c ! p" . flymake-show-project-diagnostics)))
+
+(use-package flyspell
+  :defer t
+  :config
+  (when (executable-find "aspell")
+    (setq ispell-program-name "aspell"
+          ispell-extra-args '("--sug-mode=ultra"
+                              "--lang=en_US"
+                              "--camel-case"))))
+
+;;; Text
+
+(use-package css-mode
+  :init
+  (when (treesit-available-p)
+    (add-to-list 'major-mode-remap-alist '(css-mode . css-ts-mode)))
+  :config
+  (when (treesit-available-p)
+    (add-to-list 'treesit-language-source-alist
+                 '(css . ("https://github.com/tree-sitter/tree-sitter-css")))
+    (unless (treesit-language-available-p 'css)
+      (treesit-install-language-grammar 'css)))
   :defer t)
 
-(use-package nix-ts-mode
+(use-package html-ts-mode
+  :if (treesit-available-p)
+  :init
+  (add-to-list 'major-mode-remap-alist '(html-mode . html-ts-mode))
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(html . ("https://github.com/tree-sitter/tree-sitter-html")))
+  (unless (treesit-language-available-p 'html)
+    (treesit-install-language-grammar 'html))
+  :mode "\\.html\\'")
+
+(use-package toml-ts-mode
+  :if (treesit-available-p)
+  :init
+  (add-to-list 'major-mode-remap-alist '(conf-toml-mode . toml-ts-mode))
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(toml . ("https://github.com/tree-sitter-grammars/tree-sitter-toml")))
+  (unless (treesit-language-available-p 'toml)
+    (treesit-install-language-grammar 'toml))
+  :mode "\\.toml\\'")
+
+(use-package yaml-ts-mode
   :if (treesit-available-p)
   :config
   (add-to-list 'treesit-language-source-alist
-               '(nix . ("https://github.com/nix-community/tree-sitter-nix")))
-  (unless (treesit-language-available-p 'nix)
-    (treesit-install-language-grammar 'nix))
-  :defer t)
-
-(use-package neocaml
-  :if (treesit-available-p)
-  :hook (neocaml-base-mode . neocaml-repl-minor-mode)
-  :config
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '((neocaml-mode neocaml-interface-mode) . ("ocamllsp"))))
-  :bind (:map neocaml-repl-minor-mode-map
-              :package neocaml-repl
-              ("C-c C-x C-j" . neocaml-repl-switch-to-repl)))
-
-(use-package ocaml-eglot
-  :after (eglot neocaml)
-  :config (ocaml-eglot +1))
-
-(use-package rust-mode
-  :preface
-  (defun my-rust-doc ()
-    "Build documentation using `cargo doc'."
-    (interactive)
-    (rust--compile nil "%s doc" rust-cargo-bin))
-
-  (defun my-rust-doc-open ()
-    "Build and open documentation using `cargo doc'."
-    (interactive)
-    (rust--compile nil "%s doc --open" rust-cargo-bin))
-  :custom (rust-mode-treesitter-derive t)
-  :bind (:map rust-mode-map
-              ("C-c C-c C-c" . rust-compile)
-              ("C-c C-c C-d" . rust-dbg-wrap-or-unwrap)
-              ("C-c C-c C-m" . rust-toggle-mutability)
-              ;; Unbind `rust-dbg-wrap-or-unwrap' for doc
-              ("C-c C-d" . nil)
-              ("C-c C-d C-d" . my-rust-doc)
-              ("C-c C-d C-o" . my-rust-doc-open)
-              ("C-c C-p C-b" . rust-playpen-buffer)
-              ("C-c C-p C-r" . rust-playpen-region)
-              ("C-c C-r C-c" . rust-compile-release)
-              ("C-c C-r C-r" . rust-run-release)))
-
-(use-package vue-ts-mode
-  :if (treesit-available-p)
-  :vc (:url "https://github.com/8uff3r/vue-ts-mode")
-  :config
-  (add-to-list 'treesit-language-source-alist
-               '(vue . ("https://github.com/tree-sitter-grammars/tree-sitter-vue")))
-  (unless (treesit-language-available-p 'vue)
-    (treesit-install-language-grammar 'vue))
-  :mode "\\.[nu]?vue\\'")
-
-(use-package zig-ts-mode
-  :if (treesit-available-p)
-  :vc (:url "https://codeberg.org/meow_king/zig-ts-mode")
-  :config
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs '(zig-ts-mode . ("zls"))))
-  :defer t)
+               '(yaml . ("https://github.com/tree-sitter-grammars/tree-sitter-yaml")))
+  (unless (treesit-language-available-p 'yaml)
+    (treesit-install-language-grammar 'yaml))
+  :mode "\\.ya?ml\\'")
 
 ;;; Version control
 
@@ -2139,9 +2324,9 @@ KEEP is one of `upper', `base', `lower'."
   (cape-dict-file #'my--cape-dict-file))
 
 (use-package zh-lib
-  :defer t
   :vc (:url "https://github.com/dalugm/zh-lib.el")
-  :custom (zh-lib-scheme 'simplified-traditional-quanpin-all))
+  :custom (zh-lib-scheme 'simplified-traditional-quanpin-all)
+  :defer t)
 
 (use-package marginalia
   :hook (after-init . marginalia-mode))
@@ -2333,8 +2518,8 @@ KEEP is one of `upper', `base', `lower'."
    ("C-c s l" . consult-line)
    ("C-c s L" . consult-locate)
    ("C-c s m" . consult-line-multi)
-   ("C-c s k" . consult-keep-lines)
-   ("C-c s u" . consult-focus-lines)
+   ("C-c s K" . consult-keep-lines)
+   ("C-c s k" . consult-focus-lines)
    ("C-c s o" . consult-outline)
    ("C-c s v" . consult-git-grep)
    ;; M-g bindings in `goto-map'
@@ -2351,8 +2536,8 @@ KEEP is one of `upper', `base', `lower'."
    ("M-s r" . consult-ripgrep)
    ("M-s l" . consult-line)
    ("M-s L" . consult-line-multi)
-   ("M-s k" . consult-keep-lines)
-   ("M-s u" . consult-focus-lines)
+   ("M-s K" . consult-keep-lines)
+   ("M-s k" . consult-focus-lines)
    ;; Other bindings
    ("M-L" . consult-line)
    (:map minibuffer-local-map
@@ -2669,8 +2854,8 @@ URL `http://blog.binchen.org/posts/code-faster-by-extending-emacs-evil-text-obje
    ("<leader>sm" . consult-line-multi)
    ("<leader>si" . imenu)
    ("<leader>sI" . consult-imenu-multi)
-   ("<leader>sk" . consult-keep-lines)
-   ("<leader>su" . consult-focus-lines)
+   ("<leader>sK" . consult-keep-lines)
+   ("<leader>sk" . consult-focus-lines)
    ("<leader>so" . consult-outline)
    ("<leader>ss" . consult-line)
    ("<leader>sv" . consult-git-grep)
@@ -3410,12 +3595,20 @@ Show the heading too, if it is currently invisible."
 
 ;;; Reader
 
+(use-package elfeed
+  :defer t
+  :custom (url-queue-timeout 30))
+
+(use-package elfeed-org
+  :after elfeed
+  :config (elfeed-org))
+
 (use-package logview
   :defer t)
 
 (use-package pdf-tools
   :if (display-graphic-p)
-  :hook ((pdf-view-mode . pdf-isearch-minor-mode))
+  :hook (pdf-view-mode . pdf-isearch-minor-mode)
   :mode ("\\.[pP][dD][fF]\\'" . pdf-view-mode)
   :magic ("%PDF" . pdf-view-mode))
 
