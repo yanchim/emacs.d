@@ -1689,6 +1689,12 @@ sexp before point and insert output into current position."
     (add-to-list 'major-mode-remap-alist '(js-mode . js-ts-mode)))
   :custom (js-indent-level 2)
   :config
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(((js-mode :language-id "javascript")
+                    (js-ts-mode :language-id "javascript"))
+                   . ("vtsls" "--stdio"))))
+
   (when (treesit-available-p)
     (add-to-list 'treesit-language-source-alist
                  '(javascript . ("https://github.com/tree-sitter/tree-sitter-javascript")))
@@ -1721,6 +1727,22 @@ sexp before point and insert output into current position."
   (unless (treesit-language-available-p 'just)
     (treesit-install-language-grammar 'just))
   :defer t)
+
+(use-package kotlin-ts-mode
+  :if (treesit-available-p)
+  :config
+  (add-to-list 'treesit-language-source-alist
+               '(kotlin . ("https://github.com/fwcd/tree-sitter-kotlin")))
+  (unless (treesit-language-available-p 'kotlin)
+    (treesit-install-language-grammar 'kotlin))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(kotlin-ts-mode . ("kotlin-lsp" "--stdio"))))
+  :bind (("C-c C-t C-c" . kotlin-ts-mode-run-current-test-class)
+         ("C-c C-t C-f" . kotlin-ts-mode-run-current-test-function)
+         ("C-c C-t C-t" . kotlin-ts-mode-goto-test-file))
+  :mode "\\.kts?\\'")
 
 (use-package lua-ts-mode
   :if (treesit-available-p)
@@ -1781,6 +1803,10 @@ sexp before point and insert output into current position."
                  '(python . ("https://github.com/tree-sitter/tree-sitter-python")))
     (unless (treesit-language-available-p 'python)
       (treesit-install-language-grammar 'python)))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '((python-mode python-ts-mode) . ("ty" "server"))))
   :mode ("\\.[cir]py\\'" . python-mode))
 
 (use-package racket-mode
@@ -1860,6 +1886,12 @@ sexp before point and insert output into current position."
                '(typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" nil "typescript/src")))
   (unless (treesit-language-available-p 'typescript)
     (treesit-install-language-grammar 'typescript))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(((tsx-ts-mode :language-id "typescriptreact")
+                    (typescript-ts-mode :language-id "typescript"))
+                   . ("vtsls" "--stdio"))))
   :mode (("\\.[jt]sx\\'" . tsx-ts-mode)
          ("\\.ts\\'" . typescript-ts-mode)))
 
@@ -1898,18 +1930,9 @@ sexp before point and insert output into current position."
          ("C-c l R" . eglot-reconnect)
          ("C-c l Q" . eglot-shutdown-all))
   :custom
-  (eglot-autoshutdown t)
   (eglot-extend-to-xref t)
   (eglot-ignored-server-capabilities '(:documentHighlightProvider))
-  :config
-  ;; Use vtsls instead of ts_ls
-  (add-to-list 'eglot-server-programs
-               '(((js-mode :language-id "javascript")
-                  (js-ts-mode :language-id "javascript")
-                  (tsx-ts-mode :language-id "typescriptreact")
-                  (typescript-ts-mode :language-id "typescript")
-                  (typescript-mode :language-id "typescript"))
-                 "vtsls" "--stdio")))
+  (eglot-autoshutdown t))
 
 (use-package eglot-booster
   :vc (:url "https://github.com/jdtsmith/eglot-booster")
