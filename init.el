@@ -742,6 +742,8 @@ number."
    ("C-c t k"   . visual-line-mode)
    ("C-c t p h" . my-toggle-http-proxy)
    ("C-c t p H" . my-show-http-proxy)
+   ("C-c t p s" . my-toggle-socks-proxy)
+   ("C-c t p S" . my-show-socks-proxy)
    ("C-c t t"   . load-theme)
    ("C-c w f"   . my-toggle-full-window)
    ("C-c w r"   . my-rotate-windows)
@@ -1520,22 +1522,21 @@ More details are inside `my-load-font'."
 
 ;;; Prog
 
-(use-package cc-mode
+(use-package c-ts-mode
+  :if (treesit-available-p)
   :init
-  (when (treesit-available-p)
-    (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
-    (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode)))
+  (add-to-list 'major-mode-remap-alist '(c-mode . c-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(c++-mode . c++-ts-mode))
   :config
-  (when (treesit-available-p)
-    (add-to-list 'treesit-language-source-alist
-                 '(c . ("https://github.com/tree-sitter/tree-sitter-c")))
-    (unless (treesit-language-available-p 'c)
-      (treesit-install-language-grammar 'c))
+  (add-to-list 'treesit-language-source-alist
+               '(c . ("https://github.com/tree-sitter/tree-sitter-c")))
+  (unless (treesit-language-available-p 'c)
+    (treesit-install-language-grammar 'c))
 
-    (add-to-list 'treesit-language-source-alist
-                 '(cpp . ("https://github.com/tree-sitter/tree-sitter-cpp")))
-    (unless (treesit-language-available-p 'cpp)
-      (treesit-install-language-grammar 'cpp)))
+  (add-to-list 'treesit-language-source-alist
+               '(cpp . ("https://github.com/tree-sitter/tree-sitter-cpp")))
+  (unless (treesit-language-available-p 'cpp)
+    (treesit-install-language-grammar 'cpp))
   :defer t)
 
 (use-package clojure-mode
@@ -1629,9 +1630,25 @@ sexp before point and insert output into current position."
   :bind (:map fennel-mode-map
               ("C-c C-x C-j" . fennel-repl)))
 
-(use-package fsharp-mode
-  :bind (:map fsharp-mode-map
+(use-package fsharp-ts-mode
+  :hook
+  (fsharp-ts-mode . fsharp-ts-repl-minor-mode)
+  (fsharp-ts-mode . fsharp-ts-dotnet-mode)
+  :bind (:map fsharp-ts-mode-map
               ("C-c C-x C-j" . run-fsharp)))
+
+(use-package fsharp-ts-eglot
+  :ensure nil
+  :after (eglot fsharp-ts-mode)
+  :custom
+  (fsharp-ts-eglot-pipeline-hints t)
+  ;; Use a globally installed fsautocomplete
+  (fsharp-ts-eglot-server-install-dir nil))
+
+(use-package fsharp-ts-lens
+  :ensure nil
+  :after (eglot fsharp-ts-mode)
+  :config (fsharp-ts-lens-mode +1))
 
 (use-package go-ts-mode
   :if (treesit-available-p)
@@ -1752,6 +1769,9 @@ sexp before point and insert output into current position."
                '(lua . ("https://github.com/tree-sitter-grammars/tree-sitter-lua")))
   (unless (treesit-language-available-p 'lua)
     (treesit-install-language-grammar 'lua))
+
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs '(lua-ts-mode . ("emmylua_ls"))))
   :mode "\\.lua\\'"
   :interpreter "\\<lua\\(?:jit\\)?")
 
@@ -1765,6 +1785,10 @@ sexp before point and insert output into current position."
   :bind (:map neocaml-repl-minor-mode-map
               :package neocaml-repl
               ("C-c C-x C-j" . neocaml-repl-switch-to-repl)))
+
+(use-package ocaml-eglot
+  :after (eglot neocaml)
+  :config (ocaml-eglot-mode +1))
 
 (use-package nix-ts-mode
   :if (treesit-available-p)
@@ -1944,13 +1968,6 @@ sexp before point and insert output into current position."
 (use-package eglot-tempel
   :after (eglot tempel)
   :config (eglot-tempel-mode +1))
-
-(use-package eglot-fsharp
-  :after (eglot fsharp-mode))
-
-(use-package ocaml-eglot
-  :after (eglot neocaml)
-  :config (ocaml-eglot +1))
 
 ;;;; REPL
 
