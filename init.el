@@ -1753,6 +1753,9 @@ sexp before point and insert output into current position."
 
 (use-package kotlin-ts-mode
   :if (treesit-available-p)
+  :bind (("C-c C-t C-c" . kotlin-ts-mode-run-current-test-class)
+         ("C-c C-t C-f" . kotlin-ts-mode-run-current-test-function)
+         ("C-c C-t C-t" . kotlin-ts-mode-goto-test-file))
   :config
   (add-to-list 'treesit-language-source-alist
                '(kotlin . ("https://github.com/fwcd/tree-sitter-kotlin")))
@@ -1762,9 +1765,6 @@ sexp before point and insert output into current position."
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
                  '(kotlin-ts-mode . ("kotlin-lsp" "--stdio"))))
-  :bind (("C-c C-t C-c" . kotlin-ts-mode-run-current-test-class)
-         ("C-c C-t C-f" . kotlin-ts-mode-run-current-test-function)
-         ("C-c C-t C-t" . kotlin-ts-mode-goto-test-file))
   :mode "\\.kts?\\'")
 
 (use-package lua-ts-mode
@@ -1783,11 +1783,17 @@ sexp before point and insert output into current position."
 
 (use-package neocaml
   :if (treesit-available-p)
-  :hook (neocaml-base-mode . neocaml-repl-minor-mode)
+  :hook
+  (neocaml-base-mode . neocaml-utop-minor-mode)
+  (neocaml-base-mode . neocaml-dune-interaction-mode)
+  (neocaml-dune-mode . neocaml-dune-interaction-mode)
+  (neocaml-opam-mode . neocaml-dune-interaction-mode)
   :config
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs
-                 '((neocaml-mode neocaml-interface-mode) . ("ocamllsp"))))
+                 '(((neocaml-mode :language-id "ocaml")
+                    (neocaml-interface-mode :language-id "ocaml.interface"))
+                   . ("ocamllsp"))))
   :bind (:map neocaml-repl-minor-mode-map
               :package neocaml-repl
               ("C-c C-x C-j" . neocaml-repl-switch-to-repl)))
@@ -1969,17 +1975,22 @@ sexp before point and insert output into current position."
          ("C-c l L" . eglot-events-buffer)
          ("C-c l R" . eglot-reconnect)
          ("C-c l Q" . eglot-shutdown-all))
+
+  :config
+
+  (setopt eglot-workspace-configuration
+          `( :gopls ( :usePlaceholders t
+                      :semanticTokens t
+                      :analyses ( :unusedparams t
+                                  :nilness t
+                                  :unusedwrite t)
+                      :staticcheck t
+                      :gofumpt t)))
+
   :custom
   (eglot-extend-to-xref t)
   (eglot-ignored-server-capabilities '(:documentHighlightProvider))
   (eglot-autoshutdown t))
-
-(use-package eglot-booster
-  :vc (:url "https://github.com/jdtsmith/eglot-booster")
-  :if (executable-find "emacs-lsp-booster")
-  :after eglot
-  :custom (eglot-booster-io-only t)
-  :config (eglot-booster-mode +1))
 
 (use-package eglot-tempel
   :after (eglot tempel)
@@ -2842,8 +2853,8 @@ URL `http://blog.binchen.org/posts/code-faster-by-extending-emacs-evil-text-obje
     (add-to-list 'evil-buffer-regexps b))
 
   (add-to-list 'evil-emacs-state-modes 'dired-mode)
-  (add-to-list 'evil-emacs-state-modes 'image-mode)
   (add-to-list 'evil-emacs-state-modes 'reader-mode)
+  (add-to-list 'evil-emacs-state-modes 'image-mode)
 
   (my--evil-adjust-major-mode-keymap "git-timemachine")
   (my--evil-adjust-major-mode-keymap "view")
@@ -3409,11 +3420,6 @@ Adapt from `org-babel-remove-result'."
                                      org-babel-load-languages)))
     (apply fn args))
   :custom (org-confirm-babel-evaluate nil))
-
-(use-package ob-js
-  :ensure nil
-  :defer t
-  :custom (org-babel-js-cmd "bun"))
 
 (use-package ob-lisp
   :ensure nil
