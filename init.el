@@ -354,8 +354,8 @@ Key is a symbol as the name, value is a plist specifying the search url."
                                  my-search-engine-alist
                                  nil nil #'equal)))
       (browse-url
-       (url-encode-url
-        (concat search-url
+       (concat search-url
+               (url-hexify-string
                 (if mark-active
                     (buffer-substring-no-properties (region-beginning) (region-end))
                   (read-string
@@ -535,12 +535,12 @@ URL `https://emacs.wordpress.com/2007/01/16/quick-and-dirty-code-folding/'"
                (seq-filter #'buffer-file-name (buffer-list))))))
 
   (defun my-kill-other-buffers-with-special-ones ()
-    "Keep all buffers (include special buffers) but the current one.
+    "Kill all other buffers, including special buffers.
 
 URL `https://stackoverflow.com/questions/3417438/closing-all-other-buffers-in-emacs'"
     (interactive)
     (when (y-or-n-p "Kill all buffers but current one? ")
-      (mapc #'kill-buffer (cdr (buffer-list (current-buffer))))))
+      (mapc #'kill-buffer (remq (current-buffer) (buffer-list)))))
 
   (defun my-insert-date (&optional arg)
     "Insert current date at point.
@@ -2285,7 +2285,7 @@ KEEP is one of `upper', `base', `lower'."
   (declare-function consult--find "consult" (prompt builder initial))
   (declare-function zh-lib-build-regexp-string
                     "zh-lib"
-                    (str &optional no-punc-p only-chinese-p))
+                    (str &rest args))
 
   (defvar w32-quote-process-args)
 
@@ -3146,8 +3146,8 @@ Adapt from `org-babel-remove-result'."
         (org-babel-do-load-languages 'org-babel-load-languages
                                      org-babel-load-languages))
       (funcall fn arg info params executor-type)))
-  :hook (org-babel-after-execute-hook . my-org-babel-highlight-result)
   :config
+  (add-hook 'org-babel-after-execute-hook #'my-org-babel-highlight-result)
   (advice-add 'org-babel-execute-src-block
               :around #'my--org-babel-execute-src-block-lazy-load-languages)
   :custom (org-confirm-babel-evaluate nil))
@@ -3213,14 +3213,17 @@ Adapt from `org-babel-remove-result'."
       ;; Locate YEAR headline, then MONTH headline
       (dolist (heading heading-list)
         (let ((re (format org-complex-heading-regexp-format
-                          (regexp-quote heading))))
-          (if (re-search-forward re end t)
+                          (regexp-quote heading)))
+              found)
+          (while (and (not found) (re-search-forward re end t))
+            (setq found (= (org-outline-level) level)))
+          (if found
               (goto-char (line-beginning-position))
-            ;; Not found, create a new headline at EOF
-            (goto-char (point-max))
+            ;; Append inside the parent subtree, or at EOF for a new year.
+            (goto-char (or end (point-max)))
             (or (bolp) (insert "\n"))
-            (when (/= (point) (point-min)) (org-end-of-subtree t t))
-            (insert (make-string level ?*) " " heading "\n")))
+            (insert (make-string level ?*) " " heading "\n")
+            (forward-line -1)))
         (cl-incf level)
         (setq end (save-excursion (org-end-of-subtree t t))))
       (org-end-of-subtree)))
